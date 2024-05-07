@@ -19,7 +19,7 @@ This is based on the [LISS WebComponent library](https://github.com/denis-migdal
 
 ChartsHTML uses **composition** in order to **factorize** code, improving readability and facilitating graph creation.
 
-It uses WebComponents enabling to easily see and modify on the fly (to be implemented) the graph configuration through the browser developer tools. It also favors extensibility and reusability. A JS interface (to be implemented) will also be provided.
+It uses WebComponents enabling to easily see and modify on the fly the graph configuration through the browser developer tools. It also favors extensibility and reusability. A JS interface (to be implemented) will also be provided.
 
 ChartsHTML also integrate several ChartsJS plugins :
 - Zoom (to be implemented)
