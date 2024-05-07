@@ -228,15 +228,19 @@ export default class ChartHTML extends LISS({css: CSS}) {
 				},*/
 			}
 		};
-        for(let elem of LISS.qsaSync('[slot]') )
-            elem.attach(config);
 
+        const components = LISS.qsaSync('[slot]');
+
+        //TODO prebuilt config
 		this.#chartjs = new Chart(ctx, config);
+
+        for(let elem of components)
+            elem._attach(this.#chartjs);
 	}
 }
 
-import "./scale.ts";
-import "./dataset.ts";
+import "./components/scale.ts";
+import "./components/dataset.ts";
 
 
 LISS.define('chart-html', ChartHTML);
