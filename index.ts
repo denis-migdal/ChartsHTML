@@ -102,6 +102,7 @@ export default class ChartHTML extends LISS({css: CSS}) {
 									: [direction, false]
 */
 
+
         const config: any = { //TODO: find real type
 			//type: 'scatter', collides with Violin/BoxPlot.
             data: {

@@ -23,8 +23,6 @@ export default class Dataset extends LISS({attributes: ['name', 'type']}) {
         if( type !== null)
             dataset.type = type;
 
-        console.warn(dataset);
-
         config.data.datasets.push(dataset);
     }
 }
