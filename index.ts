@@ -241,6 +241,7 @@ export default class ChartHTML extends LISS({css: CSS}) {
 
 import "./components/scale.ts";
 import "./components/dataset.ts";
+import './components/curves/HLine';
 
 
 LISS.define('chart-html', ChartHTML);
