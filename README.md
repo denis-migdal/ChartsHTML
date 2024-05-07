@@ -9,7 +9,8 @@ This is based on the [LISS WebComponent library](https://github.com/denis-migdal
     <chart-scale name="y" min="0" max="2"></chart-scale>
     <chart-dataset name="toto" type="bar">
         [1,2]
-    </chart-dataset> 
+    </chart-dataset>
+    <curve-hline color="#00FF00">1.5</curve-hline>
 </chart-html>
 ```
 
