@@ -9,8 +9,8 @@ export default class HLine extends Dataset {
         this.host.setAttribute('type', 'scatter');
     }
 
-    override _contentParser(content: string|null) {
-        return [{x:-Number.MAX_VALUE,y:+content!}, {x:Number.MAX_VALUE,y:+content!}];
+    override _contentParser(content: string) {
+        return [{x:-Number.MAX_VALUE,y:+content}, {x:Number.MAX_VALUE,y:+content}];
     }
 
     override _update() {

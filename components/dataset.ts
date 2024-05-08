@@ -4,7 +4,7 @@ import LISS from "LISS";
 
 import {Chart} from 'chart.js';
 
-export default class Dataset extends LISS.extendsLISS(GraphComponent, {attributes: ['name', 'type', 'color']}) {
+export default class Dataset extends LISS.extendsLISS(GraphComponent, {attributes: ['type', 'color']}) {
 
     #chart?: ChartHTML;
 

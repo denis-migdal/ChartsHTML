@@ -21,7 +21,7 @@ export default class Value extends GraphComponent {
         const data = JSON.parse(this.host.textContent!); //TODO fct override
 
         //TODO: update values stored in chart + notified registered values...
-        this.chart
+        this.chart.setValue(`@${this.attrs.name}`, data);
     }
 }
 LISS.define('chart-value', Value);

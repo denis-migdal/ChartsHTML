@@ -2,7 +2,7 @@
 import LISS from "LISS";
 import type ChartHTML from './';
 
-export default class GraphComponent extends LISS() {
+export default class GraphComponent extends LISS({attributes: ['name']}) {
 
     #chart?: ChartHTML;
 
@@ -30,15 +30,19 @@ export default class GraphComponent extends LISS() {
 
         this.#content_raw = this.host.textContent;
     }
-    protected _contentParser(content: string|null) {
-        if( content === null)
-            return null;
+    protected _contentParser(content: string) {
         return JSON.parse(content);
     }
     get contentParsed() {
         if(this.#content_parsed !== undefined)
             return this.#content_parsed;
-        return this.#content_parsed = this._contentParser(this.#content_raw);
+        if( this.#content_raw === null)
+            return this.#content_parsed = null;
+
+        let content = this.#content_raw;
+        if( content[0] === '@' )
+            content = this.chart.getValue(content);
+        return this.#content_parsed = this._contentParser(content);
     }
 
     // chart

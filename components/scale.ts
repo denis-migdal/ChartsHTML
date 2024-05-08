@@ -4,7 +4,7 @@ import LISS from "LISS";
 
 import {Chart} from 'chart.js';
 
-export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes: ['name', 'min', 'max', 'position']}) {
+export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes: ['min', 'max', 'position']}) {
 
     #chart?: ChartHTML;
 
@@ -15,8 +15,6 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
     }
 
     protected override _contentParser(content: string) {
-
-        console.log(content);
 
         if( content.trim() === '')
             return null;
@@ -32,8 +30,6 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
             throw new Error('name is null');
 
         const labels = this.contentParsed;
-
-        console.log(labels);
 
         let scale = this.chart._chartJS.options.scales![name]!;
         if(labels !== null) {

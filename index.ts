@@ -66,6 +66,17 @@ export default class ChartHTML extends LISS({css: CSS}) {
         */
     }
 
+	//TODO: deps tree...
+	#values: Record<string, any> = {}
+	getValue(name: string) {
+		return this.#values[name];
+	}
+	setValue(name: string, value: any) {
+		this.#values[name] = value;
+		//TODO: update ???
+	}
+
+
     // FOR INTERNAL USE ONLY
     get _chartJS() {
         return this.#chartjs;
