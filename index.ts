@@ -73,7 +73,7 @@ export default class ChartHTML extends LISS({css: CSS}) {
 	}
 	setValue(name: string, value: any) {
 		this.#values[name] = value;
-		//TODO: update ???
+		this.updateAll();
 	}
 
 
@@ -240,13 +240,34 @@ export default class ChartHTML extends LISS({css: CSS}) {
 			}
 		};
 
-        const components = LISS.qsaSync('[slot]');
+        this.#components = LISS.qsaSync('[slot]'); //TODO sync.
 
         //TODO prebuilt config
 		this.#chartjs = new Chart(ctx, config);
 
-        for(let elem of components)
+		this.#isUpdatingAll = true;
+        for(let elem of this.#components)
             elem._attach(this);
+		//this._chartJS.update('none');
+		this.#isUpdatingAll = false;
+	}
+
+	#components: any[] = [];
+
+	#isUpdatingAll: boolean = false;
+	updateAll() {
+
+		if( this.#isUpdatingAll )
+			return;
+		this.#isUpdatingAll = true;
+
+		console.log('called');
+
+		for(let elem of this.#components)
+			elem.update(); //TODO...
+		this._chartJS.update('none');
+
+		this.#isUpdatingAll = false;
 	}
 }
 

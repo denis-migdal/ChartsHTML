@@ -1,8 +1,8 @@
 
-import LISS from "LISS";
+import LISS, {ShadowCfg} from "LISS";
 import type ChartHTML from './';
 
-export default class GraphComponent extends LISS({attributes: ['name']}) {
+export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attributes: ['name']}) {
 
     #chart?: ChartHTML;
 
@@ -48,6 +48,11 @@ export default class GraphComponent extends LISS({attributes: ['name']}) {
     // chart
     get chart() {
         return this.#chart!;
+    }
+
+    update() {
+        this.#content_parsed = undefined;
+        this._update();
     }
 
     // redefine
