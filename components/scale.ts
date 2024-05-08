@@ -4,19 +4,20 @@ import LISS from "LISS";
 
 import {Chart} from 'chart.js';
 
-export default class Scale extends LISS({extends: GraphComponent, attributes: ['name', 'min', 'max', 'position']}) {
+export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes: ['name', 'min', 'max', 'position']}) {
 
     #chart?: ChartHTML;
 
     constructor() {
         super();
+
         this.host.setAttribute('slot', 'scale');
 
         const observer = new MutationObserver( () => {
             this._update()
             
             if(this.chart !== undefined)
-                this.chart.update('none'); //TODO move 2 father - move 2 update
+                this.chart._chartJS.update('none'); //TODO move 2 father - move 2 update
         });
         observer.observe(this.host, {characterData: true, subtree: true});
     }
@@ -31,7 +32,7 @@ export default class Scale extends LISS({extends: GraphComponent, attributes: ['
 
         const labels_text = this.host.textContent!.trim();
 
-        let scale = this.chart.options.scales![name]!;
+        let scale = this.chart._chartJS.options.scales![name]!;
         if(labels_text !== '') {
 
             const labels = labels_text.split(',').map(l => l.trim());
@@ -77,7 +78,7 @@ export default class Scale extends LISS({extends: GraphComponent, attributes: ['
 
 
     override _insert() {
-        this.chart.options.scales![this.attrs.name!] = {};
+        this.chart._chartJS.options.scales![this.attrs.name!] = {};
     }
 }
 LISS.define('chart-scale', Scale);

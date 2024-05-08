@@ -9,7 +9,7 @@ export default class HLine extends Dataset {
         this.host.setAttribute('type', 'scatter');
     }
 
-    get curve_data() {
+    override get curve_data() {
         return [{x:-Number.MAX_VALUE,y:this.data}, {x:Number.MAX_VALUE,y:this.data}];
     }
 

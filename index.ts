@@ -235,11 +235,15 @@ export default class ChartHTML extends LISS({css: CSS}) {
 		this.#chartjs = new Chart(ctx, config);
 
         for(let elem of components)
-            elem._attach(this.#chartjs);
+            elem._attach(this);
 	}
 }
 
+import "./components/value.ts";
+
 import "./components/scale.ts";
+
+
 import "./components/dataset.ts";
 import './components/curves/HLine';
 

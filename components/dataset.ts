@@ -4,7 +4,7 @@ import LISS from "LISS";
 
 import {Chart} from 'chart.js';
 
-export default class Dataset extends LISS({extends: GraphComponent, attributes: ['name', 'type', 'color']}) {
+export default class Dataset extends LISS.extendsLISS(GraphComponent, {attributes: ['name', 'type', 'color']}) {
 
     #chart?: ChartHTML;
 
@@ -16,7 +16,7 @@ export default class Dataset extends LISS({extends: GraphComponent, attributes: 
             this._update()
             
             if(this.chart !== undefined)
-                this.chart.update('none'); //TODO move 2 father - move 2 update
+                this.chart._chartJS.update('none'); //TODO move 2 father - move 2 update
         });
         observer.observe(this.host, {characterData: true, subtree: true});
     }
@@ -37,7 +37,7 @@ export default class Dataset extends LISS({extends: GraphComponent, attributes: 
 
     override _insert(): void {
         //@ts-ignore
-        this.chart.data.datasets.push(this.#dataset);
+        this.chart._chartJS.data.datasets.push(this.#dataset);
     }
 
     get curve_data() {

@@ -1,11 +1,13 @@
 
-import {Chart} from 'chart.js';
+import LISS from "LISS";
+import type ChartHTML from './';
 
-export default class GraphComponent {
+export default class GraphComponent extends LISS() {
 
-    #chart?: Chart;
+    #chart?: ChartHTML;
 
     constructor() {
+        super();
     }
 
     get chart() {
@@ -18,14 +20,19 @@ export default class GraphComponent {
 
     //internal
     //TODO !!! rename !!!
-    onAttrChanged(_name: string, _oldValue: string, _newValue: string): false | void {
+
+    #parsed_attrs = null;
+    #parsed_content = null;
+
+    override onAttrChanged(_name: string, _oldValue: string, _newValue: string): false | void {
+
         this._update();
         if(this.#chart !== undefined)
-            this.#chart.update('none'); //TODO move 2 father - move 2 update
+            this.#chart._chartJS.update('none'); //TODO move 2 father - move 2 update
     }
 
     // external
-    _attach(chart: Chart) {
+    _attach(chart: ChartHTML) {
         this.#chart = chart;
         this._insert();
         this._update();
