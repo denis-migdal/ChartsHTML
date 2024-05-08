@@ -8,7 +8,6 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attribu
 
     constructor() {
         super();
-
         this.#contentInit();
     }
 
