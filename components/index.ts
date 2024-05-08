@@ -8,8 +8,40 @@ export default class GraphComponent extends LISS() {
 
     constructor() {
         super();
+
+        this.#contentInit();
     }
 
+    // TextContent
+    #content_raw: string|null = null;
+    #content_parsed: any = undefined;
+    #contentInit() {
+        const observer = new MutationObserver( () => {
+
+            this.#content_raw = this.host.textContent;
+            this.#content_parsed = undefined;
+
+            this._update();
+            
+            if(this.chart !== undefined)
+                this.chart._chartJS.update('none'); //TODO move 2 father - move 2 update
+        });
+        observer.observe(this.host, {characterData: true, subtree: true});
+
+        this.#content_raw = this.host.textContent;
+    }
+    protected _contentParser(content: string|null) {
+        if( content === null)
+            return null;
+        return JSON.parse(content);
+    }
+    get contentParsed() {
+        if(this.#content_parsed !== undefined)
+            return this.#content_parsed;
+        return this.#content_parsed = this._contentParser(this.#content_raw);
+    }
+
+    // chart
     get chart() {
         return this.#chart!;
     }

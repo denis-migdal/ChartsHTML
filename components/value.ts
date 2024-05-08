@@ -4,9 +4,7 @@ import LISS from "LISS";
 
 import {Chart} from 'chart.js';
 
-export default class Value extends LISS({extends: GraphComponent, attributes: ['name']}) {
-
-    #chart?: ChartHTML;
+export default class Value extends GraphComponent {
 
     constructor() {
         super();
@@ -23,6 +21,7 @@ export default class Value extends LISS({extends: GraphComponent, attributes: ['
         const data = JSON.parse(this.host.textContent!); //TODO fct override
 
         //TODO: update values stored in chart + notified registered values...
+        this.chart
     }
 }
 LISS.define('chart-value', Value);

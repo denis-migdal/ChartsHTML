@@ -12,14 +12,15 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
         super();
 
         this.host.setAttribute('slot', 'scale');
+    }
 
-        const observer = new MutationObserver( () => {
-            this._update()
-            
-            if(this.chart !== undefined)
-                this.chart._chartJS.update('none'); //TODO move 2 father - move 2 update
-        });
-        observer.observe(this.host, {characterData: true, subtree: true});
+    protected override _contentParser(content: string) {
+
+        console.log(content);
+
+        if( content.trim() === '')
+            return null;
+        return content.split(',').map(l => l.trim());
     }
 
     #data: any = {};
@@ -30,13 +31,13 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
         if( name === null)
             throw new Error('name is null');
 
-        const labels_text = this.host.textContent!.trim();
+        const labels = this.contentParsed;
+
+        console.log(labels);
 
         let scale = this.chart._chartJS.options.scales![name]!;
-        if(labels_text !== '') {
+        if(labels !== null) {
 
-            const labels = labels_text.split(',').map(l => l.trim());
-            
             Object.assign(scale, {
                 type   : "category",
                 offset : true,
