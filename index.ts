@@ -240,7 +240,7 @@ export default class ChartHTML extends LISS({css: CSS}) {
 			}
 		};
 
-        this.#components = LISS.qsaSync('[slot]'); //TODO sync.
+        this.#components = LISS.qsaSync('[slot]', this.host); //TODO sync.
 
         //TODO prebuilt config
 		this.#chartjs = new Chart(ctx, config);
@@ -248,6 +248,8 @@ export default class ChartHTML extends LISS({css: CSS}) {
 		this.#isUpdatingAll = true;
         for(let elem of this.#components)
             elem._attach(this);
+
+		console.log(this.#components);
 		//this._chartJS.update('none');
 		this.#isUpdatingAll = false;
 	}
@@ -260,8 +262,6 @@ export default class ChartHTML extends LISS({css: CSS}) {
 		if( this.#isUpdatingAll )
 			return;
 		this.#isUpdatingAll = true;
-
-		console.log('called');
 
 		for(let elem of this.#components)
 			elem.update(); //TODO...
