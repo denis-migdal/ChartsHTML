@@ -33,9 +33,11 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
         this.#dataset.type = type;
         this.#dataset.data = this.contentParsed;
 
+        console.log(color);
+
         if(color !== null) {
-            this.dataset.borderColor = '#00FF00';
-            this.dataset.backgroundColor = '#00FF00';
+            this.dataset.borderColor = color;
+            this.dataset.backgroundColor = color;
         }
     }
 }

@@ -249,7 +249,6 @@ export default class ChartHTML extends LISS({css: CSS}) {
         for(let elem of this.#components)
             elem._attach(this);
 
-		console.log(this.#components);
 		//this._chartJS.update('none');
 		this.#isUpdatingAll = false;
 	}
@@ -278,6 +277,7 @@ import "./components/scale.ts";
 
 import "./components/dataset.ts";
 import './components/curves/HLine';
+import './components/curves/Line';
 
 
 LISS.define('chart-html', ChartHTML);
