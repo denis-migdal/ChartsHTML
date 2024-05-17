@@ -18,7 +18,7 @@ export default class Value extends GraphComponent {
 
     override _update(): void {
         //TODO: validate config...
-        this.chart.setValue(`@${this.attrs.name}`, this.contentParsed);
+        this.chart.setValue(this.attrs.name, this.contentParsed);
     }
 }
 LISS.define('chart-value', Value);

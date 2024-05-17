@@ -29,8 +29,8 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attribu
 
         this.#content_raw = this.host.textContent;
     }
-    protected _contentParser(content: string) {
-        return JSON.parse(content);
+    protected _contentParser(content: string): any {
+        return content;
     }
     get contentParsed() {
         if(this.#content_parsed !== undefined)
@@ -38,9 +38,8 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attribu
         if( this.#content_raw === null)
             return this.#content_parsed = null;
 
-        let content = this.#content_raw;
-        if( content[0] === '@' )
-            content = this.chart.getValue(content);
+        let content = this.chart.evalTString( this.#content_raw );
+
         return this.#content_parsed = this._contentParser(content);
     }
 

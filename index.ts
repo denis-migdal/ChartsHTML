@@ -9,6 +9,8 @@ Chart.register(Tooltip, Filler, ScatterController, PointElement, LineElement, Li
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 Chart.register(ChartDataLabels);
 
+import {evalTStringWithContext} from 'Utils/Fcts';
+
 //TODO: remove
 import {CategoryScale} from 'chart.js'; 
 Chart.register(CategoryScale);
@@ -38,35 +40,8 @@ export default class ChartHTML extends LISS({css: CSS}) {
         this.content.append(this.#canvas);
 
 		this.#initGraph();
-
-        /* 
-
-        // axis
-		this.#sourceXRange = new SourceInstance<RANGE_TYPE>(
-        					this.sourceProvider,
-        					options.xrange,
-        					() => this.#setRange('x' , this.#sourceXRange.getValue() ) );
-		this.#sourceYRange = new SourceInstance<RANGE_TYPE>(
-        					this.sourceProvider,
-        					options.yrange,
-        					() => this.#setRange('y' , this.#sourceYRange.getValue() ) );
-		this.#sourceY2Range = new SourceInstance<RANGE_TYPE>(
-        					this.sourceProvider,
-        					options.y2range,
-        					() => this.#setRange('y2', this.#sourceY2Range.getValue() ) );
-
-        this.#setRange('x' , this.#sourceXRange.getValue() );
-        this.#setRange('y' , this.#sourceYRange.getValue() );
-        this.#setRange('y2', this.#sourceY2Range.getValue() );
-
-
-        // curves
-		for(let element_name in elements)
-			this.addElement(element_name, elements[element_name]);
-        */
     }
 
-	//TODO: deps tree...
 	#values: Record<string, any> = {}
 	getValue(name: string) {
 		return this.#values[name];
@@ -76,6 +51,22 @@ export default class ChartHTML extends LISS({css: CSS}) {
 		this.updateAll();
 	}
 
+	evalTString(str: string, addValues = {}) {
+		return evalTStringWithContext(str, Object.assign({}, this.#values, addValues) );
+	}
+
+	#datasets: Record<string, any> = {};
+	insertDataset(dataset: any) {
+		
+		const dataset_data = dataset.dataset;
+
+        this._chartJS.data.datasets.push(dataset_data);
+		if(dataset_data.name !== null)
+			this.#datasets[dataset_data.name] = dataset;
+	}
+	getDataset(name: string) {
+		return this.#datasets[name];
+	}
 
     // FOR INTERNAL USE ONLY
     get _chartJS() {
@@ -85,7 +76,6 @@ export default class ChartHTML extends LISS({css: CSS}) {
 	#initGraph() {
 
 		let ctx = this.#canvas.getContext('2d')!;
-
 
 		// https://github.com/chartjs/chartjs-plugin-zoom
 		/*let zoom_options = {
@@ -124,6 +114,7 @@ export default class ChartHTML extends LISS({css: CSS}) {
 				animation: false,
 				maintainAspectRatio: false,
                 scales: {},
+				plugins: {}
                 /*
 				onHover: (e: any) => {
 
@@ -184,68 +175,16 @@ export default class ChartHTML extends LISS({css: CSS}) {
 					legend: {
 						display: false
 					},
-					tooltip: {
-						mode,
-						intersect,
-						titleFont: {
-							family: 'Courier New'
-						},
-						bodyFont: {
-							family: 'Courier New'
-						},
-						filter: <TType extends ChartType>(context: TooltipItem<TType>) => {
-							let name = (context.dataset as ChartDataset<TType>).label!;
-							return this.#elements[name].filter(context);
-						},
-						/*itemSort: <TTypeA extends ChartType, TTypeB extends ChartType>(a: TooltipItem<TTypeA>, b: TooltipItem<TTypeB>) => {
-
-							let diff = a.dataset.order - b.dataset.order;
-							if( diff !== 0)
-								return diff;
-							
-							diff = a.datasetIndex - b.datasetIndex;
-
-							if( diff !== 0)
-								return diff;
-
-							return a.dataIndex - b.dataIndex;
-						},*//*
-						callbacks: {
-							title: (context) => {
-
-								if( ! context.length || ! this.#options.tooltip?.title )
-									return '';
-
-								let name = context[0].dataset.label!;
-
-								let element = this.#elements[name];
-							
-								let label  = element.getLabel(context[0]);
-								let xlabel = element.getXLabel(context[0]);
-
-								return evalTStringWithContext(this.#options.tooltip.title,
-									{
-										x    :   +xlabel!, //TODO...
-										label: `${label}`
-									});
-							},
-							label: (context) => {
-
-								let name = context.dataset.label!;
-								return this.#elements[name].tooltip(context);
-							}
-						}
-					}
 				},*/
 			}
 		};
-
-        this.#components = LISS.qsaSync('[slot]', this.host); //TODO sync.
 
         //TODO prebuilt config
 		this.#chartjs = new Chart(ctx, config);
 
 		this.#isUpdatingAll = true;
+
+        this.#components = LISS.qsaSync('[slot]', this.host); //TODO sync.
         for(let elem of this.#components)
             elem._attach(this);
 
@@ -274,6 +213,7 @@ import "./components/value.ts";
 
 import "./components/scale.ts";
 
+import "./components/tooltip.ts";
 
 import "./components/dataset.ts";
 import './components/curves/HLine';
