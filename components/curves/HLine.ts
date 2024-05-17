@@ -6,7 +6,6 @@ export default class HLine extends Line {
 
     constructor() {
         super();
-        this.host.setAttribute('type', 'scatter');
     }
 
     override _contentParser(content: string) {

@@ -6,7 +6,10 @@ export default class Line extends Dataset {
 
     constructor() {
         super();
-        this.host.setAttribute('type', 'scatter');
+
+		//todo set default
+		this.setAttrDefault('type', 'scatter');
+		console.log('type', this.attrs.type);
     }
 
     /* TODO ... */

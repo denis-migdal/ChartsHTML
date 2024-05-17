@@ -16,7 +16,7 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
     #dataset = {
         name: this.attrs.name,
         data: [],
-        type: this.attrs.type
+        //type: this.attrs.type
     };
     get dataset() {
         return this.#dataset as any;
@@ -33,7 +33,9 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
 
     override _update(): void {
         //TODO: validate config...
-        const {type, color} = this.attrs;
+
+        const type  = this.attrs.type;
+        const color = this.attrs.color;
         
         this.#dataset.type = type;
         this.#dataset.data = this.contentParsed;
