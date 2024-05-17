@@ -47,10 +47,6 @@ export default class Tooltip extends GraphComponent {
             }
         };
     }
-
-    override _update(): void {
-        //TODO...
-    }
 }
 
 LISS.define('chart-tooltip', Tooltip);

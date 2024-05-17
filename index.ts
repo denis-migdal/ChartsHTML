@@ -1,7 +1,6 @@
 import LISS from "LISS";
 
 import {Chart, Tooltip, Filler, LinearScale, ScatterController, PointElement, LineElement, BarController, BarElement, ChartDataset, ScaleOptionsByType, ScaleOptions} from 'chart.js';
-import type { ChartType, TooltipItem } from "chart.js";
 import zoomPlugin from 'chartjs-plugin-zoom';
 
 Chart.register(Tooltip, Filler, ScatterController, PointElement, LineElement, LinearScale, BarController, BarElement, zoomPlugin);
@@ -116,25 +115,7 @@ export default class ChartHTML extends LISS({css: CSS}) {
                 scales: {},
 				plugins: {}
                 /*
-				onHover: (e: any) => {
-
-					if( ! e.chart.tooltip?.opacity) {
-						this.#canvas.classList.remove('clickable');
-						return;
-					}
-
-					this.#canvas.classList.add('clickable');
-				},
-				onClick: (e: any) => {
-
-					if( ! e.chart.tooltip?.opacity)
-						return;
-
-					let name = e.chart.tooltip.dataPoints[0].dataset.label!;
-					this.#elements[name].changePointLabel();
-
-					this._update();
-				},
+				
 				scales: {
 					x: {
 						ticks: {
@@ -149,33 +130,13 @@ export default class ChartHTML extends LISS({css: CSS}) {
 						},
 					}
 				},
-				hover: {
-					mode,
-					intersect
-				},
-				plugins: {
-					datalabels: {
-						backgroundColor: (context: any) => {
-				        	return context.dataset.pointBackgroundColor ?? context.dataset.backgroundColor ?? 'black';
-				        },
-				        borderRadius: 4,
-				        color: 'white',
-				        borderColor: 'white',
-				        font: {
-				          weight: 'bold'
-				        },
-						formatter: (value, context) => {
-
-							let name = context.dataset.label!;
-
-							return this.#elements[name].getPointLabel(context as any);
-						}
-					},
+				
+				plugins: 
 					zoom: zoom_options,
 					legend: {
 						display: false
 					},
-				},*/
+				*/
 			}
 		};
 
@@ -211,9 +172,10 @@ export default class ChartHTML extends LISS({css: CSS}) {
 
 import "./components/value.ts";
 
-import "./components/scale.ts";
-
 import "./components/tooltip.ts";
+import "./components/datalabels.ts";
+
+import "./components/scale.ts";
 
 import "./components/dataset.ts";
 import './components/curves/HLine';
