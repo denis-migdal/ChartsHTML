@@ -23,21 +23,26 @@ This is based on the [LISS WebComponent library](https://github.com/denis-migdal
     <img src='./doc/img/example.png' />
 </center>
 
-ChartsHTML uses **composition** in order to **factorize** code, improving readability and facilitating graph creation.
+ChartsHTML uses **composition** in order to **factorize** code, improving readability and facilitating graph creation. It uses WebComponents enabling to easily see and modify on the fly the graph configuration through the browser developer tools. It also favors extensibility and reusability. A JS API (<mark>TBI</mark>) will also be provided.
 
-It uses WebComponents enabling to easily see and modify on the fly the graph configuration through the browser developer tools. It also favors extensibility and reusability. A JS API (<mark>TBI</mark>) will also be provided.
-
-ChartsHTML also integrate several ChartsJS plugins :
+ChartsHTML also integrates several ChartsJS plugins :
 - Zoom (<mark>TBI</mark>)
-- datalabel
+- Datalabel
 - C2S (<mark>TBI</mark>)
 
-As well as offering new features :
+As well as providing new features :
 - data sources synchronisation.
 - data exports (csv, json) (<mark>TBI</mark>).
 - graph exports (png, svg, HTML) (<mark>TBI</mark>).
 
 ## Graph
+
+```html
+<chart-html>
+    <!-- chart values/options -->
+    <!-- chart content -->
+</chart-html>
+```
 
 ### Children
 
@@ -49,16 +54,85 @@ As well as offering new features :
 
 ### Public API
 
+- `setValue`
+- `getValue`
+- `evalTString`
+
+- `getDataset`
+
+- `updateAll`
+
+- `insertDataset` : called by dataset component.
+- `_chartJS`
+
 ### Protected API
 
+## Components
 
-## Dataset
+### Attributes
+
+- name
 
 ### Public API
 
+- `chart`
+- `update` : recompute parsed content. Called when values are updated.
+- `contentParsed`
+
 ### Protected API
 
+- `_contentParser` : how to parse content.
+- `_insert` : how to insert the component.
+- `_update` : how to update the component.
+
+### Internal API
+
+- `_attach` : called by the graph to attach the component.
+- `_detach` : no effects yet.
+
+## Dataset
+
+```html
+<chart-scale name="curve" type="scatter">
+    [[0,0],[1,1]]
+</chart-scale>
+```
+
+### Attributes
+
+- type : cf ChartJS
+- color
+- tooltip : cf `<chart-tooltip>`
+
+### Inherited
+
+- `<curve-line>[[1,1],[1,2]]</curve-line>`
+- `<curve-hline>1.5</curve-hline>`
+
+### Public API
+
+- `dataset` : ChartJS dataset.
+- `tooltip` : cf `<chart-tooltip>`
+- `getDatalabel` : cf `<chart-datalabels>`.
+- `datalabelToggle` : cf `<chart-datalabels>`
+
+### Protected API
+
+- `additionalValues` : cf values.
+
 ## Scale
+
+```html
+<chart-scale name="y" min="0" max="2"></chart-scale>
+<chart-scale name="x">A,B,C</chart-scale>
+```
+
+### Attributes
+
+- name : starts with x or y
+- position : top/bottom/left/right
+- min
+- max
 
 ### Public API
 
@@ -66,9 +140,15 @@ As well as offering new features :
 
 ## Value
 
+```html
+<chart-value name="val">1.5</chart-value>
+```
+
 ### Known values
 
-...
+- x
+- y
+- name
 
 ### Public API
 
@@ -76,12 +156,33 @@ As well as offering new features :
 
 ## Tooltip
 
+```html
+<chart-tooltip>Title ${val}</chart-tooltip>
+```
+
+Call datasets' `.tooltip()`.
+
 ### Public API
 
 ### Protected API
 
 ## Datalabel
 
+```html
+<chart-datalabels></chart-datalabels>
+```
+
+Call datasets' `datalabelToggle()` and `getDatalabel()`.
+
 ### Public API
 
 ### Protected API
+
+
+## TODO
+
+- [ ] Datalabel : add/remove labels + default label
+- [ ] Udpate freq : setAnimationFrameRequest + attached/detached visibility.
+- [ ] obs content in parent
+- [ ] JS API
+    - [ ] : graph attach(component) [insert in DOM].

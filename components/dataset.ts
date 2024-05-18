@@ -47,7 +47,7 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
     }
 
     // add values
-    additionalValues(context: any) {
+    protected additionalValues(context: any) {
 
         return {
             name:  context.dataset.name,
@@ -104,14 +104,5 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
 
 		this.#curDatalabel = labels[idx];
     }
-
-    /*
-
-	changePointLabel() {
-
-	}
-
-	*/
-
 }
 LISS.define('chart-dataset', Dataset);

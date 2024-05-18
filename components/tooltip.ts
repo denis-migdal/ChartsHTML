@@ -40,8 +40,6 @@ export default class Tooltip extends GraphComponent {
                 // One line per points
                 label: (context: any) => {
 
-                    console.log(context.dataset.name, this.chart.getDataset(context.dataset.name));
-
                     return this.chart.getDataset(context.dataset.name).tooltip(context);
                 }
             }
