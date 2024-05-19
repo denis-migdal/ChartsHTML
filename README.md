@@ -48,6 +48,7 @@ As well as providing new features :
 
 - Dataset
 - Scale
+- Zoom
 - Tooltip
 - Datalabel
 - Value
@@ -61,6 +62,8 @@ As well as providing new features :
 - `getDataset`
 
 - `updateAll`
+
+- `.zoom` : cf Zoom
 
 - `insertDataset` : called by dataset component.
 - `_chartJS`
@@ -138,6 +141,22 @@ As well as providing new features :
 
 ### Protected API
 
+## Zoom
+
+```html
+<chart-zoom direction="x"></chart-zoom>
+```
+
+### Attributes
+
+- direction : x | y | xy | none
+
+### Public API
+
+- `reset()`
+
+### Protected API
+
 ## Value
 
 ```html
@@ -184,5 +203,7 @@ Call datasets' `datalabelToggle()` and `getDatalabel()`.
 - [ ] Datalabel : add/remove labels + default label
 - [ ] Udpate freq : setAnimationFrameRequest + attached/detached visibility.
 - [ ] obs content in parent
+- [ ] Distinguish : internal vs protected vs public.
+- [ ] Zoom : set axis limits
 - [ ] JS API
     - [ ] : graph attach(component) [insert in DOM].

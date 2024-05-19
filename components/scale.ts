@@ -31,6 +31,7 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
 
         const labels = this.contentParsed;
 
+        console.log('scale', name, min, max, position);
         let scale = this.chart._chartJS.options.scales![name]!;
         if(labels !== null) {
 
@@ -57,8 +58,8 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
         } else {
 
             Object.assign(scale, { //TODO find real type
-                min: min,
-                max: max,
+                min: +min,
+                max: +max,
                 beginAtZero: true,
                 type: 'linear',
                 offset : false,
@@ -71,6 +72,7 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
         if( position !== null)
             //@ts-ignore
             scale.position = position;
+
     }
 
 

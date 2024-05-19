@@ -30,7 +30,6 @@ export default class Tooltip extends GraphComponent {
             },
             //TODO: filter (multi-dataset feature).
 
-
             callbacks: {
 
                 // Tooltip title (depends graph)
@@ -51,42 +50,23 @@ LISS.define('chart-tooltip', Tooltip);
 
 
 /*
+
+
+		let direction = this.#options.tooltip?.direction ?? 'xy';
+		let [mode, intersect]: ["x"|"y"|"point", boolean] =
+							direction === 'xy'
+									? ['point', true]
+									: [direction, false]
+                                    
     tooltip: {
         //ZOOM...
         mode,
         intersect,
 
-
         filter: <TType extends ChartType>(context: TooltipItem<TType>) => {
             let name = (context.dataset as ChartDataset<TType>).label!;
             return this.#elements[name].filter(context);
         },
-        /*
-        callbacks: {
-            title: (context) => {
-
-                if( ! context.length || ! this.#options.tooltip?.title )
-                    return '';
-
-                let name = context[0].dataset.label!;
-
-                let element = this.#elements[name];
-            
-                let label  = element.getLabel(context[0]);
-                let xlabel = element.getXLabel(context[0]);
-
-                return evalTStringWithContext(this.#options.tooltip.title,
-                    {
-                        x    :   +xlabel!, //TODO...
-                        label: `${label}`
-                    });
-            },
-            label: (context) => {
-
-                let name = context.dataset.label!;
-                return this.#elements[name].tooltip(context);
-            }
-        }
     }
 }*/
 

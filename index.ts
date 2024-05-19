@@ -1,12 +1,11 @@
 import LISS from "LISS";
 
 import {Chart, Tooltip, Filler, LinearScale, ScatterController, PointElement, LineElement, BarController, BarElement, ChartDataset, ScaleOptionsByType, ScaleOptions} from 'chart.js';
-import zoomPlugin from 'chartjs-plugin-zoom';
-
-Chart.register(Tooltip, Filler, ScatterController, PointElement, LineElement, LinearScale, BarController, BarElement, zoomPlugin);
 
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-Chart.register(ChartDataLabels);
+import zoomPlugin from 'chartjs-plugin-zoom';
+
+Chart.register(Tooltip, Filler, ScatterController, PointElement, LineElement, LinearScale, BarController, BarElement, ChartDataLabels, zoomPlugin);
 
 import {evalTStringWithContext} from 'Utils/Fcts';
 
@@ -76,33 +75,6 @@ export default class ChartHTML extends LISS({css: CSS}) {
 
 		let ctx = this.#canvas.getContext('2d')!;
 
-		// https://github.com/chartjs/chartjs-plugin-zoom
-		/*let zoom_options = {
-			pan: {
-				enabled: true,
-				mode: 'xy' as const,
-			},
-			limits: {
-				y: {},
-				x: {}
-			},
-			zoom: {
-				wheel: {
-					enabled: this.#options.zoom?.direction !== 'none',
-					speed: 0.1
-				},
-				mode: (this.#options.zoom?.direction ?? 'xy') as "xy"|"x"|"y"
-			}
-		};
-
-		let direction = this.#options.tooltip?.direction ?? 'xy';
-		let [mode, intersect]: ["x"|"y"|"point", boolean] =
-							direction === 'xy'
-									? ['point', true]
-									: [direction, false]
-*/
-
-
         const config: any = { //TODO: find real type
 			//type: 'scatter', collides with Violin/BoxPlot.
             data: {
@@ -130,9 +102,7 @@ export default class ChartHTML extends LISS({css: CSS}) {
 						},
 					}
 				},
-				
 				plugins: 
-					zoom: zoom_options,
 					legend: {
 						display: false
 					},
@@ -140,14 +110,17 @@ export default class ChartHTML extends LISS({css: CSS}) {
 			}
 		};
 
-        //TODO prebuilt config
-		this.#chartjs = new Chart(ctx, config);
-
+		//h4ck - required for correct pan initialization...
+		this.#chartjs = config; 
 		this.#isUpdatingAll = true;
 
         this.#components = LISS.qsaSync('[slot]', this.host); //TODO sync.
         for(let elem of this.#components)
             elem._attach(this);
+
+        //TODO prebuilt config
+		this.#chartjs = new Chart(ctx, config);
+
 
 		//this._chartJS.update('none');
 		this.#isUpdatingAll = false;
@@ -168,12 +141,17 @@ export default class ChartHTML extends LISS({css: CSS}) {
 
 		this.#isUpdatingAll = false;
 	}
+
+	get zoom() {
+		return LISS.qsSync('chart-zoom', this.host);
+	}
 }
 
 import "./components/value.ts";
 
 import "./components/tooltip.ts";
 import "./components/datalabels.ts";
+import "./components/zoom.ts";
 
 import "./components/scale.ts";
 
