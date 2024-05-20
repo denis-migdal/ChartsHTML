@@ -93,9 +93,12 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
 
             let pos;
             for(let dataset of this.chart._chartJS.data.datasets) {
-                pos = (dataset.data[0] as any)[scale_name];
-                if( pos < min )
-                    min = pos;
+
+                for(let point of dataset.data) {
+                    pos = (point as any)[scale_name];
+                    if( pos !== null && pos < min )
+                        min = pos;
+                }
             }
 
             if( min !== Number.POSITIVE_INFINITY)
@@ -107,26 +110,17 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
 
             let pos;
             for(let dataset of this.chart._chartJS.data.datasets) {
-                pos = (dataset.data[dataset.data.length-1] as any)[scale_name];
-                if( pos > max )
-                    max = pos;
+
+                for(let point of dataset.data) {
+                    pos = (point as any)[scale_name];
+                    if( pos !== null && pos > max )
+                        max = pos;
+                }
             }
 
             if( max !== Number.NEGATIVE_INFINITY)
                 scale.max = max;
         }
-
-        // they should be ordered.
-        /*
-        for(let dataset of this.chart._chartJS.data.datasets) {
-
-            for(let point of dataset.data) {
-                if( (point as any)[scale_name] < min )
-                    min = (point as any)[scale_name];
-                if( (point as any)[scale_name] > max )
-                    max = (point as any)[scale_name];
-            }
-        }*/
     }
 
 

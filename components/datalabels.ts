@@ -63,6 +63,7 @@ export default class Datalabels extends GraphComponent {
                 return;
             
             this.chart.getDataset(dataset.name).datalabelToggle();
+            this.chart.update();
         }
     }
 }

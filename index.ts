@@ -184,6 +184,7 @@ import "./components/scale.ts";
 import "./components/dataset.ts";
 import './components/curves/HLine';
 import './components/curves/Line';
+import './components/curves/Timelapse';
 
 
 LISS.define('chart-html', ChartHTML);
