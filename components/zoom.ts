@@ -19,28 +19,46 @@ export default class ChartZoom extends LISS.extendsLISS(GraphComponent, {attribu
             pan: {
 				enabled: true
 			},
-			limits: {
-				y: { /*TODO...
-                    min: 0,
-                    max: 10*/
-                },
-				x: {}
-			},
+			limits: {},
 			zoom: {
 				wheel: {
 					enabled: true,
 					speed: 0.1
-				},
-				mode: 'xy'
+				}
 			}
         }
 
+    }
+
+    // compute zoom limits (only works on x/y axis for now)
+    override _before_chart_update() {
+
+        const direction = this.attrs.direction;
+        const zoom_limits = this.chart._chartJS.options.plugins!.zoom!.limits!;
+        const scales = this.chart._chartJS.options.scales!;
+
+        if(direction === 'none')
+            return;
+
+        for(let scale_name in this.chart._chartJS.options.scales! ) {
+            
+            if(scales[scale_name]!.type !== 'linear') {
+                zoom_limits[scale_name] = {};
+                continue;
+            }
+
+            zoom_limits[scale_name] = {
+                min: scales[scale_name]!.min as number,
+                max: scales[scale_name]!.max as number,
+            }
+        }
     }
 
     override _update(): void {
 
         this.chart._chartJS.options.plugins!.zoom!.zoom!.wheel!.enabled = this.attrs.direction !== 'none';
         this.chart._chartJS.options.plugins!.zoom!.zoom!.mode           = this.attrs.direction! as any; //TODO validate
+        this.chart._chartJS.options.plugins!.zoom!.pan!.mode            = this.attrs.direction! as any; //TODO validate
     }
 
     reset() {

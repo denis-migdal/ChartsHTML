@@ -130,11 +130,12 @@ export default class ChartHTML extends LISS({css: CSS}) {
         for(let elem of this.#components)
             elem._attach(this);
 
+		for(let elem of this.#components)
+			elem._before_chart_update();
+
         //TODO prebuilt config
 		this.#chartjs = new Chart(ctx, config);
 
-
-		//this._chartJS.update('none');
 		this.#isUpdatingAll = false;
 	}
 
@@ -149,9 +150,22 @@ export default class ChartHTML extends LISS({css: CSS}) {
 
 		for(let elem of this.#components)
 			elem.update(); //TODO...
-		this._chartJS.update('none');
+
+		this.update();
 
 		this.#isUpdatingAll = false;
+	}
+
+	update() {
+
+		//TODO: set animation framerequest
+		//TODO: vs updateAll
+		//TODO: attached/detached...
+
+		for(let elem of this.#components)
+			elem._before_chart_update();
+
+		this._chartJS.update('none');
 	}
 
 	get zoom() {

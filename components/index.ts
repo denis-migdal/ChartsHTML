@@ -23,7 +23,7 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attribu
             this._update();
             
             if(this.chart !== undefined)
-                this.chart._chartJS.update('none'); //TODO move 2 father - move 2 update
+                this.chart.update();
         });
         observer.observe(this.host, {characterData: true, subtree: true});
 
@@ -56,6 +56,7 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attribu
     // redefine
     _insert() {}
     _update() {}
+    _before_chart_update() {}
 
     //internal
     //TODO !!! rename !!!
@@ -67,7 +68,7 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attribu
 
         this._update();
         if(this.#chart !== undefined)
-            this.#chart._chartJS.update('none'); //TODO move 2 father - move 2 update
+            this.#chart.update();
     }
 
     // external

@@ -61,7 +61,8 @@ As well as providing new features :
 
 - `getDataset`
 
-- `updateAll`
+- `updateAll` : when a value changed (update all components)
+- `update` : when a component changed
 
 - `.zoom` : cf Zoom
 
@@ -87,6 +88,7 @@ As well as providing new features :
 - `_contentParser` : how to parse content.
 - `_insert` : how to insert the component.
 - `_update` : how to update the component.
+- `_before_chart_update` : when a component value depends on the graph e.g. scales/zoom min/max.
 
 ### Internal API
 

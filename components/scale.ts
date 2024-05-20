@@ -2,8 +2,6 @@ import type ChartHTML from "../";
 import GraphComponent from "./";
 import LISS from "LISS";
 
-import {Chart} from 'chart.js';
-
 export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes: ['min', 'max', 'position']}) {
 
     #chart?: ChartHTML;
@@ -57,8 +55,6 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
         } else {
 
             Object.assign(scale, { //TODO find real type
-                min: +(min??0),
-                max: +(max??1),
                 beginAtZero: true,
                 type: 'linear',
                 offset : false,
@@ -66,12 +62,71 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
                     offset: false,
                 },
             });
+
+            if( min !== null)
+                scale.min = +min;
+            if( max !== null)
+                scale.max = +max;
+
         }
 
         if( position !== null)
             //@ts-ignore
             scale.position = position;
 
+    }
+
+    // compute implicit min/max.
+    override _before_chart_update() {
+
+        const scale_name = this.attrs.name!
+        const scale = this.chart._chartJS.options.scales![scale_name]!;
+
+        if(scale.type !== 'linear')
+            return;
+
+        let max = Number.NEGATIVE_INFINITY;
+
+        if( this.attrs.min === null ) {
+
+            let min = Number.POSITIVE_INFINITY;
+
+            let pos;
+            for(let dataset of this.chart._chartJS.data.datasets) {
+                pos = (dataset.data[0] as any)[scale_name];
+                if( pos < min )
+                    min = pos;
+            }
+
+            if( min !== Number.POSITIVE_INFINITY)
+                scale.min = min;
+        }
+        if( this.attrs.max === null ) {
+
+            let max = Number.NEGATIVE_INFINITY;
+
+            let pos;
+            for(let dataset of this.chart._chartJS.data.datasets) {
+                pos = (dataset.data[dataset.data.length-1] as any)[scale_name];
+                if( pos > max )
+                    max = pos;
+            }
+
+            if( max !== Number.NEGATIVE_INFINITY)
+                scale.max = max;
+        }
+
+        // they should be ordered.
+        /*
+        for(let dataset of this.chart._chartJS.data.datasets) {
+
+            for(let point of dataset.data) {
+                if( (point as any)[scale_name] < min )
+                    min = (point as any)[scale_name];
+                if( (point as any)[scale_name] > max )
+                    max = (point as any)[scale_name];
+            }
+        }*/
     }
 
 
