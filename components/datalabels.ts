@@ -19,7 +19,7 @@ export default class Datalabels extends GraphComponent {
 
     override _insert(): void {
 
-        this.chart._chartJS.options.plugins.datalabels = {
+        this.chart._chartJS.options.plugins!.datalabels = {
             backgroundColor: (context: any) => {
                 return context.dataset.pointBackgroundColor ?? context.dataset.backgroundColor ?? 'black';
             },
@@ -30,9 +30,10 @@ export default class Datalabels extends GraphComponent {
               weight: 'bold'
             },
             formatter: (_value, context) => {
-                if( context.dataset.name === null)
+                const name = (context.dataset as any).name;
+                if( name === null)
                     return null;
-                return this.chart.getDataset(context.dataset.name).getDatalabel(context);
+                return this.chart.getDataset(name).getDatalabel(context);
             }
         };
 
@@ -59,7 +60,7 @@ export default class Datalabels extends GraphComponent {
 
             const dataset =  context.chart.tooltip.dataPoints[0].dataset;
             if(dataset.name === null)
-                return null;
+                return;
             
             this.chart.getDataset(dataset.name).datalabelToggle();
         }

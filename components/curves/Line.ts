@@ -9,13 +9,12 @@ export default class Line extends Dataset {
 
 		//todo set default
 		this.setAttrDefault('type', 'scatter');
-		console.log('type', this.attrs.type);
     }
 
     /* TODO ... */
     override _contentParser(content: string) {
 
-        return super._contentParser(content).map( p => {return {x:p[0],y: p[1]} });
+        return super._contentParser(content).map( (p: [number, number]) => {return {x:p[0],y: p[1]} });
     }
 
     override _update() {

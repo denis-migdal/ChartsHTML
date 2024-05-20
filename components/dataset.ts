@@ -16,7 +16,7 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
     #dataset = {
         name: this.attrs.name,
         data: [],
-        //type: this.attrs.type
+        type: ""
     };
     get dataset() {
         return this.#dataset as any;
@@ -37,7 +37,7 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
         const type  = this.attrs.type;
         const color = this.attrs.color;
         
-        this.#dataset.type = type;
+        this.#dataset.type = type!;
         this.#dataset.data = this.contentParsed;
 
         if(color !== null) {
@@ -85,7 +85,7 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
 
     getDatalabel<TType extends ChartType>( context: TooltipItem<TType>): string|number|null {
 
-        const datalabel = this.#datalabels[this.#curDatalabel];
+        const datalabel = this.#datalabels[this.#curDatalabel]!;
         if(datalabel === "")
             return null;
 		return this.chart.evalTString(datalabel, this.additionalValues(context) );

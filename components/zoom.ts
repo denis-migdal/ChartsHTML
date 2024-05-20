@@ -9,11 +9,13 @@ export default class ChartZoom extends LISS.extendsLISS(GraphComponent, {attribu
     constructor() {
         super();
         this.host.setAttribute('slot', 'options');
+
+        this.setAttrDefault('direction', 'xy');
     }
 
     override _insert(): void {
 		// https://github.com/chartjs/chartjs-plugin-zoom
-        this.chart._chartJS.options.plugins.zoom = {
+        this.chart._chartJS.options.plugins!.zoom = {
             pan: {
 				enabled: true
 			},
@@ -37,8 +39,8 @@ export default class ChartZoom extends LISS.extendsLISS(GraphComponent, {attribu
 
     override _update(): void {
 
-        this.chart._chartJS.options.plugins.zoom.zoom.wheel.enabled = this.attrs.direction !== 'none';
-        this.chart._chartJS.options.plugins.zoom.zoom.mode          = this.attrs.direction;
+        this.chart._chartJS.options.plugins!.zoom!.zoom!.wheel!.enabled = this.attrs.direction !== 'none';
+        this.chart._chartJS.options.plugins!.zoom!.zoom!.mode           = this.attrs.direction! as any; //TODO validate
     }
 
     reset() {

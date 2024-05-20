@@ -7,7 +7,19 @@ import zoomPlugin from 'chartjs-plugin-zoom';
 
 Chart.register(Tooltip, Filler, ScatterController, PointElement, LineElement, LinearScale, BarController, BarElement, ChartDataLabels, zoomPlugin);
 
-import {evalTStringWithContext} from 'Utils/Fcts';
+/** Execute a string as a JS code, with the given variables (context). */
+export function evalWithContext<T>(cmd: string, context: Record<string, any>): T {
+	 
+	let variables = Object.keys(context).map( k => `let ${k} = context.${k};` );
+
+	return eval(variables.join(';') + ';' + cmd);
+}
+
+/** Execute a string as a template string, with the given variables (context). */
+export function evalTStringWithContext<T = string>(cmd: string, context: Record<string, any>): T {
+	
+	return evalWithContext('`' + cmd + '`', context);
+}
 
 //TODO: remove
 import {CategoryScale} from 'chart.js'; 
@@ -67,7 +79,7 @@ export default class ChartHTML extends LISS({css: CSS}) {
 	}
 
     // FOR INTERNAL USE ONLY
-    get _chartJS() {
+    get _chartJS(): Chart {
         return this.#chartjs;
     }
 

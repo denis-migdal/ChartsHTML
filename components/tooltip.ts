@@ -20,7 +20,7 @@ export default class Tooltip extends GraphComponent {
 
     override _insert(): void {
 
-        this.chart._chartJS.options.plugins.tooltip = {
+        this.chart._chartJS.options.plugins!.tooltip = {
 
             titleFont: {
                 family: 'Courier New'

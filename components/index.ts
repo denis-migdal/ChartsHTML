@@ -1,6 +1,6 @@
 
 import LISS, {ShadowCfg} from "LISS";
-import type ChartHTML from './';
+import type ChartHTML from '../';
 
 export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attributes: ['name']}) {
 
