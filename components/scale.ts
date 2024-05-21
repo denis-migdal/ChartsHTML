@@ -12,13 +12,6 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
         this.host.setAttribute('slot', 'scale');
     }
 
-    protected override _contentParser(content: string) {
-
-        if( content.trim() === '')
-            return null;
-        return content.split(',').map(l => l.trim());
-    }
-
     #data: any = {};
 
     override _update() {//TODO: validate config...

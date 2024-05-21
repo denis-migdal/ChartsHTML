@@ -7,18 +7,46 @@ import zoomPlugin from 'chartjs-plugin-zoom';
 
 Chart.register(Tooltip, Filler, ScatterController, PointElement, LineElement, LinearScale, BarController, BarElement, ChartDataLabels, zoomPlugin);
 
-/** Execute a string as a JS code, with the given variables (context). */
-export function evalWithContext<T>(cmd: string, context: Record<string, any>): T {
-	 
-	let variables = Object.keys(context).map( k => `let ${k} = context.${k};` );
+export class StringEval<T> {
 
-	return eval(variables.join(';') + ';' + cmd);
-}
+	constructor(component: any) {
+		this.#component = component;
+	}
 
-/** Execute a string as a template string, with the given variables (context). */
-export function evalTStringWithContext<T = string>(cmd: string, context: Record<string, any>): T {
-	
-	return evalWithContext('`' + cmd + '`', context);
+	#component: any;
+
+	#string: string|null = null;
+	#fct: ((args:any) => T)|null = null;
+	#result: T|undefined = undefined;
+
+	setString(str: string|null) {
+
+		if(str !== null) {
+			str = str.trim();
+			if(str.length === 0)
+				str = null;
+		}
+
+		if(str === this.#string)
+			return;
+
+		this.#result    = undefined;
+		this.#fct       = null;
+		this.#string    = str;
+	}
+	eval(context: Record<string, any>) {
+		if(this.#string === null)
+			return null;
+		if(this.#fct === null)
+			this.#fct = new Function('{v,c}', `return ${this.#string}`) as any;
+
+		return this.#result = this.#fct!( this.#component.chart.evalContext(context) );
+	}
+	value() {
+		if(this.#result === undefined)
+			return this.eval({});
+		return this.#result;
+	}
 }
 
 //TODO: remove
@@ -61,8 +89,8 @@ export default class ChartHTML extends LISS({css: CSS}) {
 		this.updateAll();
 	}
 
-	evalTString(str: string, addValues = {}) {
-		return evalTStringWithContext(str, Object.assign({}, this.#values, addValues) );
+	evalContext(context = {}) {
+		return {c: context, v: this.#values};
 	}
 
 	#datasets: Record<string, any> = {};

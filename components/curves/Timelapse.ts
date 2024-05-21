@@ -8,9 +8,10 @@ export default class Timelapse extends Line {
         super();
     }
 
-    override _contentParser(content: string) {
+    override _contentParser(content: unknown) {
 
-        const data = JSON.parse(content);
+        const data = content as [string, number,number][];
+
         const points = new Array(data.length * 3);
 
         for(let i = 0; i < data.length; ++i) {
@@ -18,8 +19,6 @@ export default class Timelapse extends Line {
             points[3*i+1] = {x: data[i][2], y: 0, label: data[i][0]};
             points[3*i+2] = {x: null, y:null};
         }
-
-        console.log(points);
 
         return points;
     }

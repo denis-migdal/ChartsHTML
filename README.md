@@ -6,16 +6,16 @@ This is based on the [LISS WebComponent library](https://github.com/denis-migdal
 ```html
 <chart-html>
     <chart-value name="val">1.5</chart-value>
-    <chart-tooltip>Title ${val}</chart-tooltip>
+    <chart-tooltip>`Title ${v.val}`</chart-tooltip>
     <chart-datalabels></chart-datalabels>
 
     <chart-scale name="x" min="0" max="2"></chart-scale>
     <chart-scale name="y" min="0" max="2"></chart-scale>
 
-    <curve-line name="curve" tooltip="${name}: (${x}, ${y})" color="red">
+    <curve-line name="curve" tooltip="`${c.name}: (${c.x}, ${c.y})`" color="red">
         [[1,1],[1,2],[2,2]]
     </curve-line>
-    <curve-hline color="#00FF00">${val}</curve-hline>
+    <curve-hline color="#00FF00">v.val</curve-hline>
 </chart-html>
 ```
 
@@ -57,7 +57,7 @@ As well as providing new features :
 
 - `setValue`
 - `getValue`
-- `evalTString`
+- `evalContext`
 
 - `getDataset`
 
@@ -123,7 +123,7 @@ As well as providing new features :
 
 ### Protected API
 
-- `additionalValues` : cf values.
+- `additionalContext` : cf values.
 
 ## Scale
 

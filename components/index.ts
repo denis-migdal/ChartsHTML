@@ -1,6 +1,7 @@
 
 import LISS, {ShadowCfg} from "LISS";
 import type ChartHTML from '../';
+import { StringEval } from "../";
 
 export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attributes: ['name']}) {
 
@@ -12,13 +13,12 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attribu
     }
 
     // TextContent
-    #content_raw: string|null = null;
-    #content_parsed: any = undefined;
+    #content_eval = new StringEval<any>(this);
+    #content_parsed: undefined|any = undefined;
     #contentInit() {
         const observer = new MutationObserver( () => {
 
-            this.#content_raw = this.host.textContent;
-            this.#content_parsed = undefined;
+            this.#content_eval.setString(this.host.textContent);
 
             this._update();
             
@@ -27,20 +27,17 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attribu
         });
         observer.observe(this.host, {characterData: true, subtree: true});
 
-        this.#content_raw = this.host.textContent;
+        this.#content_eval.setString(this.host.textContent);
     }
-    protected _contentParser(content: string): any {
+    protected _contentParser(content: any): any {
         return content;
     }
+
     get contentParsed() {
         if(this.#content_parsed !== undefined)
             return this.#content_parsed;
-        if( this.#content_raw === null)
-            return this.#content_parsed = null;
 
-        let content = this.chart.evalTString( this.#content_raw );
-
-        return this.#content_parsed = this._contentParser(content);
+        return this.#content_parsed = this._contentParser( this.#content_eval.eval({}) );
     }
 
     // chart

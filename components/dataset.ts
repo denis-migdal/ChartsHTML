@@ -1,4 +1,5 @@
 import type ChartHTML from "../";
+import { StringEval } from "../";
 import GraphComponent from "./";
 import LISS from "LISS";
 
@@ -22,11 +23,6 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
         return this.#dataset as any;
     }
 
-    // override
-    protected override _contentParser(content: string) {
-        return JSON.parse(content);
-    }
-
     override _insert(): void {
         this.chart.insertDataset(this);
     }
@@ -47,7 +43,7 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
     }
 
     // add values
-    protected additionalValues(context: any) {
+    protected additionalContext(context: any) {
 
         return {
             name:  context.dataset.name,
@@ -66,29 +62,35 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
     }
 
     // tooltips
+    #tooltipEval = new StringEval(this);
     tooltip(context: any) {
         if(this.attrs.tooltip === null)
             return "";
-        return this.chart.evalTString( this.attrs.tooltip, this.additionalValues(context) );
+
+        this.#tooltipEval.setString(this.attrs.tooltip);
+        return this.#tooltipEval.eval( this.additionalContext(context) );
     }
 
     // datalabel
 
-    //TODO...
+    //TODO: better...
 	#curDatalabel = 'none';
     #datalabels: Record<string, string|null> = {
-		none  : "",
-		name:  '${name}',
-		y: '${y}',
-        x: '${x}'
+		none  : null,
+		name  :  '`${c.name}`',
+		y: '`${c.y}`',
+        x: '`${c.y}`'
 	};
 
+    #datalabelEval = new StringEval<string>(this);
     getDatalabel<TType extends ChartType>( context: TooltipItem<TType>): string|number|null {
 
         const datalabel = this.#datalabels[this.#curDatalabel]!;
         if(datalabel === "")
             return null;
-		return this.chart.evalTString(datalabel, this.additionalValues(context) );
+
+        this.#datalabelEval.setString(datalabel);
+        return this.#datalabelEval.eval( this.additionalContext(context) );
 	}
 
     datalabelToggle(name?: string) {
