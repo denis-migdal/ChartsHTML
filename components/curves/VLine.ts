@@ -19,6 +19,14 @@ export default class VLine extends Line {
         this.dataset.pointRadius = 0;
     }
 
+    override tooltip(context: any) {
+        
+        if(context.dataIndex !== 0)
+            return null;
+        return super.tooltip(context);
+
+    }
+
 }
 
 
