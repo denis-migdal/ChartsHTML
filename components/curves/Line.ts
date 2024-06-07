@@ -14,7 +14,14 @@ export default class Line extends Dataset {
     /* TODO ... */
     override _contentParser(content: string) {
 
-		return super._contentParser(content)?.map( (p: [number, number]) => {return {x:p[0],y: p[1]} });
+		const data = super._contentParser(content);
+
+		console.warn('line update', data);
+
+		if(data === undefined)
+			return [];
+
+		return data.map( (p: [number, number]) => {return {x:p[0],y: p[1]} });
     }
 
     override _update() {

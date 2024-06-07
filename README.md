@@ -181,6 +181,10 @@ As well as providing new features :
 <chart-tooltip>Title ${val}</chart-tooltip>
 ```
 
+### Attributes
+
+- direction : x | y
+
 Call datasets' `.tooltip()`.
 
 ### Public API

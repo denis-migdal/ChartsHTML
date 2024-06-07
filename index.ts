@@ -73,8 +73,6 @@ export default class ChartHTML extends LISS({css: CSS}) {
 
 
     protected override onDOMConnected(): void {
-
-		console.warn('CONNECTED');
 		this.updateAll();
     }
 

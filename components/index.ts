@@ -54,12 +54,7 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attribu
     _insert() {}
     _update() {}
     _before_chart_update() {}
-
-    //internal
     //TODO !!! rename !!!
-
-    #parsed_attrs = null;
-    #parsed_content = null;
 
     override onAttrChanged(_name: string, _oldValue: string, _newValue: string): false | void {
 

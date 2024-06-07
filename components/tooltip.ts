@@ -5,7 +5,7 @@ import LISS from "LISS";
 import {Chart} from 'chart.js';
 
 //TODO: direction... (with zoom...)
-export default class Tooltip extends GraphComponent {
+export default class Tooltip extends LISS.extendsLISS(GraphComponent, {attributes: ['direction']}) {
 
     constructor() {
         super();
@@ -20,7 +20,13 @@ export default class Tooltip extends GraphComponent {
 
     override _insert(): void {
 
+		let mode = (this.attrs.direction ?? 'point') as "x"|"y"|"point";
+        let intersect = mode === "point";
+
         this.chart._chartJS.options.plugins!.tooltip = {
+
+            mode,
+            intersect,
 
             titleFont: {
                 family: 'Courier New'
@@ -49,19 +55,8 @@ export default class Tooltip extends GraphComponent {
 LISS.define('chart-tooltip', Tooltip);
 
 
-/*
-
-
-		let direction = this.#options.tooltip?.direction ?? 'xy';
-		let [mode, intersect]: ["x"|"y"|"point", boolean] =
-							direction === 'xy'
-									? ['point', true]
-									: [direction, false]
-                                    
+/*            
     tooltip: {
-        //ZOOM...
-        mode,
-        intersect,
 
         filter: <TType extends ChartType>(context: TooltipItem<TType>) => {
             let name = (context.dataset as ChartDataset<TType>).label!;
