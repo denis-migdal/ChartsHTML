@@ -71,6 +71,13 @@ export default class ChartHTML extends LISS({css: CSS}) {
     #canvas: HTMLCanvasElement;
     #chartjs!: Chart;
 
+
+    protected override onDOMConnected(): void {
+
+		console.warn('CONNECTED');
+		this.updateAll();
+    }
+
     constructor() {
         super();
 
@@ -172,6 +179,9 @@ export default class ChartHTML extends LISS({css: CSS}) {
 	#isUpdatingAll: boolean = false;
 	updateAll() {
 
+		if( ! this.isInDOM )
+			return;
+
 		if( this.#isUpdatingAll )
 			return;
 		this.#isUpdatingAll = true;
@@ -185,6 +195,9 @@ export default class ChartHTML extends LISS({css: CSS}) {
 	}
 
 	update() {
+
+		if( ! this.isInDOM )
+			return;
 
 		//TODO: set animation framerequest
 		//TODO: vs updateAll

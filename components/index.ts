@@ -72,7 +72,8 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attribu
     _attach(chart: ChartHTML) {
         this.#chart = chart;
         this._insert();
-        this._update();
+        if( this.isInDOM)
+            this._update();
     }
     _detach() {}
 }
