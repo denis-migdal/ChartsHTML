@@ -212,6 +212,12 @@ export default class ChartHTML extends LISS({css: CSS}) {
 	}
 }
 
+
+//TOOLS
+(Number.prototype as any).toPercentStr = function() {
+	return `${(this.valueOf() * 100).toFixed(2).padStart(6, ' ')}%`;
+}
+
 import "./components/value.ts";
 
 import "./components/tooltip.ts";
