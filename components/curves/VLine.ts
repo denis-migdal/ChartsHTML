@@ -2,14 +2,14 @@ import Line from './Line'
 
 import LISS from "LISS";
 
-export default class HLine extends Line {
+export default class VLine extends Line {
 
     constructor() {
         super();
     }
 
     override _contentParser(content: string) {
-        return [{x:Number.NEGATIVE_INFINITY,y:+content}, {x:Number.POSITIVE_INFINITY,y:+content}];
+        return [{x:+content,y:Number.POSITIVE_INFINITY}, {x:+content,y:Number.NEGATIVE_INFINITY}];
     }
 
     override _update() {
@@ -22,4 +22,4 @@ export default class HLine extends Line {
 }
 
 
-LISS.define('curve-hline', HLine);
+LISS.define('curve-vline', VLine);

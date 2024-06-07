@@ -227,8 +227,9 @@ import "./components/zoom.ts";
 import "./components/scale.ts";
 
 import "./components/dataset.ts";
-import './components/curves/HLine';
 import './components/curves/Line';
+import './components/curves/HLine';
+import './components/curves/VLine';
 import './components/curves/Timelapse';
 
 

@@ -89,6 +89,8 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
 
                 for(let point of dataset.data) {
                     pos = (point as any)[scale_name];
+                    if( pos === Number.NEGATIVE_INFINITY)
+                        continue;
                     if( pos !== null && pos < min )
                         min = pos;
                 }
@@ -106,6 +108,9 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
 
                 for(let point of dataset.data) {
                     pos = (point as any)[scale_name];
+                    if( pos === Number.POSITIVE_INFINITY)
+                        continue;
+
                     if( pos !== null && pos > max )
                         max = pos;
                 }
