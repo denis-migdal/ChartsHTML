@@ -18,6 +18,25 @@ export default class Tooltip extends LISS.extendsLISS(GraphComponent, {attribute
         observer.observe(this.host, {characterData: true, subtree: true});
     }
 
+    //TODO: refactor (cf Dataset)
+    protected additionalContext(context: any) {
+
+        return {
+            name:  context.dataset.name,
+            x:     (context?.parsed as any)?.x
+                ?? (context.dataset as any)?.data[context.dataIndex]?.x
+                ?? (context.dataset as any)?.data[context.dataIndex]?.[0]
+                ?? null,
+
+            y:      (context?.parsed as any)?.y
+                ?? (context.dataset as any)?.data[context.dataIndex]?.y
+                ?? (context.dataset as any)?.data[context.dataIndex]?.[1]
+                ?? null
+
+        };
+
+    }
+
     override _insert(): void {
 
 		let mode = (this.attrs.direction ?? 'point') as "x"|"y"|"point";
@@ -40,7 +59,7 @@ export default class Tooltip extends LISS.extendsLISS(GraphComponent, {attribute
 
                 // Tooltip title (depends graph)
                 title: (context: any) => {
-                    return this.contentParsed
+                    return this._contentParser( this._content_eval.eval(this.additionalContext(context[0]) ) );
                 },
                 // One line per points
                 label: (context: any) => {

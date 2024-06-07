@@ -13,12 +13,12 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attribu
     }
 
     // TextContent
-    #content_eval = new StringEval<any>(this);
+    protected _content_eval = new StringEval<any>(this);
     #content_parsed: undefined|any = undefined;
     #contentInit() {
         const observer = new MutationObserver( () => {
 
-            this.#content_eval.setString(this.host.textContent);
+            this._content_eval.setString(this.host.textContent);
 
             this._update();
             
@@ -27,7 +27,7 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attribu
         });
         observer.observe(this.host, {characterData: true, subtree: true});
 
-        this.#content_eval.setString(this.host.textContent);
+        this._content_eval.setString(this.host.textContent);
     }
     protected _contentParser(content: any): any {
         return content;
@@ -37,7 +37,7 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attribu
         if(this.#content_parsed !== undefined)
             return this.#content_parsed;
 
-        return this.#content_parsed = this._contentParser( this.#content_eval.eval({}) );
+        return this.#content_parsed = this._contentParser( this._content_eval.eval({}) );
     }
 
     // chart
