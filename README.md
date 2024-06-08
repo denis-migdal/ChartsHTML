@@ -44,6 +44,10 @@ As well as providing new features :
 </chart-html>
 ```
 
+### Attributes
+
+- "measure-render-time"
+
 ### Children
 
 - Dataset
@@ -207,6 +211,10 @@ Call datasets' `datalabelToggle()` and `getDatalabel()`.
 
 ### Protected API
 
+## OPTI
+
+- show-points="false"
+    - 100,000 points : 300ms -> 10ms.
 
 ## TODO
 

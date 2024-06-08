@@ -17,14 +17,22 @@ export default class ChartZoom extends LISS.extendsLISS(GraphComponent, {attribu
 		// https://github.com/chartjs/chartjs-plugin-zoom
         this.chart._chartJS.options.plugins!.zoom = {
             pan: {
-				enabled: true
+				enabled: true,
+                onPanComplete: () => {
+
+                    console.warn('?', this.chart._chartJS.scales["x"].min, this.chart._chartJS.scales["x"].max )
+                }
+                /* onPanComplete */
 			},
 			limits: {},
 			zoom: {
 				wheel: {
 					enabled: true,
 					speed: 0.1
-				}
+				},
+                onZoomComplete: () => {
+                    console.warn('?', this.chart._chartJS.scales["x"].min, this.chart._chartJS.scales["x"].max )
+                }
 			}
         }
 

@@ -66,7 +66,7 @@ const CSS = `
 }
 `;
 
-export default class ChartHTML extends LISS({css: CSS}) {
+export default class ChartHTML extends LISS({css: CSS, attributes: ["measure-render-time"]}) {
 
     #canvas: HTMLCanvasElement;
     #chartjs!: Chart;
@@ -125,12 +125,15 @@ export default class ChartHTML extends LISS({css: CSS}) {
             data: {
 				datasets: []
 			},
+			plugins: [],
 			options: {
 				locale: 'en-IN',
 				animation: false,
 				maintainAspectRatio: false,
                 scales: {},
-				plugins: {}
+				plugins: {},
+
+				
                 /*
 				plugins: 
 					legend: {
@@ -139,6 +142,24 @@ export default class ChartHTML extends LISS({css: CSS}) {
 				*/
 			}
 		};
+
+		// not working ?
+		/*config.options.plugins.decimation = {
+			enabled: true,
+  			algorithm: 'min-max',
+		}*/
+
+		if(this.attrs["measure-render-time"] === "true") {
+
+			let lastRender: number = 0;
+
+			config.plugins.push({
+				beforeRender: () => { lastRender = Date.now() },
+				afterRender : () => { 
+					console.warn(`Graph rendered in ${Date.now() - lastRender}ms`);
+				}
+			})
+		}
 
 		//h4ck - required for correct pan initialization...
 		this.#chartjs = config; 

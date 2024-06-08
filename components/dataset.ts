@@ -5,7 +5,7 @@ import LISS from "LISS";
 
 import type { ChartType, TooltipItem } from "chart.js";
 
-export default class Dataset extends LISS.extendsLISS(GraphComponent, {attributes: ['type', 'color', 'tooltip']}) {
+export default class Dataset extends LISS.extendsLISS(GraphComponent, {attributes: ['type', 'color', 'tooltip', 'hide']}) {
 
     #chart?: ChartHTML;
 
@@ -34,7 +34,7 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
         const color = this.attrs.color;
         
         this.#dataset.type = type!;
-        this.#dataset.data = this.contentParsed;
+        this.#dataset.data = this.attrs.hide === "true" ? [] : this.contentParsed;
 
         if(color !== null) {
             this.dataset.borderColor = color;
@@ -109,9 +109,11 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
 
     toCSV() {
 
+        const data = this.contentParsed; // when hide, #dataset.data is [].
+
         // Get the keys.
         const keys_set = new Set<string>();
-        for(let point of this.#dataset.data)
+        for(let point of data)
             for(let key in point)
                 keys_set.add(key);
 
@@ -119,7 +121,7 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
         const keys = [...keys_set].sort()
         for(let key of keys) {
 
-            let line = [this.attrs.name, key, ...this.#dataset.data.map(p => p[key])];
+            let line = [this.attrs.name, key, ...data.map(p => p[key])];
 
             lines.push(line.join('\t'));
         }

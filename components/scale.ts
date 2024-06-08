@@ -80,20 +80,17 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
 
         let max = Number.NEGATIVE_INFINITY;
 
+        let getValue = (p: any) => p[scale_name];
+
         if( this.attrs.min === null ) {
 
             let min = Number.POSITIVE_INFINITY;
 
-            let pos;
+            let tmin;
             for(let dataset of this.chart._chartJS.data.datasets) {
-
-                for(let point of dataset.data) {
-                    pos = (point as any)[scale_name];
-                    if( pos === Number.NEGATIVE_INFINITY)
-                        continue;
-                    if( pos !== null && pos < min )
-                        min = pos;
-                }
+                tmin = value_min(dataset.data, getValue);
+                if( tmin < min)
+                    min = tmin;
             }
 
             if( min !== Number.POSITIVE_INFINITY)
@@ -103,17 +100,11 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
 
             let max = Number.NEGATIVE_INFINITY;
 
-            let pos;
+            let tmax;
             for(let dataset of this.chart._chartJS.data.datasets) {
-
-                for(let point of dataset.data) {
-                    pos = (point as any)[scale_name];
-                    if( pos === Number.POSITIVE_INFINITY)
-                        continue;
-
-                    if( pos !== null && pos > max )
-                        max = pos;
-                }
+                tmax = value_max(dataset.data, getValue);
+                if( tmax > max)
+                    max = tmax;
             }
 
             if( max !== Number.NEGATIVE_INFINITY)
@@ -127,3 +118,35 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
     }
 }
 LISS.define('chart-scale', Scale);
+
+export function value_min<T>(points: readonly T[], value: (point: T) => number) {
+
+    let min = Number.POSITIVE_INFINITY;
+
+    let pos;
+    for(let point of points) {
+        pos = value(point);
+        if( pos === Number.NEGATIVE_INFINITY || pos === null)
+            continue;
+        if( pos < min )
+            min = pos;
+    }
+
+    return min;
+}
+export function value_max<T>(points: readonly T[], value: (point: T) => number) {
+
+    let max = Number.NEGATIVE_INFINITY;
+
+    let pos;
+    for(let point of points) {
+        pos = value(point);
+        if( pos === Number.POSITIVE_INFINITY || pos === null)
+            continue;
+
+        if( pos > max )
+            max = pos;
+    }
+
+    return max;
+}
