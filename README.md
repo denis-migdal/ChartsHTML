@@ -113,7 +113,9 @@ As well as providing new features :
 ### Inherited
 
 - `<curve-line>[[1,1],[1,2]]</curve-line>`
+    - attrs : showPoints="false"
 - `<curve-hline>1.5</curve-hline>`
+- `<curve-vline>1.5</curve-vline>`
 
 ### Public API
 

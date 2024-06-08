@@ -6,17 +6,12 @@ export default class VLine extends Line {
 
     constructor() {
         super();
+
+        this.setAttrDefault('showPoints', 'false');
     }
 
     override _contentParser(content: string) {
         return [{x:+content,y:Number.POSITIVE_INFINITY}, {x:+content,y:Number.NEGATIVE_INFINITY}];
-    }
-
-    override _update() {
-        super._update();
-
-        this.dataset.cubicInterpolationMode = 'monotone';
-        this.dataset.pointRadius = 0;
     }
 
     override tooltip(context: any) {

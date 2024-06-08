@@ -2,12 +2,12 @@ import Dataset from '../dataset'
 
 import LISS from "LISS";
 
-export default class Line extends Dataset {
+//@ts-ignore : "Property 'onAttrChanged' is protected in type 'Line' but public in type 'Dataset'." WTF ???
+export default class Line extends LISS.extendsLISS(Dataset, {attributes: ['showPoints']}) {
 
     constructor() {
         super();
 
-		//todo set default
 		this.setAttrDefault('type', 'scatter');
     }
 
@@ -15,8 +15,6 @@ export default class Line extends Dataset {
     override _contentParser(content: string) {
 
 		const data = super._contentParser(content);
-
-		console.warn('line update', data);
 
 		if(data === undefined)
 			return [];
@@ -27,17 +25,13 @@ export default class Line extends Dataset {
     override _update() {
         super._update();
 
-        //TODO...
-
-        //TODO: extends curve
         this.dataset.showLine = true;
         this.dataset.borderWidth = 2;
         this.dataset.parsing = false;
         this.dataset.normalized =  true;
 
-        //TODO: curve opts
-        //this.dataset.cubicInterpolationMode = 'monotone';
-        //this.dataset.pointRadius = 0;
+		if( this.attrs.showPoints === "false")
+			this.dataset.pointRadius = 0;
 
         /* this.#dataset = {
         	label: name,
