@@ -106,5 +106,25 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
 
 		this.#curDatalabel = labels[idx];
     }
+
+    toCSV() {
+
+        // Get the keys.
+        const keys_set = new Set<string>();
+        for(let point of this.#dataset.data)
+            for(let key in point)
+                keys_set.add(key);
+
+        let lines = new Array<string>();
+        const keys = [...keys_set].sort()
+        for(let key of keys) {
+
+            let line = [this.attrs.name, key, ...this.#dataset.data.map(p => p[key])];
+
+            lines.push(line.join('\t'));
+        }
+
+        return lines.join(`\n`);
+    }
 }
 LISS.define('chart-dataset', Dataset);

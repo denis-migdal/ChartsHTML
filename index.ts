@@ -132,21 +132,6 @@ export default class ChartHTML extends LISS({css: CSS}) {
                 scales: {},
 				plugins: {}
                 /*
-				
-				scales: {
-					x: {
-						ticks: {
-							maxRotation: 0,
-							minRotation: 0
-						},
-					},
-					y: {
-						ticks: {
-							maxRotation: 0,
-							minRotation: 0
-						},
-					}
-				},
 				plugins: 
 					legend: {
 						display: false
@@ -205,6 +190,10 @@ export default class ChartHTML extends LISS({css: CSS}) {
 			elem._before_chart_update();
 
 		this._chartJS.update('none');
+	}
+
+	toCSV() {
+		return Object.values(this.#datasets).map( d => d.toCSV() ).join('\n');
 	}
 
 	get zoom() {

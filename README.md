@@ -60,6 +60,7 @@ As well as providing new features :
 - `evalContext`
 
 - `getDataset`
+- `toCSV()`
 
 - `updateAll` : when a value changed (update all components)
 - `update` : when a component changed
@@ -120,6 +121,7 @@ As well as providing new features :
 - `tooltip` : cf `<chart-tooltip>`
 - `getDatalabel` : cf `<chart-datalabels>`.
 - `datalabelToggle` : cf `<chart-datalabels>`
+- `toCSV()`
 
 ### Protected API
 
