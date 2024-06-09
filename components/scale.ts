@@ -78,13 +78,12 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
         if(scale.type !== 'linear')
             return;
 
+        let min = Number.POSITIVE_INFINITY;
         let max = Number.NEGATIVE_INFINITY;
 
         let getValue = (p: any) => p[scale_name];
 
         if( this.attrs.min === null ) {
-
-            let min = Number.POSITIVE_INFINITY;
 
             let tmin;
             for(let dataset of this.chart._chartJS.data.datasets) {
@@ -92,13 +91,8 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
                 if( tmin < min)
                     min = tmin;
             }
-
-            if( min !== Number.POSITIVE_INFINITY)
-                scale.min = min;
         }
         if( this.attrs.max === null ) {
-
-            let max = Number.NEGATIVE_INFINITY;
 
             let tmax;
             for(let dataset of this.chart._chartJS.data.datasets) {
@@ -107,9 +101,24 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
                     max = tmax;
             }
 
-            if( max !== Number.NEGATIVE_INFINITY)
-                scale.max = max;
         }
+
+        if( min === max ) {
+            min = min - Math.abs(min);
+            max = max + Math.abs(max);
+        }
+
+        if( min !== Number.POSITIVE_INFINITY)
+            scale.min = min;
+        else
+            delete scale.min;
+
+        if( max !== Number.NEGATIVE_INFINITY)
+            scale.max = max;
+        else
+            delete scale.max;
+
+        console.warn(min, max);
     }
 
 
