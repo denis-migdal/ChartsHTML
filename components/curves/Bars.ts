@@ -2,7 +2,8 @@ import Dataset from '../dataset'
 
 import LISS from "LISS";
 
-export default class Bars extends Dataset {
+//@ts-ignore
+export default class Bars extends LISS.extendsLISS(Dataset, {attributes: ['reversed']}) {
 
     constructor() {
         super();
@@ -27,7 +28,7 @@ export default class Bars extends Dataset {
         // h4ck to set min/max values.
         if(this.dataset.data.length > 1) {
 
-            const data = this.dataset.data;
+            let data = this.dataset.data;
             const min = data[0].x;
             const max = data[data.length-1].x;
 
@@ -37,6 +38,9 @@ export default class Bars extends Dataset {
                 if( w < width)
                     width = w;
             }
+
+            if( this.attrs.reversed === "true" )
+                data = data.map( (p:any) => {return {x: p.x, y: -p.y} });
 
             this.dataset.data = [
                 {x: min -width/2, y:null},
