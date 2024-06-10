@@ -2,7 +2,7 @@ import type ChartHTML from "../";
 import GraphComponent from "./";
 import LISS from "LISS";
 
-import {Chart} from 'chart.js';
+import {Chart, ChartType, TooltipItem, ChartDataset} from 'chart.js';
 
 //TODO: direction... (with zoom...)
 export default class Tooltip extends LISS.extendsLISS(GraphComponent, {attributes: ['direction']}) {
@@ -53,12 +53,21 @@ export default class Tooltip extends LISS.extendsLISS(GraphComponent, {attribute
             bodyFont: {
                 family: 'Courier New'
             },
-            //TODO: filter (multi-dataset feature).
+            filter: <TType extends ChartType>(context: TooltipItem<TType>, ...args) => {
+                
+                //TODO... also no tooltip...
+                const point = context.parsed as any;
+                return point.x !== null && point.y !== null;
+            },
 
             callbacks: {
 
                 // Tooltip title (depends graph)
                 title: (context: any) => {
+
+                    if(context.length === 0)
+                        return null;
+
                     return this._contentParser( this._content_eval.eval(this.additionalContext(context[0]) ) );
                 },
                 // One line per points

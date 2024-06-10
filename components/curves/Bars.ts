@@ -11,18 +11,14 @@ export default class Bars extends Dataset {
     }
 
     /* TODO ... */
-    override _contentParser(content: string) {
+    override _contentParser(content: unknown) {
 
-		const data = super._contentParser(content);
+        const data = content as undefined| readonly [number,number][];
 
 		if(data === undefined)
 			return [];
 
 		return data.map( (p: [number, number]) => {return {x:p[0],y: p[1]} });
-    }
-
-    override _before_chart_update(): void {
-        console.warn(this.chart._chartJS.data.datasets);
     }
 
     override _update() {
@@ -52,7 +48,6 @@ export default class Bars extends Dataset {
         this.dataset.borderWidth   = 0;
         this.dataset.barPercentage = 1;
         this.dataset.categoryPercentage = 2;
-        this.dataset.backgroundColor = "green";
         this.dataset.inflateAmount = 1; // hide artifacts.
         this.dataset.grouped = false;
 

@@ -242,6 +242,6 @@ import './components/curves/HLine';
 import './components/curves/VLine';
 import './components/curves/Timelapse';
 import './components/curves/Bars';
-
+import './components/curves/Histogram';
 
 LISS.define('chart-html', ChartHTML);

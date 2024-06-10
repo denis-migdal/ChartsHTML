@@ -29,7 +29,7 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attribu
 
         this._content_eval.setString(this.host.textContent);
     }
-    protected _contentParser(content: any): any {
+    protected _contentParser(content: unknown): any {
         return content;
     }
 

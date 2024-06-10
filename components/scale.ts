@@ -16,14 +16,22 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
 
     override _update() {//TODO: validate config...
 
-        const {name,position,min,max} = this.attrs;
+        let {name,position,min,max} = this.attrs;
+
         if( name === null)
             throw new Error('name is null');
 
-        const labels = this.contentParsed;
+        let labels = this.contentParsed; //TODO: null or undefined ? not clear...
+
+        // range...
+        if(labels != null && labels.length === 2 && typeof labels[0] === "number" && typeof labels[1] === "number" ) {
+            this.attrs.min = `${labels[0]}`;
+            this.attrs.max = `${labels[1]}`;
+            labels = null;
+        }
 
         let scale = this.chart._chartJS.options.scales![name]!;
-        if(labels !== null) {
+        if(labels != null) {
 
             Object.assign(scale, {
                 type   : "category",
