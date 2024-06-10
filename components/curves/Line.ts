@@ -1,7 +1,6 @@
 import Dataset from '../dataset'
 
 import LISS from "LISS";
-import { value_max, value_min } from '../scale';
 
 //@ts-ignore : "Property 'onAttrChanged' is protected in type 'Line' but public in type 'Dataset'." WTF ???
 export default class Line extends LISS.extendsLISS(Dataset, {attributes: ['show-points', 'decimate']}) {
