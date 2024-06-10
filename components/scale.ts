@@ -117,8 +117,6 @@ export default class Scale extends LISS.extendsLISS(GraphComponent, {attributes:
             scale.max = max;
         else
             delete scale.max;
-
-        console.warn(min, max);
     }
 
 

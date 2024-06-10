@@ -109,7 +109,7 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
 
     toCSV() {
 
-        const data = this.contentParsed; // when hide, #dataset.data is [].
+        const data = this.contentParsed as Record<string, number>[]; // when hide, #dataset.data is [].
 
         // Get the keys.
         const keys_set = new Set<string>();
@@ -121,7 +121,7 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
         const keys = [...keys_set].sort()
         for(let key of keys) {
 
-            let line = [this.attrs.name, key, ...data.map(p => p[key])];
+            let line = [this.attrs.name, key, ...data.map( p => p[key])];
 
             lines.push(line.join('\t'));
         }
