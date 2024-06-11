@@ -172,7 +172,6 @@ export default class ChartHTML extends LISS({css: CSS, attributes: ["measure-ren
 		for(let elem of this.#components)
 			elem._before_chart_update();
 
-        //TODO prebuilt config
 		this.#chartjs = new Chart(ctx, config);
 
 		this.#isUpdatingAll = false;
@@ -243,5 +242,6 @@ import './components/curves/VLine';
 import './components/curves/Timelapse';
 import './components/curves/Bars';
 import './components/curves/Histogram';
+import './components/curves/Points';
 
 LISS.define('chart-html', ChartHTML);

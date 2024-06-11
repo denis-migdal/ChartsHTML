@@ -42,6 +42,11 @@ export default class Tooltip extends LISS.extendsLISS(GraphComponent, {attribute
 		let mode = (this.attrs.direction ?? 'point') as "x"|"y"|"point";
         let intersect = mode === "point";
 
+        this.chart._chartJS.options.hover = {
+            mode,
+            intersect
+        };
+
         this.chart._chartJS.options.plugins!.tooltip = {
 
             mode,

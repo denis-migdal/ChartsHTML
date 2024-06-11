@@ -122,6 +122,7 @@ As well as providing new features :
     - `<curve-vline>1.5</curve-vline>`
 - `<curve-bars>[[1,1],[2,2]]</curve-bars>`
     - `<curve-histogram precision="100">[1,2,2]</curve-histogram>`
+- `<curve-points></curve-points>`
 
 ### Public API
 

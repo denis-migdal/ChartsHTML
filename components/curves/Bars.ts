@@ -40,7 +40,7 @@ export default class Bars extends LISS.extendsLISS(Dataset, {attributes: ['rever
             }
 
             if( this.attrs.reversed === "true" )
-                data = data.map( (p:any) => {return {x: p.x, y: -p.y} });
+                data = data.map( (p:any) => {return {x: p.x, y: p.y !== null ? -p.y : null} });
 
             this.dataset.data = [
                 {x: min -width/2, y:null},
