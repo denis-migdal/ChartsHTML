@@ -19,8 +19,6 @@ export default class Points extends Dataset {
 		if(data === undefined)
 			return [];
 
-        console.warn("points", data);
-
 		return data.map( (p: [number, number]) => {return {x:p[0],y: p[1]} });
     }
 

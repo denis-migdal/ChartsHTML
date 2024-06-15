@@ -58,7 +58,7 @@ export default class Tooltip extends LISS.extendsLISS(GraphComponent, {attribute
             bodyFont: {
                 family: 'Courier New'
             },
-            filter: <TType extends ChartType>(context: TooltipItem<TType>, ...args) => {
+            filter: <TType extends ChartType>(context: TooltipItem<TType>) => {
                 
                 //TODO... also no tooltip...
                 const point = context.parsed as any;

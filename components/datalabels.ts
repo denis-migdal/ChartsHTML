@@ -37,12 +37,6 @@ export default class Datalabels extends GraphComponent {
             }
         };
 
-            /* 
-        hover: {
-            mode,
-            intersect
-        },*/
-
         //TODO:
         this.chart._chartJS.options.onHover = (e: any) => {
 
