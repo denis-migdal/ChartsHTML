@@ -78,7 +78,7 @@ export default class Tooltip extends LISS.extendsLISS(GraphComponent, {attribute
                 // One line per points
                 label: (context: any) => {
 
-                    return this.chart.getDataset(context.dataset.name).tooltip(context);
+                    return this.chart.getDataset(context.dataset.name).tooltip(context) as string;
                 }
             }
         };

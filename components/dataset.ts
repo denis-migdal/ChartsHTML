@@ -23,8 +23,23 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
         return this.#dataset as any;
     }
 
+    toggleShow() {
+        this.attrs.hide = `${ this.isShown }`;
+        this.update();
+        this.chart!.update();
+
+        return this.isShown;
+    }
+    get isShown() {
+        return this.attrs.hide !== "true";
+    }
+
     override _insert(): void {
         this.chart.insertDataset(this);
+    }
+
+    override _detach(): void {
+        this.chart.removeDataset(this);
     }
 
     override _update(): void {
@@ -62,7 +77,7 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
     }
 
     // tooltips
-    #tooltipEval = new StringEval(this);
+    #tooltipEval = new StringEval<string>(this);
     tooltip(context: any) {
         if(this.attrs.tooltip === null)
             return "";

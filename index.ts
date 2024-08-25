@@ -37,9 +37,10 @@ export class StringEval<T> {
 	eval(context: Record<string, any>) {
 		if(this.#string === null)
 			return null;
-		if(this.#fct === null)
+		if(this.#fct === null) {
+			console.warn('?', this.#string);
 			this.#fct = new Function('{v,c}', `return ${this.#string}`) as any;
-
+		}
 		return this.#result = this.#fct!( this.#component.chart.evalContext(context) );
 	}
 	value() {
@@ -98,14 +99,26 @@ export default class ChartHTML extends LISS({css: CSS, attributes: ["measure-ren
 		return {c: context, v: this.#values};
 	}
 
-	#datasets: Record<string, any> = {};
-	insertDataset(dataset: any) {
+	#datasets: Record<string, Dataset> = {};
+	getDatasetNames() {
+		return Object.keys(this.#datasets);
+	}
+	insertDataset(dataset: Dataset) {
 		
 		const dataset_data = dataset.dataset;
 
         this._chartJS.data.datasets.push(dataset_data);
 		if(dataset_data.name !== null)
 			this.#datasets[dataset_data.name] = dataset;
+	}
+	removeDataset(dataset: Dataset) {
+
+		const dataset_data = dataset.dataset;
+		if(dataset_data.name !== null)
+			delete this.#datasets[dataset_data.name];
+
+		const idx = this._chartJS.data.datasets.indexOf(dataset_data);
+		this._chartJS.data.datasets.splice(idx, 1);
 	}
 	getDataset(name: string) {
 		return this.#datasets[name];
@@ -235,6 +248,7 @@ import "./components/zoom.ts";
 
 import "./components/scale.ts";
 
+import "./components/datasets.ts";
 import "./components/dataset.ts";
 import './components/curves/Line';
 import './components/curves/HLine';
@@ -243,5 +257,6 @@ import './components/curves/Timelapse';
 import './components/curves/Bars';
 import './components/curves/Histogram';
 import './components/curves/Points';
+import Dataset from "./components/dataset.ts";
 
 LISS.define('chart-html', ChartHTML);

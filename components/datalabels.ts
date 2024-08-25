@@ -33,7 +33,7 @@ export default class Datalabels extends GraphComponent {
                 const name = (context.dataset as any).name;
                 if( name === null)
                     return null;
-                return this.chart.getDataset(name).getDatalabel(context);
+                return this.chart.getDataset(name).getDatalabel(context as any);
             }
         };
 

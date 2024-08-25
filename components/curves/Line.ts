@@ -47,7 +47,13 @@ export default class Line extends LISS.extendsLISS(Dataset, {attributes: ['show-
 
 		}
 
-		return data.map( (p: [number, number]) => {return {x:p[0],y: p[1]} });
+		console.warn('!?', typeof data, data);
+
+		return data.map( (p: [number, number]|number, idx:number) => {
+			if( ! Array.isArray(p) )
+				return {x: idx, y: p};
+			return {x:p[0],y: p[1]}
+		});
     }
 
     override _update() {
