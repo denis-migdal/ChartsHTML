@@ -26,7 +26,7 @@ export default class Datasets extends LISS.extendsLISS(GraphComponent, {shadow: 
         let colors: string[]|null = null;
         if( this.attrs.colors !== null) {
             this.#colors_eval.setString( this.attrs.colors );
-            colors = this.#colors_eval.value();
+            colors = this.#colors_eval.eval();
         }
 
         this.#curves = contents.map( (content: any, i: number) => {

@@ -34,7 +34,7 @@ export class StringEval<T> {
 		this.#fct       = null;
 		this.#string    = str;
 	}
-	eval(context: Record<string, any>) {
+	eval(context: Record<string, any> = {}) {
 		if(this.#string === null)
 			return null;
 		if(this.#fct === null) {
