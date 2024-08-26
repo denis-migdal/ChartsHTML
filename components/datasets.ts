@@ -1,8 +1,9 @@
 import GraphComponent from '.';
 import LISS, { ShadowCfg } from "LISS";
 import Dataset from './dataset';
+import { StringEval } from 'ChartsHTML';
 
-export default class Datasets extends LISS.extendsLISS(GraphComponent, {shadow: ShadowCfg.OPEN, attributes: ['type']}) {
+export default class Datasets extends LISS.extendsLISS(GraphComponent, {shadow: ShadowCfg.OPEN, attributes: ['type', 'color', 'colors']}) {
 
     constructor() {
         super();
@@ -11,12 +12,22 @@ export default class Datasets extends LISS.extendsLISS(GraphComponent, {shadow: 
 
     #curves: Dataset[] = [];
 
+    #colors_eval = new StringEval<string[]>(this);
+
     override _update(): void {
 
         for(let curve of this.#curves)
             curve._detach();
 
         const contents = this.contentParsed ?? [];
+
+
+        //TODO: generic ???
+        let colors: string[]|null = null;
+        if( this.attrs.colors !== null) {
+            this.#colors_eval.setString( this.attrs.colors );
+            colors = this.#colors_eval.value();
+        }
 
         this.#curves = contents.map( (content: any, i: number) => {
 
@@ -27,7 +38,8 @@ export default class Datasets extends LISS.extendsLISS(GraphComponent, {shadow: 
                 content: [content],
                 parent : this.content as any,
                 attrs: {
-                    name: `${this.attrs.name}.${i}`
+                    name: `${this.attrs.name}.${i}`,
+                    color: colors?.[i] ?? this.attrs.color ?? 'black'
                 }
             });
         });
