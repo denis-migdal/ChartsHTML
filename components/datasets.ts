@@ -3,7 +3,7 @@ import LISS, { ShadowCfg } from "LISS";
 import Dataset from './dataset';
 import { StringEval } from 'ChartsHTML';
 
-export default class Datasets extends LISS.extendsLISS(GraphComponent, {shadow: ShadowCfg.OPEN, attributes: ['type', 'color', 'colors']}) {
+export default class Datasets extends LISS.extendsLISS(GraphComponent, {shadow: ShadowCfg.OPEN, attributes: ['type', 'tooltip', 'color', 'colors']}) {
 
     constructor() {
         super();
@@ -39,7 +39,8 @@ export default class Datasets extends LISS.extendsLISS(GraphComponent, {shadow: 
                 parent : this.content as any,
                 attrs: {
                     name: `${this.attrs.name}.${i}`,
-                    color: colors?.[i] ?? this.attrs.color ?? 'black'
+                    color: colors?.[i] ?? this.attrs.color ?? 'black',
+                    tooltip: this.attrs.tooltip!
                 }
             });
         });

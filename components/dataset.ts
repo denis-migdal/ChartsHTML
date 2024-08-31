@@ -79,6 +79,7 @@ export default class Dataset extends LISS.extendsLISS(GraphComponent, {attribute
     // tooltips
     #tooltipEval = new StringEval<string>(this);
     tooltip(context: any) {
+
         if(this.attrs.tooltip === null)
             return "";
 

@@ -9,6 +9,7 @@ export default class Tooltip extends LISS.extendsLISS(GraphComponent, {attribute
 
     constructor() {
         super();
+
         this.host.setAttribute('slot', 'options');
 
         //TODO : move 2 parents....
@@ -77,7 +78,7 @@ export default class Tooltip extends LISS.extendsLISS(GraphComponent, {attribute
                 },
                 // One line per points
                 label: (context: any) => {
-
+                    console.warn(context);
                     return this.chart.getDataset(context.dataset.name).tooltip(context) as string;
                 }
             }

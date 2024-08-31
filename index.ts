@@ -37,10 +37,8 @@ export class StringEval<T> {
 	eval(context: Record<string, any> = {}) {
 		if(this.#string === null)
 			return null;
-		if(this.#fct === null) {
-			console.warn('?', this.#string);
+		if(this.#fct === null)
 			this.#fct = new Function('{v,c}', `return ${this.#string}`) as any;
-		}
 		return this.#result = this.#fct!( this.#component.chart.evalContext(context) );
 	}
 	value() {
