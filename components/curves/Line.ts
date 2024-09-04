@@ -47,8 +47,6 @@ export default class Line extends LISS.extendsLISS(Dataset, {attributes: ['show-
 
 		}
 
-		console.warn('!?', typeof data, data);
-
 		return data.map( (p: [number, number]|number, idx:number) => {
 			if( ! Array.isArray(p) )
 				return {x: idx, y: p};
