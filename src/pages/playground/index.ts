@@ -3,7 +3,9 @@ import {hl, initContentEditableCode} from "../../../libs/LISS/src/pages/playgrou
 let iframe = document.querySelector('iframe')!;
 
 const examples = [
-    "html-empty"
+    "html-empty",
+
+    "js-empty",
 ];
 
 const resources = [
@@ -77,9 +79,9 @@ function update() {
             }
         </style>
         <script type="module" defer>
-            import ChartsHTML from '../../index.js';
+            import ChartHTML from '../../index.js';
 
-            //TODO...
+            ${values.js}
         </script>
     </head>
     <body>

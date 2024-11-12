@@ -25,14 +25,18 @@ Et fournit de nouvelles fonctionnalités :
 
 ## Votre premier graphe ChartsHTML
 
+Tout d'abord, construisons un nouveau graphe vide :
 <table>
     <thead>
         <tr><th>HTML</th><th>JS</th></tr>
     </thead>
     <tbody>
         <tr><td>
-            <code lang="html">&lt;chart-html&gt;&lt;/chart-html&gt;</code>
+            <pre><code lang="html">&lt;chart-html&gt;&lt;/chart-html&gt;</code></pre>
         </td><td>
+<pre><code lang="js">const graph = new ChartHTML();
+document.body.append(graph.host);
+</code></pre>
         </td></tr>
     </tbody>
     <tfoot>
