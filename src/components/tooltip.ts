@@ -1,0 +1,114 @@
+import type ChartHTML from "..";
+import GraphComponent from ".";
+import LISS from "../../libs/LISS/src/index.ts";
+
+import {Chart, ChartType, TooltipItem, ChartDataset} from 'chart.js';
+
+//TODO: direction... (with zoom...)
+export default class Tooltip extends LISS({extends: GraphComponent, attrs: ['direction']}) {
+
+    constructor() {
+        super();
+
+        this.host.setAttribute('slot', 'options');
+
+        //TODO : move 2 parents....
+        const observer = new MutationObserver( () => {
+            this._update()
+        });
+        observer.observe(this.host, {characterData: true, subtree: true});
+    }
+
+    //TODO: refactor (cf Dataset)
+    protected additionalContext(context: any) {
+
+        return {
+            name:  context.dataset.name,
+            x:     (context?.parsed as any)?.x
+                ?? (context.dataset as any)?.data[context.dataIndex]?.x
+                ?? (context.dataset as any)?.data[context.dataIndex]?.[0]
+                ?? null,
+
+            y:      (context?.parsed as any)?.y
+                ?? (context.dataset as any)?.data[context.dataIndex]?.y
+                ?? (context.dataset as any)?.data[context.dataIndex]?.[1]
+                ?? null
+
+        };
+
+    }
+
+    override _insert(): void {
+
+		let mode = (this.attrs.direction ?? 'point') as "x"|"y"|"point";
+        let intersect = mode === "point";
+
+        this.chart._chartJS.options.hover = {
+            mode,
+            intersect
+        };
+
+        this.chart._chartJS.options.plugins!.tooltip = {
+
+            mode,
+            intersect,
+
+            titleFont: {
+                family: 'Courier New'
+            },
+            bodyFont: {
+                family: 'Courier New'
+            },
+            filter: <TType extends ChartType>(context: TooltipItem<TType>) => {
+                
+                //TODO... also no tooltip...
+                const point = context.parsed as any;
+                return point.x !== null && point.y !== null;
+            },
+
+            callbacks: {
+
+                // Tooltip title (depends graph)
+                title: (context: any) => {
+
+                    if(context.length === 0)
+                        return null;
+
+                    return this._contentParser( this._content_eval.eval(this.additionalContext(context[0]) ) );
+                },
+                // One line per points
+                label: (context: any) => {
+                    console.warn(context);
+                    return this.chart.getDataset(context.dataset.name).tooltip(context) as string;
+                }
+            }
+        };
+    }
+}
+
+LISS.define('chart-tooltip', Tooltip);
+
+
+/*            
+    tooltip: {
+
+        filter: <TType extends ChartType>(context: TooltipItem<TType>) => {
+            let name = (context.dataset as ChartDataset<TType>).label!;
+            return this.#elements[name].filter(context);
+        },
+    }
+}*/
+
+/*itemSort: <TTypeA extends ChartType, TTypeB extends ChartType>(a: TooltipItem<TTypeA>, b: TooltipItem<TTypeB>) => {
+
+            let diff = a.dataset.order - b.dataset.order;
+            if( diff !== 0)
+                return diff;
+            
+            diff = a.datasetIndex - b.datasetIndex;
+
+            if( diff !== 0)
+                return diff;
+
+            return a.dataIndex - b.dataIndex;
+        },*/

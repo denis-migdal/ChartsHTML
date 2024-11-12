@@ -1,0 +1,44 @@
+# ChartsHTML
+
+## Qu'est-ce que ChartsHTML ?
+
+ChartsHTML est une surcouche de Chart.js. ChartsHTML permet de construire des graphes via des **compositions**. Cela permet ainsi de :
+- **factoriser** les éléments de configuration des graphes ChartsHTML ;
+- favoriser l'extensibilité et réutilisabilité des composants ;
+- améliorer la lisibilité du code ;
+- faciliter la création de graphes.
+
+Les graphes ChartsHTML peuvent être créés en HTML, ou en JS/TS.<br/>
+En interne, ChartsHTML utilise des composants Web (basés sur LISS) permettant ainsi, via les outils de développement du navigateur, de facilement consulter et modifier à la volée la configuration des graphes.
+
+ChartsHTML intègre aussi plusieurs plugins ChartJS :
+- Zoom (<mark>TBI ?</mark>)
+- Datalabel
+- C2S (<mark>TBI</mark>)
+
+Et fournit de nouvelles fonctionnalités :
+- synchronisation de sources de données (<mark>TBI ?</mark>).
+- export de données (csv, json, ?) (<mark>TBI</mark>).
+- export de graphes (png, svg, HTML, ?) (<mark>TBI</mark>).
+
+💡 Vous pouvez consulter les différents exemples dans le [https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/](playground).
+
+## Votre premier graphe ChartsHTML
+
+<table>
+    <thead>
+        <tr><th>HTML</th><th>JS</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>
+            <code lang="html">\<chart-html\>\</chart-html\></code>
+        </td><td>
+        </td></tr>
+    </tbody>
+    <tfoot>
+        <tr><td>
+            [https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-empty](playground)
+        </td><td>
+        </td></tr>
+    </tfoot>
+</table>
