@@ -7,8 +7,17 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attrs: 
 
     #chart?: ChartHTML;
 
-    constructor() {
+    constructor(params: Record<string,any> = {}) {
         super();
+
+        for(let key in params ) {
+            if( key === "content" ) {
+                this.host.textContent = JSON.stringify(params.content);
+                continue;
+            }
+            this.attrs[key] = params[key];
+        }
+
         this.#contentInit();
     }
 
@@ -67,6 +76,7 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attrs: 
     _attach(chart: ChartHTML) {
         this.#chart = chart;
         this._insert();
+
         if( this.isInDOM)
             this._update();
     }

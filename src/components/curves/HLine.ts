@@ -4,8 +4,8 @@ import LISS from "../../../libs/LISS/src/index.ts";
 
 export default class HLine extends LISS({extends: Line}) {
 
-    constructor() {
-        super();
+    constructor(...args: any[]) {
+        super(...args);
 
         this.setAttrDefault('showPoints', 'false');
     }

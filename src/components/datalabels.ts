@@ -7,8 +7,8 @@ import LISS from "../../libs/LISS/src/index.ts";
 
 export default class Datalabels extends LISS({extends: GraphComponent}) {
 
-    constructor() {
-        super();
+    constructor(...args: any[]) {
+        super(...args);
         this.host.setAttribute('slot', 'options');
 
         //TODO : move 2 parents....

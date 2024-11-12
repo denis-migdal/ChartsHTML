@@ -5,8 +5,8 @@ import LISS from "../../../libs/LISS/src/index.ts";
 //@ts-ignore
 export default class Bars extends LISS({extends: Dataset, attrs: ['reversed']}) {
 
-    constructor() {
-        super();
+    constructor(...args: any[]) {
+        super(...args);
 
 		this.setAttrDefault('type', 'bar');
     }

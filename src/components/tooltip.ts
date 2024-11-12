@@ -7,8 +7,8 @@ import {Chart, ChartType, TooltipItem, ChartDataset} from 'chart.js';
 //TODO: direction... (with zoom...)
 export default class Tooltip extends LISS({extends: GraphComponent, attrs: ['direction']}) {
 
-    constructor() {
-        super();
+    constructor(...args: any[]) {
+        super(...args);
 
         this.host.setAttribute('slot', 'options');
 

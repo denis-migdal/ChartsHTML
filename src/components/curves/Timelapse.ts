@@ -4,8 +4,8 @@ import LISS from "../../../libs/LISS/src/index.ts";
 
 export default class Timelapse extends LISS({extends: Line}) {
 
-    constructor() {
-        super();
+    constructor(...args: any[]) {
+        super(...args);
     }
 
     override _contentParser(content: unknown) {

@@ -9,15 +9,17 @@ export default class Dataset extends LISS({extends: GraphComponent, attrs: ['typ
 
     #chart?: ChartHTML;
 
-    constructor() {
-        super();
+    constructor(...args: any[]) {
+        super(...args);
+
         this.host.setAttribute('slot', 'dataset');
+        this.setAttrDefault('color', 'black');
     }
 
     #dataset = {
         name: this.attrs.name,
         data: [],
-        type: ""
+        type: null
     };
     get dataset() {
         return this.#dataset as any;

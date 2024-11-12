@@ -6,8 +6,8 @@ export default class Scale extends LISS({extends: GraphComponent, attrs: ['min',
 
     #chart?: ChartHTML;
 
-    constructor() {
-        super();
+    constructor(...args: any[]) {
+        super(...args);
 
         this.host.setAttribute('slot', 'scale');
     }

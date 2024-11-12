@@ -6,8 +6,8 @@ import {Chart} from 'chart.js';
 
 export default class Value extends LISS({extends: GraphComponent}) {
 
-    constructor() {
-        super();
+    constructor(...args: any[]) {
+        super(...args);
         this.host.setAttribute('slot', 'dataset');
 
         const observer = new MutationObserver( () => {

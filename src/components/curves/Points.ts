@@ -5,8 +5,8 @@ import LISS from "../../../libs/LISS/src/index.ts";
 //@ts-ignore : "Property 'onAttrChanged' is protected in type 'Line' but public in type 'Dataset'." WTF ???
 export default class Points extends LISS({extends: Dataset}) {
 
-    constructor() {
-        super();
+    constructor(...args: any[]) {
+        super(...args);
 
 		this.setAttrDefault('type', 'scatter');
     }

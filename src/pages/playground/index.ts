@@ -4,8 +4,10 @@ let iframe = document.querySelector('iframe')!;
 
 const examples = [
     "html-empty",
+    "html-line",
 
     "js-empty",
+    "js-line",
 ];
 
 const resources = [

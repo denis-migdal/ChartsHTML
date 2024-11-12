@@ -6,8 +6,8 @@ import {Chart} from 'chart.js';
 
 export default class ChartZoom extends LISS({extends: GraphComponent, attrs:['direction']}) {
 
-    constructor() {
-        super();
+    constructor(...args: any[]) {
+        super(...args);
         this.host.setAttribute('slot', 'options');
 
         this.setAttrDefault('direction', 'xy');

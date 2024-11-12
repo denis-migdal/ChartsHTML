@@ -4,8 +4,8 @@ import LISS from "../../../libs/LISS/src/index.ts";
 
 export default class Histogram extends LISS({extends: Bars, attrs: ['precision']}) {
 
-    constructor() {
-        super();
+    constructor(...args: any[]) {
+        super(...args);
     }
 
     override _contentParser(content: unknown) {

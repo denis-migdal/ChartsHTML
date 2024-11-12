@@ -5,8 +5,8 @@ import { StringEval } from '..';
 
 export default class Datasets extends LISS({extends: GraphComponent, shadow: ShadowCfg.OPEN, attrs: ['type', 'tooltip', 'color', 'colors']}) {
 
-    constructor() {
-        super();
+    constructor(...args: any[]) {
+        super(...args);
         this.host.setAttribute('slot', 'datasets');
     }
 

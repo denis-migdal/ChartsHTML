@@ -54,6 +54,7 @@ Chart.register(CategoryScale);
 
 const CSS = `
 :host {
+	position: relative;
     display: block;
     width: 100%;
     height: 100%;
@@ -91,6 +92,18 @@ export default class ChartHTML extends LISS({css: CSS, attrs: ["measure-render-t
 	setValue(name: string, value: any) {
 		this.#values[name] = value;
 		this.updateAll();
+	}
+
+	addComponent(Component: Constructor<Dataset>, params: Record<string,string|null> = {}) {
+		
+		let instance = new Component(params);
+		this.host.append(instance.host);
+		instance._attach(this);
+
+		this.#components.push(instance);
+
+		//instance._before_chart_update();
+		//this.update();
 	}
 
 	evalContext(context = {}) {
@@ -140,6 +153,7 @@ export default class ChartHTML extends LISS({css: CSS, attrs: ["measure-render-t
 			options: {
 				locale: 'en-IN',
 				animation: false,
+				responsive: true,
 				maintainAspectRatio: false,
                 scales: {},
 				plugins: {},
@@ -200,6 +214,8 @@ export default class ChartHTML extends LISS({css: CSS, attrs: ["measure-render-t
 			return;
 		this.#isUpdatingAll = true;
 
+		this._chartJS.resize();
+
 		for(let elem of this.#components)
 			elem.update(); //TODO...
 
@@ -248,7 +264,7 @@ import "./components/scale.ts";
 
 import "./components/datasets.ts";
 import "./components/dataset.ts";
-import './components/curves/Line';
+import Line from './components/curves/Line';
 import './components/curves/HLine';
 import './components/curves/VLine';
 import './components/curves/Timelapse';
@@ -256,5 +272,8 @@ import './components/curves/Bars';
 import './components/curves/Histogram';
 import './components/curves/Points';
 import Dataset from "./components/dataset";
+import { Constructor } from "LISS/src/types.ts";
+
+ChartHTML.Line = Line;
 
 LISS.define('chart-html', ChartHTML);
