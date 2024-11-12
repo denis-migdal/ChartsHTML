@@ -11,10 +11,29 @@
 
 ## TODO
 
+- doc properties
+  - color
+  - tooltip (as r`` ?).
+
+- doc curves
+
+- doc components
+
+- doc public API
+  - getDataset(name)
+  - getDatasetNames()
+  - update()
+  - updateAll()
+  - get/setValue (refactor ???)
+  - zoom() => Zoom
+  - ...
+- doc component public API
+  - change attr ? (color/tooltip/etc ?)
+  - ...
+
 ### Bugs
 
-- canvas overflow (1px de trop)
-- default datalabel/zoom
+- default datalabel
 
 ### Features
 
@@ -28,7 +47,8 @@
 ### Refactors
 
 - refactor internals
-- use signal/computedSignal/effect
+- use signal/computedSignal (lazy eval)/effect
+  -> override computation in children classes ???
 
 ### TS type errors
 

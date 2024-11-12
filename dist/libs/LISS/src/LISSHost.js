@@ -140,11 +140,8 @@ export function buildLISSHost(Liss) {
             return `${this.tagName}[is="${this.getAttribute("is")}"]`;
         }
         // ============== Impl ===================
-        // h4cky
-        #extra_cstr_args;
-        constructor(params, base, ...extra_cstr_args) {
+        constructor(params, base) {
             super();
-            this.#extra_cstr_args = extra_cstr_args;
             Object.assign(this.#params, params);
             let { promise, resolve } = Promise.withResolvers();
             this.whenInitialized = promise;
@@ -228,7 +225,7 @@ export function buildLISSHost(Liss) {
             // build
             // h4ck, okay because JS is monothreaded.
             setCstrHost(this);
-            let obj = this.base === null ? new Liss(params, ...this.#extra_cstr_args) : this.base;
+            let obj = this.base === null ? new Liss(params) : this.base;
             this.#base = obj;
             // default slot
             if (this.hasShadow && this.#content.childNodes.length === 0)

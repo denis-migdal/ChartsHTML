@@ -77,3 +77,7 @@ document.body.append(graph.host);
         </td></tr>
     </tfoot>
 </table>
+
+-> types de datasets
+
+-> les autres composants

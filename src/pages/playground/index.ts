@@ -76,6 +76,8 @@ function update() {
     <head>
         <style>
             body {
+                width : 100dvw;
+                height: 100dvh;
                 margin: 0;
                 background-color: white;
             }
