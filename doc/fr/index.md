@@ -48,7 +48,7 @@ document.body.append(graph.host);
     </tfoot>
 </table>
 
-Nous pouvons ensuite ajouter, e.g. une ligne au graphe :
+Nous pouvons ensuite ajouter notre premier composant au graphe, e.g. une ligne :
 <table>
     <thead>
         <tr><th>HTML</th><th>JS</th></tr>

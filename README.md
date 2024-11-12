@@ -18,6 +18,8 @@
 
 ### Features
 
+- show example in doc (iframe to x?example="x" ?)
+
 - share components (clone)
 - move  components (remove and add)
 
