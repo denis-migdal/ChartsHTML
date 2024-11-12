@@ -2,8 +2,8 @@
 
 ## Qu'est-ce que ChartsHTML ?
 
-ChartsHTML est une surcouche de Chart.js. ChartsHTML permet de construire des graphes via des **compositions**. Cela permet ainsi de :
-- **factoriser** les éléments de configuration des graphes ChartsHTML ;
+ChartsHTML est une surcouche de Chart.js. ChartsHTML permet de construire des graphes via des **compositions**. Il permet ainsi de :
+- **factoriser** les éléments de configuration des graphes Chart.js ;
 - favoriser l'extensibilité et réutilisabilité des composants ;
 - améliorer la lisibilité du code ;
 - faciliter la création de graphes.
@@ -11,7 +11,7 @@ ChartsHTML est une surcouche de Chart.js. ChartsHTML permet de construire des gr
 Les graphes ChartsHTML peuvent être créés en HTML, ou en JS/TS.<br/>
 En interne, ChartsHTML utilise des composants Web (basés sur LISS) permettant ainsi, via les outils de développement du navigateur, de facilement consulter et modifier à la volée la configuration des graphes.
 
-ChartsHTML intègre aussi plusieurs plugins ChartJS :
+ChartsHTML intègre aussi plusieurs plugins Chart.js :
 - Zoom (<mark>TBI ?</mark>)
 - Datalabel
 - C2S (<mark>TBI</mark>)
