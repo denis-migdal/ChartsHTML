@@ -31,13 +31,13 @@ Et fournit de nouvelles fonctionnalités :
     </thead>
     <tbody>
         <tr><td>
-            <code lang="html">\<chart-html\>\</chart-html\></code>
+            <code lang="html">&lt;chart-html&gt;&lt;/chart-html&gt;</code>
         </td><td>
         </td></tr>
     </tbody>
     <tfoot>
         <tr><td>
-            [https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-empty](playground)
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-empty">playground</a>
         </td><td>
         </td></tr>
     </tfoot>
