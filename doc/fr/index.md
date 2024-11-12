@@ -43,6 +43,7 @@ document.body.append(graph.host);
         <tr><td>
             <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-empty">playground</a>
         </td><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-empty">playground</a>
         </td></tr>
     </tfoot>
 </table>
