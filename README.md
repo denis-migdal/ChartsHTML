@@ -58,6 +58,12 @@
   -> wait first eval to evaluate
   -> do not not parse content if already done and hasn't changed.
 
+-> ChartHTML cstr => second+ args => its initial components ?
+
+-> tooltips => external: externalTooltipHandler
+https://www.chartjs.org/docs/latest/samples/tooltip/html.html
+
+
 ### Refactors
 
 - LISS : replace attrs by signals ? (and raw_attrs for validation ?).

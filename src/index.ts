@@ -206,7 +206,9 @@ export default class ChartHTML extends LISS({css: CSS, attrs: ["measure-render-t
                 scales: {},
 				plugins: {
 					datalabels: false,
-					tooltip   : false
+					tooltip   : {
+						enabled: false
+					}
 				},
 
                 /*
@@ -311,7 +313,7 @@ import Datalabels from "./components/datalabels.ts";
 import Zoom       from "./components/zoom.ts";
 import Scale      from "./components/scale.ts";
 import Datasets   from "./components/datasets.ts";
-import Dataset   from "./components/dataset.ts";
+import Dataset    from "./components/dataset.ts";
 
 import Line      from './components/curves/Line';
 import Points    from './components/curves/Points';

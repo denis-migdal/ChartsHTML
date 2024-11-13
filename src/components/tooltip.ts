@@ -50,6 +50,7 @@ export default class Tooltip extends LISS({extends: GraphComponent, attrs: ['dir
 
         this.chart._chartJS.options.plugins!.tooltip = {
 
+            enabled: true,
             mode,
             intersect,
 
@@ -60,7 +61,6 @@ export default class Tooltip extends LISS({extends: GraphComponent, attrs: ['dir
                 family: 'Courier New'
             },
             filter: <TType extends ChartType>(context: TooltipItem<TType>) => {
-                
                 //TODO... also no tooltip...
                 const point = context.parsed as any;
                 return point.x !== null && point.y !== null;
@@ -78,6 +78,7 @@ export default class Tooltip extends LISS({extends: GraphComponent, attrs: ['dir
                 },
                 // One line per points
                 label: (context: any) => {
+
                     return this.chart.getDataset(context.dataset.name).tooltip(context) as string;
                 }
             }
