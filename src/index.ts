@@ -306,25 +306,36 @@ export default class ChartHTML extends LISS({css: CSS, attrs: ["measure-render-t
 
 import "./components/value.ts";
 
-import _Tooltip from "./components/tooltip.ts";
-import "./components/datalabels.ts";
-import "./components/zoom.ts";
+import _Tooltip   from "./components/tooltip.ts";
+import Datalabels from "./components/datalabels.ts";
+import Zoom       from "./components/zoom.ts";
+import Scale      from "./components/scale.ts";
+import Datasets   from "./components/datasets.ts";
+import Dataset   from "./components/dataset.ts";
 
-import "./components/scale.ts";
+import Line      from './components/curves/Line';
+import Points    from './components/curves/Points';
+import HLine     from './components/curves/HLine';
+import VLine     from './components/curves/VLine';
+import Timelapse from './components/curves/Timelapse';
+import Bars      from './components/curves/Bars';
+import Histogam  from './components/curves/Histogram';
 
-import "./components/datasets.ts";
-import "./components/dataset.ts";
-import Line from './components/curves/Line';
-import './components/curves/HLine';
-import './components/curves/VLine';
-import './components/curves/Timelapse';
-import './components/curves/Bars';
-import './components/curves/Histogram';
-import './components/curves/Points';
-import Dataset from "./components/dataset";
 import { Constructor } from "LISS/src/types.ts";
 
-ChartHTML.Line    = Line;
-ChartHTML.Tooltip = _Tooltip;
+ChartHTML.Tooltip    = _Tooltip;
+ChartHTML.Datalabels = Datalabels;
+ChartHTML.Zoom       = Zoom;
+ChartHTML.Scale      = Scale;
+ChartHTML.Datasets   = Datasets;
+ChartHTML.Dataset    = Dataset;
+
+ChartHTML.Line      = Line;
+ChartHTML.Points    = Points;
+ChartHTML.VLine     = VLine;
+ChartHTML.HLine     = HLine;
+ChartHTML.Timelapse = Timelapse;
+ChartHTML.Bars      = Bars;
+ChartHTML.Histogam  = Histogam;
 
 LISS.define('chart-html', ChartHTML);
