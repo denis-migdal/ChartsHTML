@@ -256,7 +256,33 @@ document.body.append(graph.host);</code></pre>
     </tfoot>
 </table>
 
+💡 Dans l'API JS, `ChartHTML.setValue(name, value)` et `ChartHTML.getValue()` permettent de manipuler ces valeurs :
 
-
-💡 En JS, `addValue(name, value)` permet d'ajouter une valeur.
--> en JS l'intérêt met à jour les graphes lorsque la valeur est changée.
+<table>
+    <thead>
+        <tr><th>JS API</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>
+<pre><code lang="js">const graph = new ChartHTML();
+graph.addComponent(ChartHTML.Value, {
+    name   : "data",
+    content: [[0,0], [1,1], [2,0]]
+});
+graph.addComponent(ChartHTML.Line, {
+    color  : "green",
+    content: ({values: {data}}) => data
+});
+graph.addComponent(ChartHTML.Line, {
+    color  : "red",
+    content: ({values: {data}}) => data?.map(e => [e[0], 1-e[1]])
+});
+document.body.append(graph.host);</code></pre>
+        </td></tr>
+    </tbody>
+    <tfoot>
+        <tr><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=jsapi-value">playground</a>
+        </td></tr>
+    </tfoot>
+</table>

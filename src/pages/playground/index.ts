@@ -20,6 +20,8 @@ const examples = [
     "js-tooltip",
     "js-datalabels",
     "js-value",
+
+    "jsapi-value"
 ];
 
 const resources = [
