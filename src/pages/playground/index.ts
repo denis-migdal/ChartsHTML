@@ -6,10 +6,12 @@ const examples = [
     "html-empty",
     "html-line",
     "html-line-color-tooltip",
+    "html-scales",
 
     "js-empty",
     "js-line",
     "js-line-color-tooltip",
+    "js-scales"
 ];
 
 const resources = [

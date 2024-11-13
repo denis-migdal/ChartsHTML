@@ -14,7 +14,6 @@
 - doc StringEval types + auto-deduce.
 
 - doc curves
-
 - doc components
 
 - doc public API
@@ -33,32 +32,26 @@
 
 ### Features
 
+- playground
+  - show generated HTML => message to iframe => send outerHTML (+toggle contenteditable)
+
+- default color/tooltip/datalabel at graph level
+  - <curves-defaults> component ? [require internal refactor?]
+
 - hide -> hidden
+  -> hidden scales.
 
-- show generated HTML => message to iframe => send outerHTML (+toggle contenteditable)
-- show example in doc (iframe to x?example="x" ?) / load from example...
-- toggle HTML/JS ?
-
+- charts.js raw options override ?
 - share components (clone)
 - move  components (remove and add)
 
-- charts.js raw options override ?
 
-- default color/tooltip/datalabel at graph level
-  - curves-defaults component ?
-- add tooltip if one graph set tooltip.
+- doc
+  - show example in doc (iframe to x?example="x" ?) / load from example...
+  - toggle HTML/JS ?
 
-- if color starts with -- => use css prop computed value ? (requires to manually update ?) => use signal ?
-- dark mode => invert (do it yourself?)
-
-- StringEval => implicit type (js/template/str/?)
-  -> StringEval is a computedSignal()
-
-- opti StringEval
-  -> wait first eval to evaluate
-  -> do not not parse content if already done and hasn't changed.
-
--> ChartHTML cstr => second+ args => its initial components ?
+-> Initial components in ChartHTML cstr ? [...args] ?
+  -> {scales: {name:}, datasets: {}} ?
 
 -> tooltips => external: externalTooltipHandler
 https://www.chartjs.org/docs/latest/samples/tooltip/html.html
@@ -66,11 +59,16 @@ https://www.chartjs.org/docs/latest/samples/tooltip/html.html
 
 ### Refactors
 
-- LISS : replace attrs by signals ? (and raw_attrs for validation ?).
-- move out StringEval
-- refactor internals (_insert/_attach/etc)
-- use signal/computedSignal (lazy eval)/effect
-  -> const computedSignal => computation use method that can be redefined.
+- use signals (attrs+content are signals/processed ?)
+  -> contentRaw + contentParsed (a constant computedSignal, override method).
+  -> attrsRaw + attrsParsed (?) [not a signal : besoin de la structure entière]
+  -> StringEval is a computedSignal() ?
+    -> do not reparse content.
+  -> rawValues -> signalValues (???)
+  -> effect`` <= detect signals and update only when signals changed.
+
+- revoir internals (_insert/_attach/etc)
+- déplacer StringEval dans son propre fichier.
 
 ### TS type errors
 
