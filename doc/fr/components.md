@@ -5,7 +5,7 @@ Les composants permettant d'ajouter des datasets et fonctionnalités à votre gr
 Il existe plusieurs types de composants :
 
 - `Dataset` : un dataset générique.
-- `Scale` : configurer les axes du graphe.
+- [`Scale` : configurer les axes du graphe.](./components.md#scale)
 - `Tooltip` : activer et configurer les bulles informatives.
 - `Datalabels` : activer et configurer les étiquettes de données.
 - `Zoom` : activer et configurer le zoom/pan.
@@ -14,15 +14,14 @@ Il existe plusieurs types de composants :
 
 ## `Scale`
 
-Le composant `Scale` permet d'ajouter et de configurer les axes de votre graphe.
+Le composant `Scale` permet d'ajouter et de configurer les axes de votre graphe.<br/>
+💡 Par défaut les axes sont linéaires. Si une liste est fournie en contenu de `Scale`, il sera considéré comme un axe de catégorie.
 
-La position des axes est déterminée par la propriété `position`, elle peut prendre pour valeur `top`, `bottom`, `left`, `right`.<br/>
+La position des axes est déterminée par la propriété `position`, elle peut prendre pour valeur `top`, `bottom`, `left`, ou `right`.<br/>
 💡 Par défaut, les axes dont le nom commence par `x` ou `y` sont positionnés en bas ou à gauche.
 
-Par défaut les axes sont linéaires. Si une liste est fournie en contenu de `Scale`, il sera considéré comme un axe de catégorie.
-
 Les axes linéaires peuvent indiquer une valeur minimale et maximale via les priopriétés `min` et ̀`max`.<br/>
-💡 Si le `min` et/ou ̀`max` ne sont pas indiqués, leur valeur est calculée à partir des données affichées.
+💡 Si le `min` et/ou ̀`max` ne sont pas renseignés, leur valeur est calculée à partir des données affichées.
 
 ⚠ Les axes doivent être nommés via la propriété `name`.
 
@@ -54,9 +53,9 @@ document.body.append(graph.host);
     </tbody>
     <tfoot>
         <tr><td>
-            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-line-color-tooltip">playground</a>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-scales">playground</a>
         </td><td>
-            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-line-color-tooltip">playground</a>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-scales">playground</a>
         </td></tr>
     </tfoot>
 </table>
