@@ -78,8 +78,47 @@ document.body.append(graph.host);
     </tfoot>
 </table>
 
--> types de datasets + leurs attributs
+Nous pouvons alors configurer cet élément, e.g. sa couleur et son tooltip :
+<table>
+    <thead>
+        <tr><th>HTML</th><th>JS</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>
+            <pre><code lang="html">&lt;chart-html&gt;
+    &lt;chart-tooltip&gt;str:Data&lt;/chart-tooltip&gt;
+    &lt;curve-line name="my line" color="red"
+             tooltip="js:({ctx}) => `${ctx.name}: (${ctx.x}, ${ctx.y})`"&gt;
+        [[0,0], [1,1], [2,0]]
+    &lt;/curve-line&gt;
+&lt;/chart-html&gt;</code></pre>
+        </td><td>
+<pre><code lang="js">const graph = new ChartHTML();
+graph.addComponent(ChartHTML.Tooltip, {
+    content: "Data"
+});
+graph.addComponent(ChartHTML.Line, {
+    name   : "my line",
+    color  : "red",
+    tooltip: ({ctx}) => `${ctx.name}: (${ctx.x}, ${ctx.y})`,
+    content: [[0,0], [1,1], [2,0]]
+});
+document.body.append(graph.host);
+</code></pre>
+        </td></tr>
+    </tbody>
+    <tfoot>
+        <tr><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-line-color-tooltip">playground</a>
+        </td><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-line-color-tooltip">playground</a>
+        </td></tr>
+    </tfoot>
+</table>
 
+
+-> types de datasets + leurs attributs
+    -> tooltip => ChartHTML.
 -> les autres composants
 
 -> plus de JS API.

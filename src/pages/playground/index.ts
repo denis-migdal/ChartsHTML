@@ -5,9 +5,11 @@ let iframe = document.querySelector('iframe')!;
 const examples = [
     "html-empty",
     "html-line",
+    "html-line-color-tooltip",
 
     "js-empty",
     "js-line",
+    "js-line-color-tooltip",
 ];
 
 const resources = [

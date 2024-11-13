@@ -21,6 +21,14 @@ export class StringEval<T> {
 
 	setString(str: string|null) {
 
+		if( str instanceof Function ) {
+			this.#result    = undefined;
+			this.#fct       = str as any;
+			this.#string    = null;
+
+			return;
+		}
+
 		if(str !== null) {
 			str = str.trim();
 			if(str.length === 0)
@@ -35,10 +43,25 @@ export class StringEval<T> {
 		this.#string    = str;
 	}
 	eval(context: Record<string, any> = {}) {
-		if(this.#string === null)
-			return null;
-		if(this.#fct === null)
-			this.#fct = new Function('{v,c}', `return ${this.#string}`) as any;
+
+		if( this.#fct === null ) {
+
+			if(this.#string === null)
+				return null;
+
+			let str = this.#string;
+			if( str.startsWith('json:') )
+				return this.#result = JSON.parse(str.slice(5));
+
+			if( str.startsWith('str:') )
+				return this.#result = str.slice(4) as T;
+
+			if( str.startsWith('js:') )
+				str = "(" + str.slice(3) + ")({values,ctx})";
+			
+			this.#fct = new Function('{values,ctx}', `return ${str}`) as any;
+		}
+
 		return this.#result = this.#fct!( this.#component.chart.evalContext(context) );
 	}
 	value() {
@@ -107,7 +130,7 @@ export default class ChartHTML extends LISS({css: CSS, attrs: ["measure-render-t
 	}
 
 	evalContext(context = {}) {
-		return {c: context, v: this.#values};
+		return {ctx: context, values: this.#values};
 	}
 
 	#datasets: Record<string, Dataset> = {};
@@ -258,7 +281,7 @@ export default class ChartHTML extends LISS({css: CSS, attrs: ["measure-render-t
 
 import "./components/value.ts";
 
-import "./components/tooltip.ts";
+import _Tooltip from "./components/tooltip.ts";
 import "./components/datalabels.ts";
 import "./components/zoom.ts";
 
@@ -276,6 +299,7 @@ import './components/curves/Points';
 import Dataset from "./components/dataset";
 import { Constructor } from "LISS/src/types.ts";
 
-ChartHTML.Line = Line;
+ChartHTML.Line    = Line;
+ChartHTML.Tooltip = _Tooltip;
 
 LISS.define('chart-html', ChartHTML);

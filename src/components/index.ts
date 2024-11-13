@@ -12,6 +12,10 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attrs: 
 
         for(let key in params ) {
             if( key === "content" ) {
+                if( typeof params.content === "string" ) {
+                    this.host.textContent = "str:" + params.content;
+                    continue;
+                }
                 this.host.textContent = JSON.stringify(params.content);
                 continue;
             }

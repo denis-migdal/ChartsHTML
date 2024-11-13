@@ -41,7 +41,7 @@
 - hide -> hidden
 
 - show generated HTML => message to iframe => send outerHTML (+toggle contenteditable)
-- show example in doc (iframe to x?example="x" ?)
+- show example in doc (iframe to x?example="x" ?) / load from example...
 
 - share components (clone)
 - move  components (remove and add)
@@ -49,14 +49,18 @@
 - charts.js raw options override ?
 
 - default color/tooltip/datalabel at graph level
+- add tooltip if one graph set tooltip.
 
 - if color starts with -- => use css prop computed value ? (requires to manually update ?) => use signal ?
 - dark mode => invert (do it yourself?)
 
+- StringEval => implicit type (js/template/str/?)
+
 ### Refactors
 
 - LISS : replace attrs by signals ? (and raw_attrs for validation ?).
-- refactor internals
+- move out StringEval
+- refactor internals (_insert/_attach/etc)
 - use signal/computedSignal (lazy eval)/effect
   -> const computedSignal => computation use method that can be redefined.
 

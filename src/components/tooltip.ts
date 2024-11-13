@@ -78,7 +78,6 @@ export default class Tooltip extends LISS({extends: GraphComponent, attrs: ['dir
                 },
                 // One line per points
                 label: (context: any) => {
-                    console.warn(context);
                     return this.chart.getDataset(context.dataset.name).tooltip(context) as string;
                 }
             }
