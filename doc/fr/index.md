@@ -21,7 +21,7 @@ Et fournit de nouvelles fonctionnalités :
 - export de données (csv, json, ?) (<mark>TBI</mark>).
 - export de graphes (png, svg, HTML, ?) (<mark>TBI</mark>).
 
-💡 Vous pouvez consulter les différents exemples dans le [https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/](playground).
+💡 Vous pouvez consulter les différents exemples dans le [playground](https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/).
 
 ## Votre premier graphe ChartsHTML
 
@@ -78,7 +78,7 @@ document.body.append(graph.host);
     </tfoot>
 </table>
 
-Nous pouvons alors configurer cet élément, e.g. sa couleur et son tooltip :
+Nous pouvons alors configurer cet élément, e.g. sa couleur et ses bulles informatives (au survol des points) :
 <table>
     <thead>
         <tr><th>HTML</th><th>JS</th></tr>
@@ -118,10 +118,10 @@ document.body.append(graph.host);
 
 💡 `ctx` contient les informations contextuelles (peuvent varier en fonction du composant) :
 - `ctx.name` : le nom du dataset ;
-- `ctx.x` : la valeur d'abscisse ;
-- `ctx.y` : la valeur d'ordonnée.
+- `ctx.x` : la valeur d'abscisse du point ;
+- `ctx.y` : la valeur d'ordonnée du point.
 
-
+Vous pouvez désormais 
 
 -> types de datasets + leurs attributs
     -> tooltip => ChartHTML.
