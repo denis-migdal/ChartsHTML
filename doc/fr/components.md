@@ -24,8 +24,8 @@ Le composant `Dataset` permet d'afficher et de configurer un dataset.
 - `tooltip` : l'info-bulle à afficher au survol.
 
 💡 Plusieurs composants héritent de `Dataset` pour faciliter l'utilisation de différent types de courbes :
+- [`Points` : un ensemble de points.](./curves.md#points)
 - `Line` : une ligne.
- - `Points` : un ensemble de points.
  - `HLine` : une ligne horizontale.
  - `VLine` : une ligne verticale.
 - `Bars` : données en barres.

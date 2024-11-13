@@ -123,8 +123,8 @@ document.body.append(graph.host);
 
 Vous pouvez désormais ajouter, puis configurer, d'autres composants à votre graphe :
 - [`Dataset` : permet d'afficher et de configurer un dataset.](./components.md#dataset)
+  - [`Points` : un ensemble de points.](./curves.md#points)
   - `Line` : une ligne.
-     - `Points` : un ensemble de points.
      - `HLine` : une ligne horizontale.
      - `VLine` : une ligne verticale.
   - `Bars` : données en barres.
