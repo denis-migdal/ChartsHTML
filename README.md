@@ -37,6 +37,10 @@
 
 - datalabels : clickable class CSS cursor
 
+- Playground
+  - modification remove select current value
+  - afficher HTML si JS, si modification HTML, cacher JS.
+
 ### Features
 
 - Dataset: specify axes to use.
@@ -68,6 +72,7 @@
 -> Initial components in ChartHTML cstr ? [...args] ?
   -> {scales: {name:}, datasets: {}} ?
   -> {[type]: {[name]: {otherprops}}}
+  -> special : curves: { [name]: {opts+type}} => capitalize.
 
 -> tooltips => external: externalTooltipHandler
 https://www.chartjs.org/docs/latest/samples/tooltip/html.html
