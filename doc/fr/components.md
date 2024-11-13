@@ -9,7 +9,7 @@ Il existe plusieurs types de composants :
 - [`Tooltip` : activer et configurer les bulles informatives.](./components.md#tooltip)
 - [`Datalabels` : activer et configurer les étiquettes de données.](./components.md#datalabels)
 - [`Zoom` : activer et configurer le zoom/pan.](./components.md#zoom)
-- `Value` : configure une valeur partagée.
+- [`Value` : configure une valeur partagée ou externe.](./components.md#value)
 - `Datasets` : regroupe un ensemble de datasets en un seul composant (généralement utilisé avec Value).
 
 ## `Scale`
@@ -208,3 +208,55 @@ document.body.append(graph.host);</code></pre>
 </table>
 
 🐛 Actuellement, le pan ne fonctionne pas avec l'API JS.
+
+## `Value`
+
+Le composant `Value` permet de configurer une valeur partagée ou externe.
+
+<table>
+    <thead>
+        <tr><th>HTML</th><th>JS</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>
+            <pre><code lang="html">&lt;chart-html&gt;
+    &lt;chart-value name="data"&gt;
+        [[0,0], [1,1], [2,0]]
+    &lt;/chart-value&gt;
+    &lt;curve-line color="green"&gt;
+        values.data
+    &lt;/curve-line&gt;
+    &lt;curve-line color="red"&gt;
+        values.data?.map(e => [e[0], 1-e[1]])
+    &lt;/curve-line&gt;
+&lt;/chart-html&gt;</code></pre>
+        </td><td>
+<pre><code lang="js">const graph = new ChartHTML();
+graph.addComponent(ChartHTML.Value, {
+    name   : "data",
+    content: [[0,0], [1,1], [2,0]]
+});
+graph.addComponent(ChartHTML.Line, {
+    color  : "green",
+    content: ({values: {data}}) => data
+});
+graph.addComponent(ChartHTML.Line, {
+    color  : "red",
+    content: ({values: {data}}) => data?.map(e => [e[0], 1-e[1]])
+});
+document.body.append(graph.host);</code></pre>
+        </td></tr>
+    </tbody>
+    <tfoot>
+        <tr><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-value">playground</a>
+        </td><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-value">playground</a>
+        </td></tr>
+    </tfoot>
+</table>
+
+
+
+💡 En JS, `addValue(name, value)` permet d'ajouter une valeur.
+-> en JS l'intérêt met à jour les graphes lorsque la valeur est changée.

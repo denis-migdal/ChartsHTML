@@ -10,6 +10,7 @@ const examples = [
     "html-zoom",
     "html-tooltip",
     "html-datalabels",
+    "html-value",
 
     "js-empty",
     "js-line",
@@ -18,6 +19,7 @@ const examples = [
     "js-zoom",
     "js-tooltip",
     "js-datalabels",
+    "js-value",
 ];
 
 const resources = [

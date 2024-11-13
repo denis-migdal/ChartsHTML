@@ -205,9 +205,7 @@ export default class ChartHTML extends LISS({css: CSS, attrs: ["measure-render-t
 				maintainAspectRatio: false,
                 scales: {},
 				plugins: {
-					datalabels: {
-						enabled: false,
-					},
+					datalabels: false,
 					tooltip   : {
 						enabled: false
 					}
@@ -308,8 +306,7 @@ export default class ChartHTML extends LISS({css: CSS, attrs: ["measure-render-t
 	return `${(this.valueOf() * 100).toFixed(2).padStart(6, ' ')}%`;
 }
 
-import "./components/value.ts";
-
+import Value      from "./components/value.ts";
 import _Tooltip   from "./components/tooltip.ts";
 import Datalabels from "./components/datalabels.ts";
 import Zoom       from "./components/zoom.ts";
@@ -331,6 +328,7 @@ ChartHTML.Tooltip    = _Tooltip;
 ChartHTML.Datalabels = Datalabels;
 ChartHTML.Zoom       = Zoom;
 ChartHTML.Scale      = Scale;
+ChartHTML.Value      = Value;
 ChartHTML.Datasets   = Datasets;
 ChartHTML.Dataset    = Dataset;
 

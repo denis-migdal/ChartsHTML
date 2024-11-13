@@ -17,6 +17,7 @@ export default class Value extends LISS({extends: GraphComponent}) {
     }
 
     override _update(): void {
+
         //TODO: validate config...
         this.chart.setValue(this.attrs.name!, this.contentParsed);
     }

@@ -16,6 +16,9 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attrs: 
                     this.host.textContent = "str:" + params.content;
                     continue;
                 }
+                if( typeof params.content === 'function') {
+                    this._content_eval.setString(params.content);
+                }
                 this.host.textContent = JSON.stringify(params.content);
                 continue;
             }

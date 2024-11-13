@@ -134,7 +134,7 @@ Vous pouvez désormais ajouter, puis configurer, d'autres composants à votre gr
 - [`Tooltip` : activer et configurer les bulles informatives.](./components.md#tooltip)
 - [`Datalabels` : activer et configurer les étiquettes de données.](./components.md#datalabels)
 - [`Zoom` : activer et configurer le zoom/pan.](./components.md#zoom)
-- `Value` : configure une valeur partagée.
+- [`Value` : configure une valeur partagée ou externe.](./components.md#value)
 - `Datasets` : regroupe un ensemble de datasets en un seul composant (généralement utilisé avec Value).
 
 💡 [TODO API JS++]
