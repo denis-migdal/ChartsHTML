@@ -15,7 +15,6 @@ Est un ensemble de points à afficher sur le graphe.
     &lt;curve-points&gt;
         [[0,0], [1,1], [2,0]]
     &lt;/curve-points&gt;
-    &lt;/chart-dataset&gt;
 &lt;/chart-html&gt;</code></pre>
         </td><td>
 <pre><code lang="js">const graph = new ChartHTML();
