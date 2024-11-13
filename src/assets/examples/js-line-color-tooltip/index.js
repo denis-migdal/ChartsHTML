@@ -1,11 +1,15 @@
 const graph = new ChartHTML();
-graph.addComponent(ChartHTML.Tooltip, {
-    content: "Data"
+graph.addComponent(ChartHTML.Scale, {
+    name: "x",
+    content: ["A", "B", "C"]
 });
-graph.addComponent(ChartHTML.Line, {
-    name   : "my line",
-    color  : "red",
-    tooltip: ({ctx}) => `${ctx.name}: (${ctx.x}, ${ctx.y})`,
-    content: [[0,0], [1,1], [2,0]]
+graph.addComponent(ChartHTML.Scale, {
+    name: "y",
+    min: 0,
+    max: 10
+});
+graph.addComponent(ChartHTML.Scale, {
+    name: "r",
+    position: "right"
 });
 document.body.append(graph.host);
