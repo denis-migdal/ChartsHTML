@@ -7,7 +7,7 @@ Il existe plusieurs types de composants :
 - `Dataset` : un dataset générique.
 - [`Scale` : configurer les axes du graphe.](./components.md#scale)
 - [`Tooltip` : activer et configurer les bulles informatives.](./components.md#tooltip)
-- `Datalabels` : activer et configurer les étiquettes de données.
+- [`Datalabels` : activer et configurer les étiquettes de données.](./components.md#datalabels)
 - [`Zoom` : activer et configurer le zoom/pan.](./components.md#zoom)
 - `Value` : configure une valeur partagée.
 - `Datasets` : regroupe un ensemble de datasets en un seul composant (généralement utilisé avec Value).
@@ -111,6 +111,57 @@ document.body.append(graph.host);</code></pre>
         </td></tr>
     </tfoot>
 </table>
+
+## `Datalabels`
+
+Le composant `Datalabels` permet d'activer et de configurer les étiquettes de données.
+
+Au clic sur un point de la courbe, l'étiquette affichée change :
+- rien : n'affiche aucune étiquette (par défaut) ;
+- nom
+- x
+- y
+
+<table>
+    <thead>
+        <tr><th>HTML</th><th>JS</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>
+            <pre><code lang="html">&lt;chart-html&gt;
+    &lt;chart-tooltip direction="x"&gt;Data&lt;/chart-tooltip&gt;
+    &lt;chart-tooltip&gt;&lt;/chart-tooltip&gt;
+    &lt;chart-datalabels&gt;&lt;/chart-datalabels&gt;
+    &lt;curve-line name="my line"
+        [[0,0], [1,1], [2,0]]
+    &lt;/curve-line&gt;
+&lt;/chart-html&gt;</code></pre>
+        </td><td>
+<pre><code lang="js">const graph = new ChartHTML();
+graph.addComponent(ChartHTML.Tooltip, {
+    direction : "x",
+    content: "Data"
+});
+graph.addComponent(ChartHTML.Line, {
+    name   : "my line",
+    tooltip: ({ctx}) => `${ctx.name}: (${ctx.x}, ${ctx.y})`,
+    content: [[0,0], [1,1], [2,0]]
+});
+document.body.append(graph.host);</code></pre>
+        </td></tr>
+    </tbody>
+    <tfoot>
+        <tr><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-datalabels">playground</a>
+        </td><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-datalabels">playground</a>
+        </td></tr>
+    </tfoot>
+</table>
+
+💡 `Datalabels` n'est pour le moment pas configurable.
+
+🐛 Actuellement `Datalabels` requiert la présence d'un `Tooltip`
 
 ## `Zoom`
 

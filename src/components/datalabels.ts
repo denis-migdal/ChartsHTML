@@ -20,7 +20,12 @@ export default class Datalabels extends LISS({extends: GraphComponent}) {
 
     override _insert(): void {
 
+        console.warn('inserted');
+
         this.chart._chartJS.options.plugins!.datalabels = {
+
+            enabled: true,
+
             backgroundColor: (context: any) => {
                 return context.dataset.pointBackgroundColor ?? context.dataset.backgroundColor ?? 'black';
             },
@@ -50,6 +55,7 @@ export default class Datalabels extends LISS({extends: GraphComponent}) {
         };
         this.chart._chartJS.options.onClick = (context: any) => {
 
+            // vérifier si des points sont sélectionnés.
             if( ! context.chart.tooltip?.opacity)
                 return;
 
@@ -58,6 +64,7 @@ export default class Datalabels extends LISS({extends: GraphComponent}) {
                 return;
             
             this.chart.getDataset(dataset.name).datalabelToggle();
+
             this.chart.update();
         }
     }

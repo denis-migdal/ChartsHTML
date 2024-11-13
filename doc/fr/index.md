@@ -132,7 +132,7 @@ Vous pouvez désormais ajouter, puis configurer, d'autres composants à votre gr
   - `Timelapse` : données temporelles.
 - [`Scale` : configurer les axes du graphe.](./components.md#scale)
 - [`Tooltip` : activer et configurer les bulles informatives.](./components.md#tooltip)
-- `Datalabels` : activer et configurer les étiquettes de données.
+- [`Datalabels` : activer et configurer les étiquettes de données.](./components.md#datalabels)
 - [`Zoom` : activer et configurer le zoom/pan.](./components.md#zoom)
 - `Value` : configure une valeur partagée.
 - `Datasets` : regroupe un ensemble de datasets en un seul composant (généralement utilisé avec Value).

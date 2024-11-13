@@ -30,7 +30,11 @@
 
 ### Bugs
 
+🐛 Empty tooltip : do not show.
 🐛 Actuellement, le pan ne fonctionne pas avec l'API JS.
+🐛 Actuellement Datalabels requiert Tooltip
+
+- datalabels : clickable class CSS cursor
 
 ### Features
 
@@ -45,11 +49,16 @@
 - hide -> hidden
   -> hidden scales.
 
+- Datalabels : own list of labels + default label.
+  - datalabels : name + list (no name = default ?)
+  - dataset : datalabels="name" (by default the curve-defaults ?)
+
 - charts.js raw options override ?
   -> doc how to inherit/build own component
 - share components (clone)
 - move  components (remove and add)
 
+- export/import (several types...)
 
 - doc
   - show example in doc (iframe to x?example="x" ?) / load from example...

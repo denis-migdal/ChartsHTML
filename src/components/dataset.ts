@@ -95,9 +95,9 @@ export default class Dataset extends LISS({extends: GraphComponent, attrs: ['typ
 	#curDatalabel = 'none';
     #datalabels: Record<string, string|null> = {
 		none  : null,
-		name  :  '`${c.name}`',
-		y: '`${c.y}`',
-        x: '`${c.y}`'
+		name  :  '${ctx.name}',
+        x     : '${ctx.x}',
+		y     : '${ctx.y}',
 	};
 
     #datalabelEval = new StringEval<string>(this);
