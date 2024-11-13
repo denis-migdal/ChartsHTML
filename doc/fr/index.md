@@ -122,7 +122,7 @@ document.body.append(graph.host);
 - `ctx.y` : la valeur d'ordonnée du point.
 
 Vous pouvez désormais ajouter, puis configurer, d'autres composants à votre graphe :
-- `Dataset` : un dataset générique.
+- [`Dataset` : permet d'afficher et de configurer un dataset.](./components.md#dataset)
   - `Line` : une ligne.
      - `Points` : un ensemble de points.
      - `HLine` : une ligne horizontale.

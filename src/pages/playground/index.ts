@@ -6,6 +6,9 @@ const examples = [
     "html-empty",
     "html-line",
     "html-line-color-tooltip",
+
+    "html-dataset",
+
     "html-scales",
     "html-zoom",
     "html-tooltip",
@@ -15,13 +18,17 @@ const examples = [
     "js-empty",
     "js-line",
     "js-line-color-tooltip",
+
+    "js-dataset",
+
     "js-scales",
     "js-zoom",
     "js-tooltip",
     "js-datalabels",
     "js-value",
 
-    "jsapi-value"
+    "jsapi-value",
+    "jsapi-value-cstr"
 ];
 
 const resources = [

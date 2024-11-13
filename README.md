@@ -33,6 +33,7 @@
 🐛 Empty tooltip : do not show.
 🐛 Actuellement, le pan ne fonctionne pas avec l'API JS.
 🐛 Actuellement Datalabels requiert Tooltip
+🐛 jsapi-value-cstr
 
 - datalabels : clickable class CSS cursor
 
