@@ -78,6 +78,8 @@ document.body.append(graph.host);
     </tfoot>
 </table>
 
--> types de datasets
+-> types de datasets + leurs attributs
 
 -> les autres composants
+
+-> plus de JS API.

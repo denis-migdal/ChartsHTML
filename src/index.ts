@@ -156,7 +156,9 @@ export default class ChartHTML extends LISS({css: CSS, attrs: ["measure-render-t
 				responsive: true,
 				maintainAspectRatio: false,
                 scales: {},
-				plugins: {},
+				plugins: {
+					datalabels: false
+				},
 
 				
                 /*

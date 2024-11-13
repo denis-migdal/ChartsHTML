@@ -13,7 +13,10 @@
 
 - doc properties
   - color
-  - tooltip (as r`` ?).
+  - tooltip => fct
+      => "js:"
+      => "str:"
+      => `` => () => 
 
 - doc curves
 
@@ -33,22 +36,29 @@
 
 ### Bugs
 
-- default datalabel
-
 ### Features
 
+- hide -> hidden
+
+- show generated HTML => message to iframe => send outerHTML (+toggle contenteditable)
 - show example in doc (iframe to x?example="x" ?)
 
 - share components (clone)
 - move  components (remove and add)
 
-- if color starts with -- => use css prop computed value ? (requires to manually update)
+- charts.js raw options override ?
+
+- default color/tooltip/datalabel at graph level
+
+- if color starts with -- => use css prop computed value ? (requires to manually update ?) => use signal ?
+- dark mode => invert (do it yourself?)
 
 ### Refactors
 
+- LISS : replace attrs by signals ? (and raw_attrs for validation ?).
 - refactor internals
 - use signal/computedSignal (lazy eval)/effect
-  -> override computation in children classes ???
+  -> const computedSignal => computation use method that can be redefined.
 
 ### TS type errors
 
