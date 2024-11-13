@@ -8,6 +8,7 @@ const examples = [
     "html-line-color-tooltip",
 
     "html-dataset",
+    "html-points",
 
     "html-scales",
     "html-zoom",
@@ -20,6 +21,7 @@ const examples = [
     "js-line-color-tooltip",
 
     "js-dataset",
+    "js-points",
 
     "js-scales",
     "js-zoom",

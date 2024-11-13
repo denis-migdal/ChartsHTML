@@ -26,11 +26,11 @@ Le composant `Dataset` permet d'afficher et de configurer un dataset.
 💡 Plusieurs composants héritent de `Dataset` pour faciliter l'utilisation de différent types de courbes :
 - [`Points` : un ensemble de points.](./curves.md#points)
 - `Line` : une ligne.
- - `HLine` : une ligne horizontale.
- - `VLine` : une ligne verticale.
+    - `HLine` : une ligne horizontale.
+    - `VLine` : une ligne verticale.
+    - `Timelapse` : données temporelles.
 - `Bars` : données en barres.
- - `Histogram` : histogramme.
-- `Timelapse` : données temporelles.
+    - `Histogram` : histogramme.
 
 <table>
     <thead>
