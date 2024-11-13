@@ -86,9 +86,9 @@ Nous pouvons alors configurer cet élément, e.g. sa couleur et son tooltip :
     <tbody>
         <tr><td>
             <pre><code lang="html">&lt;chart-html&gt;
-    &lt;chart-tooltip&gt;str:Data&lt;/chart-tooltip&gt;
+    &lt;chart-tooltip&gt;Data&lt;/chart-tooltip&gt;
     &lt;curve-line name="my line" color="red"
-             tooltip="js:({ctx}) => `${ctx.name}: (${ctx.x}, ${ctx.y})`"&gt;
+             tooltip="${ctx.name}: (${ctx.x}, ${ctx.y})"&gt;
         [[0,0], [1,1], [2,0]]
     &lt;/curve-line&gt;
 &lt;/chart-html&gt;</code></pre>
@@ -115,6 +115,12 @@ document.body.append(graph.host);
         </td></tr>
     </tfoot>
 </table>
+
+💡 `ctx` contient les informations contextuelles (peuvent varier en fonction du composant) :
+- `ctx.name` : le nom du dataset ;
+- `ctx.x` : la valeur d'abscisse ;
+- `ctx.y` : la valeur d'ordonnée.
+
 
 
 -> types de datasets + leurs attributs

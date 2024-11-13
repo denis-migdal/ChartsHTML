@@ -11,12 +11,7 @@
 
 ## TODO
 
-- doc properties
-  - color
-  - tooltip => fct
-      => "js:"
-      => "str:"
-      => `` => () => 
+- doc StringEval types + auto-deduce.
 
 - doc curves
 
@@ -42,6 +37,7 @@
 
 - show generated HTML => message to iframe => send outerHTML (+toggle contenteditable)
 - show example in doc (iframe to x?example="x" ?) / load from example...
+- toggle HTML/JS ?
 
 - share components (clone)
 - move  components (remove and add)
@@ -49,12 +45,18 @@
 - charts.js raw options override ?
 
 - default color/tooltip/datalabel at graph level
+  - curves-defaults component ?
 - add tooltip if one graph set tooltip.
 
 - if color starts with -- => use css prop computed value ? (requires to manually update ?) => use signal ?
 - dark mode => invert (do it yourself?)
 
 - StringEval => implicit type (js/template/str/?)
+  -> StringEval is a computedSignal()
+
+- opti StringEval
+  -> wait first eval to evaluate
+  -> do not not parse content if already done and hasn't changed.
 
 ### Refactors
 

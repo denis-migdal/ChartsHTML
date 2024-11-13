@@ -1,7 +1,7 @@
 <chart-html>
-    <chart-tooltip>str:Data</chart-tooltip>
+    <chart-tooltip>Data</chart-tooltip>
     <curve-line name="my line" color="red"
-             tooltip="js:({ctx}) => `${ctx.name}: (${ctx.x}, ${ctx.y})`">
+             tooltip="${ctx.name}: (${ctx.x}, ${ctx.y})">
         [[0,0], [1,1], [2,0]]
     </curve-line>
 </chart-html>

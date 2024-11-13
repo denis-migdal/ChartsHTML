@@ -46,19 +46,44 @@ export class StringEval<T> {
 
 		if( this.#fct === null ) {
 
-			if(this.#string === null)
+			let str = this.#string;
+
+			if( str === null)
 				return null;
 
-			let str = this.#string;
-			if( str.startsWith('json:') )
-				return this.#result = JSON.parse(str.slice(5));
+			let prefix = str.slice(0, str.indexOf(':') );
+			if( ! ["js", "str", "template", "raw_js", "json"].includes(prefix) )
+				prefix = "";
+			else {
+				str = str.slice(prefix.length+1);
+			}
 
-			if( str.startsWith('str:') )
-				return this.#result = str.slice(4) as T;
+			// deduce string type...
+			if(prefix === "") {
+				if(str.startsWith('({') ) {
+					prefix = "js";
+				} else if(str[0] === '(' || str[0] === '[' || str[0] === '{' || str.startsWith("values") || str.startsWith("ctx") ) {
+					// can't use JSON.
+					prefix = "raw_js";
+				} else if( str.includes('${') ) {
+					prefix = "template"
+				} else {
+					prefix = "str"
+				}
+			}
 
-			if( str.startsWith('js:') )
-				str = "(" + str.slice(3) + ")({values,ctx})";
-			
+			if( prefix === "json" )
+				return this.#result = JSON.parse(str);
+
+			if( prefix === "str" )
+				return this.#result = str as T;
+
+			if( prefix === "template" )
+				str = '`' + str + '`';
+
+			if( prefix === "js" )
+				str = "(" + str + ")({values,ctx})";
+
 			this.#fct = new Function('{values,ctx}', `return ${str}`) as any;
 		}
 
@@ -180,10 +205,10 @@ export default class ChartHTML extends LISS({css: CSS, attrs: ["measure-render-t
 				maintainAspectRatio: false,
                 scales: {},
 				plugins: {
-					datalabels: false
+					datalabels: false,
+					tooltip   : false
 				},
 
-				
                 /*
 				plugins: 
 					legend: {
