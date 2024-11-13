@@ -78,7 +78,7 @@ document.body.append(graph.host);
     </tfoot>
 </table>
 
-Nous pouvons alors configurer cet élément, e.g. sa couleur et ses bulles informatives (au survol des points) :
+Nous pouvons alors configurer cet élément, e.g. sa couleur et ses bulles informatives (au survol de ses points) :
 <table>
     <thead>
         <tr><th>HTML</th><th>JS</th></tr>
@@ -121,10 +121,20 @@ document.body.append(graph.host);
 - `ctx.x` : la valeur d'abscisse du point ;
 - `ctx.y` : la valeur d'ordonnée du point.
 
-Vous pouvez désormais 
+Vous pouvez désormais ajouter, puis configurer, d'autres composants à votre graphe :
+- `Dataset` : un dataset générique.
+  - `Line` : une ligne.
+     - `Points` : un ensemble de points.
+     - `HLine` : une ligne horizontale.
+     - `VLine` : une ligne verticale.
+  - `Bars` : données en barres.
+     - `Histogram` : histogramme.
+  - `Timelapse` : données temporelles.
+- `Scale` : configurer les axes du graphe.
+- `Tooltip` : activer et configurer les bulles informatives.
+- `Datalabels` : activer et configurer les étiquettes de données.
+- `Zoom` : activer et configurer le zoom/pan.
+- `Value` : configure une valeur partagée.
+- `Datasets` : regroupe un ensemble de datasets en un seul composant (généralement utilisé avec Value).
 
--> types de datasets + leurs attributs
-    -> tooltip => ChartHTML.
--> les autres composants
-
--> plus de JS API.
+💡 [TODO API JS++]
