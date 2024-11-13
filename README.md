@@ -30,7 +30,11 @@
 
 ### Bugs
 
+🐛 Actuellement, le pan ne fonctionne pas avec l'API JS.
+
 ### Features
+
+- Dataset: specify axes to use.
 
 - playground
   - show generated HTML => message to iframe => send outerHTML (+toggle contenteditable)
