@@ -8,12 +8,14 @@ const examples = [
     "html-line-color-tooltip",
     "html-scales",
     "html-zoom",
+    "html-tooltip",
 
     "js-empty",
     "js-line",
     "js-line-color-tooltip",
     "js-scales",
     "js-zoom",
+    "js-tooltip",
 ];
 
 const resources = [

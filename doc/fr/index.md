@@ -131,7 +131,7 @@ Vous pouvez désormais ajouter, puis configurer, d'autres composants à votre gr
      - `Histogram` : histogramme.
   - `Timelapse` : données temporelles.
 - [`Scale` : configurer les axes du graphe.](./components.md#scale)
-- `Tooltip` : activer et configurer les bulles informatives.
+- [`Tooltip` : activer et configurer les bulles informatives.](./components.md#tooltip)
 - `Datalabels` : activer et configurer les étiquettes de données.
 - [`Zoom` : activer et configurer le zoom/pan.](./components.md#zoom)
 - `Value` : configure une valeur partagée.

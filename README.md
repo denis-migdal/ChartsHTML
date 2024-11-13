@@ -46,6 +46,7 @@
   -> hidden scales.
 
 - charts.js raw options override ?
+  -> doc how to inherit/build own component
 - share components (clone)
 - move  components (remove and add)
 
@@ -56,6 +57,7 @@
 
 -> Initial components in ChartHTML cstr ? [...args] ?
   -> {scales: {name:}, datasets: {}} ?
+  -> {[type]: {[name]: {otherprops}}}
 
 -> tooltips => external: externalTooltipHandler
 https://www.chartjs.org/docs/latest/samples/tooltip/html.html

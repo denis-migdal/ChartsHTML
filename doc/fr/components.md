@@ -6,7 +6,7 @@ Il existe plusieurs types de composants :
 
 - `Dataset` : un dataset générique.
 - [`Scale` : configurer les axes du graphe.](./components.md#scale)
-- `Tooltip` : activer et configurer les bulles informatives.
+- [`Tooltip` : activer et configurer les bulles informatives.](./components.md#tooltip)
 - `Datalabels` : activer et configurer les étiquettes de données.
 - [`Zoom` : activer et configurer le zoom/pan.](./components.md#zoom)
 - `Value` : configure une valeur partagée.
@@ -59,6 +59,55 @@ document.body.append(graph.host);</code></pre>
             <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-scales">playground</a>
         </td><td>
             <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-scales">playground</a>
+        </td></tr>
+    </tfoot>
+</table>
+
+## `Tooltip`
+
+Le composant `Tooltip` permet d'ajouter et de configurer les bulles informatives au survol des points des courbes.
+
+La propriété `direction` permet d'indiquer la manière dont les points sont sélectionnés :
+- `point` (défaut) : les points sous le curseur.
+- `x` : les points de même abscisse que le curseur.
+- `y` : les points de même ordonnée que le curseur. 
+
+Les bulles informatives sont composées :
+- d'un titre défini par le contenu de `Tooltip`
+- d'une ligne par points sélectionnés, dont le contenu est défini par la propriété `tooltip` du dataset à laquelle le point appartient.
+
+<table>
+    <thead>
+        <tr><th>HTML</th><th>JS</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>
+            <pre><code lang="html">&lt;chart-html&gt;
+    &lt;chart-tooltip direction="x"&gt;Data&lt;/chart-tooltip&gt;
+    &lt;curve-line name="my line"
+             tooltip="${ctx.name}: (${ctx.x}, ${ctx.y})"&gt;
+        [[0,0], [1,1], [2,0]]
+    &lt;/curve-line&gt;
+&lt;/chart-html&gt;</code></pre>
+        </td><td>
+<pre><code lang="js">const graph = new ChartHTML();
+graph.addComponent(ChartHTML.Tooltip, {
+    direction : "x",
+    content: "Data"
+});
+graph.addComponent(ChartHTML.Line, {
+    name   : "my line",
+    tooltip: ({ctx}) => `${ctx.name}: (${ctx.x}, ${ctx.y})`,
+    content: [[0,0], [1,1], [2,0]]
+});
+document.body.append(graph.host);</code></pre>
+        </td></tr>
+    </tbody>
+    <tfoot>
+        <tr><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-tooltip">playground</a>
+        </td><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-tooltip">playground</a>
         </td></tr>
     </tfoot>
 </table>
