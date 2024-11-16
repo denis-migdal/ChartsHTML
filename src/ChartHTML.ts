@@ -122,7 +122,9 @@ export default class ChartHTML extends LISS({css: CSS}) {
 				maintainAspectRatio: false,
                 scales: {},
 				plugins: {
-					datalabels: false,
+					datalabels: {
+                        display: false,
+                    },
 					tooltip   : {
 						enabled: false
 					}
