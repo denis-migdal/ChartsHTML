@@ -1,10 +1,10 @@
 const graph = new ChartHTML();
-graph.addComponent(ChartHTML.Scale, {
+graph.addComponent(ChartsHTML.Scale, {
     name: "x",
     min : 0,
     max : 10
 });
-graph.addComponent(ChartHTML.Zoom, {
+graph.addComponent(ChartsHTML.Zoom, {
     direction: "x"
 });
 document.body.append(graph.host);

@@ -2,13 +2,13 @@ import Dataset from '../dataset'
 
 import LISS from "../../../libs/LISS/src/index.ts";
 
-//@ts-ignore
-export default class Bars extends LISS({extends: Dataset, attrs: ['reversed']}) {
+//['reversed']
+export default class Bars extends LISS({extends: Dataset}) {
 
     constructor(...args: any[]) {
         super(...args);
 
-		this.setAttrDefault('type', 'bar');
+        this.data.setDefault('type', 'bar');
     }
 
     /* TODO ... */
@@ -39,7 +39,7 @@ export default class Bars extends LISS({extends: Dataset, attrs: ['reversed']}) 
                     width = w;
             }
 
-            if( this.attrs.reversed === "true" )
+            if( this.data.getValue('reversed') === "true" )
                 data = data.map( (p:any) => {return {x: p.x, y: p.y !== null ? -p.y : null} });
 
             this.dataset.data = [
@@ -56,7 +56,6 @@ export default class Bars extends LISS({extends: Dataset, attrs: ['reversed']}) 
         this.dataset.grouped = false;
 
         //this.dataset.barThickness = "flex"; // not working properly...
-
 
         this.dataset.parsing = false;
         this.dataset.normalized = true;

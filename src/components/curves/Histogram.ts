@@ -2,7 +2,8 @@ import Bars from './Bars';
 
 import LISS from "../../../libs/LISS/src/index.ts";
 
-export default class Histogram extends LISS({extends: Bars, attrs: ['precision']}) {
+// precision
+export default class Histogram extends LISS({extends: Bars}) {
 
     constructor(...args: any[]) {
         super(...args);
@@ -18,7 +19,7 @@ export default class Histogram extends LISS({extends: Bars, attrs: ['precision']
         //TODO: better ?
         const min = this.chart._chartJS.options.scales!.x!.min as number;
         const max = this.chart._chartJS.options.scales!.x!.max as number;
-        const precision = +(this.attrs.precision ?? 10);
+        const precision = +( this.data.getValue('precision') ?? 10);
 
         const sorted = true;
 

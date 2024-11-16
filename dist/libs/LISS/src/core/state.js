@@ -1,4 +1,4 @@
-import { getState, initialize, initializeSync, upgrade, upgradeSync, whenInitialized, whenUpgraded } from "state";
+import { getState, initialize, initializeSync, upgrade, upgradeSync, whenInitialized, whenUpgraded } from "../state";
 import LISS from "../extends";
 LISS.DEFINED = LISS.DEFINED,
     LISS.READY = LISS.READY;

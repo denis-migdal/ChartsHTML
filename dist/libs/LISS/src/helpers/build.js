@@ -1,5 +1,5 @@
 import { initialize, initializeSync } from "../state";
-import { html } from "utils";
+import { html } from "../utils";
 export async function liss(str, ...args) {
     const elem = html(str, ...args);
     if (elem instanceof DocumentFragment)

@@ -16,10 +16,12 @@ export function initContentEditableCode(target, enter_lose_focus = true) {
         let rrange = window.getSelection().getRangeAt(0);
         let path = [];
         let cur = rrange.startContainer;
+        console.warn('find');
         while (cur !== p) {
             path.push(cur);
             cur = cur.parentNode;
         }
+        console.warn('found');
         let length = 0;
         let children = p.childNodes;
         for (let i = path.length - 1; i >= 0; --i) {
@@ -41,7 +43,10 @@ export function initContentEditableCode(target, enter_lose_focus = true) {
         // Update innerHTML
         p.innerHTML = hljs.highlight(p.textContent, { language }).value;
         cur = p;
+        console.warn('find2');
         while (cur.nodeType !== Node.TEXT_NODE) {
+            if (cur.childNodes.length === 0)
+                break;
             for (let i = 0; i < cur.childNodes.length; ++i) {
                 const clen = cur.childNodes[i].textContent.length;
                 if (length <= clen) {
@@ -51,6 +56,7 @@ export function initContentEditableCode(target, enter_lose_focus = true) {
                 length -= clen;
             }
         }
+        console.warn('found2');
         var range = document.createRange();
         var sel = window.getSelection();
         range.setStart(cur, length);

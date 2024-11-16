@@ -1,12 +1,14 @@
 const graph = new ChartHTML();
-graph.addComponent(ChartHTML.Tooltip, {
+
+graph.addComponent(ChartsHTML.Tooltip, {
     content: ""
 });
-graph.addComponent(ChartHTML.Datalabels, {
+graph.addComponent(ChartsHTML.Datalabels, {
     content: ""
 });
-graph.addComponent(ChartHTML.Line, {
+graph.addComponent(ChartsHTML.Line, {
     name   : "my line",
     content: [[0,0], [1,1], [2,0]]
 });
+
 document.body.append(graph.host);

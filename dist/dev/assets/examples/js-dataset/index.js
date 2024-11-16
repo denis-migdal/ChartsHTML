@@ -1,8 +1,8 @@
 const graph = new ChartHTML();
-graph.addComponent(ChartHTML.Tooltip, {
+graph.addComponent(ChartsHTML.Tooltip, {
     content: "Data"
 });
-graph.addComponent(ChartHTML.Dataset, {
+graph.addComponent(ChartsHTML.Dataset, {
     name   : "my line",
     type   : "scatter",
     color  : "red",

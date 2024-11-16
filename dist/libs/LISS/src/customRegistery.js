@@ -3,12 +3,11 @@ let x;
 // Go to state DEFINED
 export function define(tagname, ComponentClass) {
     // could be better.
-    if ("Base" in ComponentClass) {
+    if ("Base" in ComponentClass)
         ComponentClass = ComponentClass.Base;
-    }
-    const Class = ComponentClass.LISSCfg.host;
+    const Class = ComponentClass.Host.Cfg.host;
     let htmltag = _element2tagname(Class) ?? undefined;
-    const LISSclass = ComponentClass.Host; //buildLISSHost<T>(ComponentClass, params);
+    const LISSclass = ComponentClass.Host;
     const opts = htmltag === undefined ? {}
         : { extends: htmltag };
     customElements.define(tagname, LISSclass, opts);
@@ -27,6 +26,7 @@ export function getName(element) {
     if ("Host" in element.constructor)
         element = element.constructor.Host;
     if ("Host" in element)
+        // @ts-ignore
         element = element.Host;
     if ("Base" in element.constructor)
         element = element.constructor;

@@ -1,10 +1,7 @@
-import type ChartHTML from "..";
 import GraphComponent from ".";
 import LISS from "../../libs/LISS/src/index.ts";;
 
-export default class Scale extends LISS({extends: GraphComponent, attrs: ['min', 'max', 'position']}) {
-
-    #chart?: ChartHTML;
+export default class Scale extends LISS({extends: GraphComponent}) {
 
     constructor(...args: any[]) {
         super(...args);
@@ -16,7 +13,10 @@ export default class Scale extends LISS({extends: GraphComponent, attrs: ['min',
 
     override _update() {//TODO: validate config...
 
-        let {name,position,min,max} = this.attrs;
+        const name     = this.data.getValue('name');
+        const position = this.data.getValue('position');
+        const min      = this.data.getValue('min');
+        const max      = this.data.getValue('max');
 
         if( name === null)
             throw new Error('name is null');
@@ -25,8 +25,8 @@ export default class Scale extends LISS({extends: GraphComponent, attrs: ['min',
 
         // range...
         if(labels != null && labels.length === 2 && typeof labels[0] === "number" && typeof labels[1] === "number" ) {
-            this.attrs.min = `${labels[0]}`;
-            this.attrs.max = `${labels[1]}`;
+            this.data.setValue('min', `${labels[0]}`, false);
+            this.data.setValue('max', `${labels[1]}`, false);
             labels = null;
         }
 
@@ -80,14 +80,17 @@ export default class Scale extends LISS({extends: GraphComponent, attrs: ['min',
     // compute implicit min/max.
     override _before_chart_update() {
 
-        const scale_name = this.attrs.name!
+        const scale_name = this.data.getValue('name')!
         const scale = this.chart._chartJS.options.scales![scale_name]!;
 
         if(scale.type !== 'linear')
             return;
 
-        let min = +(this.attrs.min ?? Number.POSITIVE_INFINITY);
-        let max = +(this.attrs.max ?? Number.NEGATIVE_INFINITY);
+        const vmin = this.data.getValue('min');
+        const vmax = this.data.getValue('max');
+
+        let min = +(vmin ?? Number.POSITIVE_INFINITY);
+        let max = +(vmax ?? Number.NEGATIVE_INFINITY);
 
         let getValue = (p: any) => p[scale_name];
 
@@ -128,7 +131,8 @@ export default class Scale extends LISS({extends: GraphComponent, attrs: ['min',
 
 
     override _insert() {
-        this.chart._chartJS.options.scales![this.attrs.name!] = {};
+        const name = this.data.getValue('name')!;
+        this.chart._chartJS.options.scales![name] = {};
     }
 }
 LISS.define('chart-scale', Scale);

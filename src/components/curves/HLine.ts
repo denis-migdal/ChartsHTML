@@ -7,7 +7,7 @@ export default class HLine extends LISS({extends: Line}) {
     constructor(...args: any[]) {
         super(...args);
 
-        this.setAttrDefault('showPoints', 'false');
+        this.data.setDefault('showPoints', 'false');
     }
 
     override _contentParser(content: string) {

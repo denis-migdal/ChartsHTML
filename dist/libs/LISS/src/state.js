@@ -196,8 +196,8 @@ export async function initialize(elem, strict = false) {
     }
     const host = await upgrade(elem);
     await state.whenReady();
-    let params = typeof strict === "boolean" ? {} : strict;
-    host.initialize(params);
+    let params = typeof strict === "boolean" ? [] : strict;
+    host.initialize(...params);
     return host.base;
 }
 export function initializeSync(elem, strict = false) {
@@ -210,8 +210,8 @@ export function initializeSync(elem, strict = false) {
     const host = upgradeSync(elem);
     if (!state.isReady)
         throw new Error("Element not ready !");
-    let params = typeof strict === "boolean" ? {} : strict;
-    host.initialize(params);
+    let params = typeof strict === "boolean" ? [] : strict;
+    host.initialize(...params);
     return host.base;
 }
 // ====================== external WHEN ======================================

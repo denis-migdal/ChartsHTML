@@ -1,9 +1,9 @@
 const graph = new ChartHTML();
-graph.addComponent(ChartHTML.Tooltip, {
+graph.addComponent(ChartsHTML.Tooltip, {
     direction : "x",
     content: "Data"
 });
-graph.addComponent(ChartHTML.Line, {
+graph.addComponent(ChartsHTML.Line, {
     name   : "my line",
     tooltip: ({ctx}) => `${ctx.name}: (${ctx.x}, ${ctx.y})`,
     content: [[0,0], [1,1], [2,0]]

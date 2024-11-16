@@ -1,9 +1,9 @@
 import GraphComponent from '.';
 import LISS, { ShadowCfg } from "../../libs/LISS/src/index.ts";
 import Dataset from './dataset';
-import { StringEval } from '..';
+import { StringEval } from '../StringEval';
 
-export default class Datasets extends LISS({extends: GraphComponent, shadow: ShadowCfg.OPEN, attrs: ['type', 'tooltip', 'color', 'colors']}) {
+export default class Datasets extends LISS({extends: GraphComponent, shadow: ShadowCfg.OPEN}) {
 
     constructor(...args: any[]) {
         super(...args);
@@ -24,25 +24,34 @@ export default class Datasets extends LISS({extends: GraphComponent, shadow: Sha
 
         //TODO: generic ???
         let colors: string[]|null = null;
-        if( this.attrs.colors !== null) {
-            this.#colors_eval.setString( this.attrs.colors );
+        const vcolors = this.data.getValue('colors');
+        if( vcolors !== null) {
+            this.#colors_eval.setString( vcolors );
             colors = this.#colors_eval.eval();
         }
+
+        const type = this.data.getValue('type');
+        const name = this.data.getValue('name');
+        const tooltip = this.data.getValue('tooltip');
+        const color   = this.data.getValue('color');
 
         this.#curves = contents.map( (content: any, i: number) => {
 
             if( typeof content !== "string")
                 content = JSON.stringify(content);
 
-            return LISS.buildSync(this.attrs.type as any, {
+            // TODO: unimplemented ?
+            throw new Error('Not implemented !');
+            /*
+            return LISS.buildSync(type as any, {
                 content: [content],
                 parent : this.content as any,
                 attrs: {
-                    name: `${this.attrs.name}.${i}`,
-                    color: colors?.[i] ?? this.attrs.color ?? 'black',
-                    tooltip: this.attrs.tooltip!
+                    name: `${name}.${i}`,
+                    color: colors?.[i] ?? color ?? 'black',
+                    tooltip: tooltip!
                 }
-            });
+            });*/
         });
 
         for(let curve of this.#curves)

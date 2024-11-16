@@ -1,6 +1,6 @@
 import { LISS } from "../LISSBase";
 import { define } from "../customRegistery";
-import { html } from "../utils";
+import ContentGenerator from "../ContentGenerator";
 // should be improved (but how ?)
 const script = document.querySelector('script[autodir]');
 if (script !== null) {
@@ -12,7 +12,20 @@ if (script !== null) {
     ];
     const KnownTags = new Set();
     const SW = new Promise(async (resolve) => {
-        await navigator.serviceWorker.register(script.getAttribute('sw') ?? "/sw.js", { scope: "/" });
+        const sw_path = script.getAttribute('sw');
+        if (sw_path === null) {
+            console.warn("You are using LISS Auto mode without sw.js.");
+            resolve();
+            return;
+        }
+        try {
+            await navigator.serviceWorker.register(sw_path, { scope: "/" });
+        }
+        catch (e) {
+            console.warn("Registration of ServiceWorker failed");
+            console.error(e);
+            resolve();
+        }
         if (navigator.serviceWorker.controller) {
             resolve();
             return;
@@ -22,8 +35,11 @@ if (script !== null) {
         });
     });
     let components_dir = script.getAttribute('autodir');
-    if (components_dir[0] === '.')
+    /*
+    if( components_dir[0] === '.') {
         components_dir = window.location.pathname + components_dir; // getting an absolute path.
+    }
+    */
     if (components_dir[components_dir.length - 1] !== '/')
         components_dir += '/';
     // observe for new injected tags.
@@ -51,26 +67,23 @@ if (script !== null) {
         for (let i = 0; i < filenames.length; ++i)
             if (resources[i] !== undefined)
                 files[filenames[i]] = resources[i];
-        const content = files["index.html"];
+        const html = files["index.html"];
         const css = files["index.css"];
-        let host = undefined;
+        let host = HTMLElement;
         if (tag.hasAttribute('is'))
             host = tag.constructor;
-        const opts = {
-            ...content !== undefined && { content },
-            ...css !== undefined && { css },
-            ...host !== undefined && { host },
-        };
-        return defineWebComponent(tagname, files, opts);
+        return defineWebComponent(tagname, files, { html, css, host });
     }
     function defineWebComponent(tagname, files, opts) {
         const js = files["index.js"];
-        const content = files["index.html"];
         let klass = null;
         if (js !== undefined)
             klass = js(opts);
-        else if (content !== undefined) {
-            klass = LISSAuto(opts.content, opts.css, opts.host);
+        else if (opts.html !== undefined) {
+            klass = LISS({
+                ...opts,
+                content_generator: LISSAuto_ContentGenerator
+            });
         }
         if (klass === null)
             throw new Error(`Missing files for WebComponent ${tagname}.`);
@@ -103,36 +116,33 @@ if (script !== null) {
         }
     }
 }
-//TODO: improve ?
-export function LISSAuto(content, css, host) {
-    const opts = { content, css, host };
-    //TODO: {}
-    //TODO: CSS_factory too ??? ou css-toto="toto" (?)
-    opts.content_factory = (str) => {
-        str = str.replaceAll(/\$\{([\w]+)\}/g, (_, name) => {
-            return `<liss value="${name}"></liss>`;
-        });
-        //TODO: ${} in attr
-        // - detect start ${ + end }
-        // - register elem + attr name
-        // - replace. 
-        const content = html `${str}`;
-        let spans = content.querySelectorAll('liss[value]');
-        return (_a, _b, elem) => {
-            // can be optimized...
-            for (let span of spans)
-                span.textContent = elem.getAttribute(span.getAttribute('value'));
-            return content.cloneNode(true);
-        };
-    };
-    const klass = class WebComponent extends LISS(opts) {
-        constructor(...args) {
-            super(...args);
-            const css_attrs = this.host.getAttributeNames().filter(e => e.startsWith('css-'));
-            for (let css_attr of css_attrs)
-                this.host.style.setProperty(`--${css_attr.slice('css-'.length)}`, this.host.getAttribute(css_attr));
+export class LISSAuto_ContentGenerator extends ContentGenerator {
+    prepareHTML(html) {
+        if (typeof html === 'string') {
+            html = html.replaceAll(/\$\{([\w]+)\}/g, (_, name) => {
+                return `<liss value="${name}"></liss>`;
+            });
+            // https://stackoverflow.com/questions/29182244/convert-a-string-to-a-template-string
+            //let str = (content as string).replace(/\$\{(.+?)\}/g, (_, match) => this.getAttribute(match)??'')
+            //TODO: ${} in attr
+            // - detect start ${ + end }
+            // - register elem + attr name
+            // - replace. 
         }
-    };
-    return klass;
+        return super.prepareHTML(html);
+    }
+    generate(host) {
+        const content = super.generate(host);
+        // html magic values.
+        // can be optimized...
+        const values = content.querySelectorAll('liss[value]');
+        for (let value of values)
+            value.textContent = host.getAttribute(value.getAttribute('value'));
+        // css prop.
+        const css_attrs = host.getAttributeNames().filter(e => e.startsWith('css-'));
+        for (let css_attr of css_attrs)
+            host.style.setProperty(`--${css_attr.slice('css-'.length)}`, host.getAttribute(css_attr));
+        return content;
+    }
 }
 //# sourceMappingURL=LISSAuto.js.map

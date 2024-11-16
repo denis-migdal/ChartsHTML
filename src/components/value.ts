@@ -1,8 +1,5 @@
-import type ChartHTML from "..";
 import GraphComponent from ".";
 import LISS from "../../libs/LISS/src/index.ts";;
-
-import {Chart} from 'chart.js';
 
 export default class Value extends LISS({extends: GraphComponent}) {
 
@@ -19,7 +16,7 @@ export default class Value extends LISS({extends: GraphComponent}) {
     override _update(): void {
 
         //TODO: validate config...
-        this.chart.setValue(this.attrs.name!, this.contentParsed);
+        this.chart.setValue(this.data.getValue('name')!, this.contentParsed);
     }
 }
 LISS.define('chart-value', Value);

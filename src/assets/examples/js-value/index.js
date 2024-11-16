@@ -1,13 +1,13 @@
 const graph = new ChartHTML();
-graph.addComponent(ChartHTML.Value, {
+graph.addComponent(ChartsHTML.Value, {
     name   : "data",
     content: [[0,0], [1,1], [2,0]]
 });
-graph.addComponent(ChartHTML.Line, {
+graph.addComponent(ChartsHTML.Line, {
     color  : "green",
     content: ({values: {data}}) => data
 });
-graph.addComponent(ChartHTML.Line, {
+graph.addComponent(ChartsHTML.Line, {
     color  : "red",
     content: ({values: {data}}) => data?.map(e => [e[0], 1-e[1]])
 });

@@ -1,14 +1,14 @@
 const graph = new ChartHTML();
-graph.addComponent(ChartHTML.Scale, {
+graph.addComponent(ChartsHTML.Scale, {
     name: "x",
     content: ["A", "B", "C"]
 });
-graph.addComponent(ChartHTML.Scale, {
+graph.addComponent(ChartsHTML.Scale, {
     name: "y",
     min: 0,
     max: 10
 });
-graph.addComponent(ChartHTML.Scale, {
+graph.addComponent(ChartsHTML.Scale, {
     name: "r",
     position: "right"
 });

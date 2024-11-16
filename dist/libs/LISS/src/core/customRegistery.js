@@ -1,4 +1,4 @@
-import { define, getBaseCstr, getHostCstr, getName, isDefined, whenAllDefined, whenDefined } from "customRegistery";
+import { define, getBaseCstr, getHostCstr, getName, isDefined, whenAllDefined, whenDefined } from "../customRegistery";
 import LISS from "../extends";
 LISS.define = define;
 LISS.whenDefined = whenDefined;

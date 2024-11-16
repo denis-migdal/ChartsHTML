@@ -106,7 +106,8 @@ function update() {
             }
         </style>
         <script type="module" defer>
-            import ChartHTML from '../../index.js';
+            import * as ChartsHTML from '../../index.js';
+            const ChartHTML = ChartsHTML.ChartHTML;
 
             ${values.js}
         </script>

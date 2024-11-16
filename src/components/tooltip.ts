@@ -1,11 +1,10 @@
-import type ChartHTML from "..";
 import GraphComponent from ".";
 import LISS from "../../libs/LISS/src/index.ts";
 
-import {Chart, ChartType, TooltipItem, ChartDataset} from 'chart.js';
+import { ChartType, TooltipItem} from 'chart.js';
 
 //TODO: direction... (with zoom...)
-export default class Tooltip extends LISS({extends: GraphComponent, attrs: ['direction']}) {
+export default class Tooltip extends LISS({extends: GraphComponent}) {
 
     constructor(...args: any[]) {
         super(...args);
@@ -40,7 +39,7 @@ export default class Tooltip extends LISS({extends: GraphComponent, attrs: ['dir
 
     override _insert(): void {
 
-		let mode = (this.attrs.direction ?? 'point') as "x"|"y"|"point";
+		let mode = (this.data.getValue('direction') ?? 'point') as "x"|"y"|"point";
         let intersect = mode === "point";
 
         this.chart._chartJS.options.hover = {
@@ -87,7 +86,6 @@ export default class Tooltip extends LISS({extends: GraphComponent, attrs: ['dir
 }
 
 LISS.define('chart-tooltip', Tooltip);
-
 
 /*            
     tooltip: {

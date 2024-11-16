@@ -1,14 +1,13 @@
-import type ChartHTML from "../index.ts";
-import {Chart} from 'chart.js';
-
 import GraphComponent from "./index.ts";
 import LISS from "../../libs/LISS/src/index.ts";
-
 
 export default class Datalabels extends LISS({extends: GraphComponent}) {
 
     constructor(...args: any[]) {
         super(...args);
+
+        console.warn('end cstr');
+
         this.host.setAttribute('slot', 'options');
 
         //TODO : move 2 parents....
@@ -24,7 +23,7 @@ export default class Datalabels extends LISS({extends: GraphComponent}) {
 
         this.chart._chartJS.options.plugins!.datalabels = {
 
-            enabled: true,
+            //enabled: true,
 
             backgroundColor: (context: any) => {
                 return context.dataset.pointBackgroundColor ?? context.dataset.backgroundColor ?? 'black';
@@ -67,6 +66,9 @@ export default class Datalabels extends LISS({extends: GraphComponent}) {
 
             this.chart.update();
         }
+
+        console.warn('ok');
+
     }
 }
 

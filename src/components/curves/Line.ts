@@ -2,13 +2,13 @@ import Dataset from '../dataset'
 
 import LISS from "../../../libs/LISS/src/index.ts";
 
-//@ts-ignore : "Property 'onAttrChanged' is protected in type 'Line' but public in type 'Dataset'." WTF ???
-export default class Line extends LISS({extends: Dataset, attrs: ['show-points', 'decimate']}) {
+// ['show-points', 'decimate']
+export default class Line extends LISS({extends: Dataset}) {
 
     constructor(...args: any[]) {
+		
         super(...args);
-
-		this.setAttrDefault('type', 'scatter');
+		this.data.setDefault('type', 'scatter');
     }
 
     /* TODO ... */
@@ -19,7 +19,9 @@ export default class Line extends LISS({extends: Dataset, attrs: ['show-points',
 		if(data === undefined)
 			return [];
 
-		if(this.attrs.decimate !== null) {
+		const decimate = this.data.getValue('decimate');
+
+		if(decimate !== null) {
 
 			/*
 			this.chart._chartJS.options.onResize = (...args) => {
@@ -62,7 +64,7 @@ export default class Line extends LISS({extends: Dataset, attrs: ['show-points',
         this.dataset.parsing = false;
         this.dataset.normalized =  true;
 
-		if( this.attrs["show-points"] === "false")
+		if( this.data.getValue("show-points") === "false")
 			this.dataset.pointRadius = 0;
 
         /* this.#dataset = {

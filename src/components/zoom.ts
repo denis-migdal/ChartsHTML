@@ -1,16 +1,13 @@
-import type ChartHTML from "..";
 import GraphComponent from ".";
 import LISS from "../../libs/LISS/src/index.ts";;
 
-import {Chart} from 'chart.js';
-
-export default class ChartZoom extends LISS({extends: GraphComponent, attrs:['direction']}) {
+export default class ChartZoom extends LISS({extends: GraphComponent}) {
 
     constructor(...args: any[]) {
         super(...args);
         this.host.setAttribute('slot', 'options');
 
-        this.setAttrDefault('direction', 'xy');
+        this.data.setDefault('direction', 'xy');
     }
 
     override _insert(): void {
@@ -41,7 +38,7 @@ export default class ChartZoom extends LISS({extends: GraphComponent, attrs:['di
     // compute zoom limits (only works on x/y axis for now)
     override _before_chart_update() {
 
-        const direction = this.attrs.direction;
+        const direction = this.data.getValue('direction');
         const zoom_limits = this.chart._chartJS.options.plugins!.zoom!.limits!;
         const scales = this.chart._chartJS.options.scales!;
 
@@ -64,9 +61,11 @@ export default class ChartZoom extends LISS({extends: GraphComponent, attrs:['di
 
     override _update(): void {
 
-        this.chart._chartJS.options.plugins!.zoom!.zoom!.wheel!.enabled = this.attrs.direction !== 'none';
-        this.chart._chartJS.options.plugins!.zoom!.zoom!.mode           = this.attrs.direction! as any; //TODO validate
-        this.chart._chartJS.options.plugins!.zoom!.pan!.mode            = this.attrs.direction! as any; //TODO validate
+        const direction = this.data.getValue('direction') as "x"|"y"|"xy"|"none";
+
+        this.chart._chartJS.options.plugins!.zoom!.zoom!.wheel!.enabled = direction !== 'none';
+        this.chart._chartJS.options.plugins!.zoom!.zoom!.mode           = direction! as any; //TODO validate
+        this.chart._chartJS.options.plugins!.zoom!.pan!.mode            = direction! as any; //TODO validate
     }
 
     reset() {

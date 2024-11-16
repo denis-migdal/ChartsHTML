@@ -1,13 +1,68 @@
 
 import LISS, {ShadowCfg} from "../../libs/LISS/src/index.ts";;
-import type ChartHTML from '..';
-import { StringEval } from "..";
+import type {ChartHTML} from '..';
+import { StringEval } from "../StringEval";
 
-export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attrs: ['name']}) {
+//TODO: observe content too...
+class DataManager {
+
+    #elem: HTMLElement;
+    #data: Record<string, string|null> = {};
+    #defaults: Record<string, string|null> = {};
+
+    constructor(elem: HTMLElement) {
+        this.#elem = elem;
+    }
+
+    //TODO: default value
+    //TODO: include parsing ?
+
+    setDefault(name: string, value: string) {
+        this.#defaults[name] = value;
+    }
+
+    setValue(name: string, value: string|null, updateAttr = true) {
+        this.#data[name] = value;
+
+        if(value === null) {
+            this.#elem.removeAttribute(name);
+            return;
+        }
+        if( updateAttr )
+            this.#elem.setAttribute(name, value!);
+    }
+
+    getValue(name: string) {
+        let value = this.#data[name];
+        if( value === undefined )
+            value = this.#data[name] = this.#elem.getAttribute(name);
+
+        if( value === null && name in this.#defaults)
+            return this.#defaults[name];
+        return value;
+    }
+}
+
+// ,attrs: ['name']
+export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE}) {
+
+    protected data = new DataManager(this.host);
+
+    static override readonly observedAttributes = ['name'];
+    override attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
+        if(oldValue === newValue)
+            return;
+        this.data.setValue(name, newValue, false);
+
+        this._update();
+        if(this.#chart !== undefined)
+            this.#chart.update();
+    }
 
     #chart?: ChartHTML;
 
     constructor(params: Record<string,any> = {}) {
+
         super();
 
         for(let key in params ) {
@@ -22,7 +77,7 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attrs: 
                 this.host.textContent = JSON.stringify(params.content);
                 continue;
             }
-            this.attrs[key] = params[key];
+            this.data.setValue(key, params[key], false);
         }
 
         this.#contentInit();
@@ -72,19 +127,13 @@ export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE,attrs: 
     _before_chart_update() {}
     //TODO !!! rename !!!
 
-    override onAttrChanged(_name: string, _oldValue: string, _newValue: string): false | void {
-
-        this._update();
-        if(this.#chart !== undefined)
-            this.#chart.update();
-    }
-
     // external
     _attach(chart: ChartHTML) {
+
         this.#chart = chart;
         this._insert();
 
-        if( this.isInDOM)
+        if( this.isConnected)
             this._update();
     }
     _detach() {}
