@@ -32,8 +32,8 @@ export default class ChartHTML extends LISS({css: CSS}) {
     #canvas: HTMLCanvasElement;
     #chartjs!: Chart;
 
-
     protected override connectedCallback(): void {
+        console.warn('DOM');
 		this.updateAll();
     }
 
@@ -67,8 +67,7 @@ export default class ChartHTML extends LISS({css: CSS}) {
 
 		this.#components.push(instance);
 
-		instance._before_chart_update();
-		this.update();
+        this.update();
 	}
 
 	evalContext(context = {}) {
