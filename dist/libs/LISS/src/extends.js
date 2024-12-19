@@ -13,7 +13,7 @@ export function _extends(opts) {
     if (opts.extends === undefined) // h4ck
         throw new Error('please provide a LISSControler!');
     const cfg = opts.extends.Host.Cfg;
-    opts = Object.assign({}, opts, cfg, cfg.args);
+    opts = Object.assign({}, cfg, cfg.args, opts);
     class ExtendedLISS extends opts.extends {
         constructor(...args) {
             super(...args);

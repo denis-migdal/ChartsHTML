@@ -14,9 +14,9 @@ export default class Value extends LISS({extends: GraphComponent}) {
     }
 
     override _update(): void {
-
+        //TODO: signal...
         //TODO: validate config...
-        this.chart.setValue(this.data.getValue('name')!, this.contentParsed);
+        this.chart.setValue(this.data.getValue('name')!, this.parsedContent.value);
     }
 }
 LISS.define('chart-value', Value);

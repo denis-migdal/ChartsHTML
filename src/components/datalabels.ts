@@ -66,9 +66,6 @@ export default class Datalabels extends LISS({extends: GraphComponent}) {
 
             this.chart.update();
         }
-
-        console.warn('ok');
-
     }
 }
 

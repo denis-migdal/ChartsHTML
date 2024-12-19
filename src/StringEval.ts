@@ -79,7 +79,7 @@ export class StringEval<T> {
 			this.#fct = new Function('{values,ctx}', `return ${str}`) as any;
 		}
 
-		return this.#result = this.#fct!( this.#component.chart.evalContext(context) );
+		return this.#result = this.#fct!( this.#component.chart?.evalContext?.(context) ?? {} );
 	}
 	value() {
 		if(this.#result === undefined)

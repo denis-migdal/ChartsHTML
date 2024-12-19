@@ -13,13 +13,17 @@ export async function getControler(elem) {
     const host = await upgrade(elem);
     await whenReady(host);
     //TODO: initializeSync vs initialize ?
-    return host.initialize();
+    if (!host.isInitialized)
+        return host.initialize();
+    return host.controler;
 }
 export function getControlerSync(elem) {
     const host = upgradeSync(elem);
     if (!isReady(host))
         throw new Error("Dependancies not ready !");
-    return host.initialize();
+    if (!host.isInitialized)
+        return host.initialize();
+    return host.controler;
 }
 export const initialize = getControler;
 export const initializeSync = getControlerSync;

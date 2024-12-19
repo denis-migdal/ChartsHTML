@@ -4,67 +4,80 @@ import LISS from "../../../libs/LISS/src/index.ts";
 
 // ['show-points', 'decimate']
 export default class Line extends LISS({extends: Dataset}) {
+	
+	static override observedAttributes = [
+        ...Dataset.observedAttributes,
+        'show-points'
+    ];
 
-    constructor(...args: any[]) {
+    constructor(args: any) {
 		
-        super(...args);
-		this.data.setDefault('type', 'scatter');
-    }
+        super(args);
 
-    /* TODO ... */
-    override _contentParser(content: string) {
+		this.propertiesManager.setDefaultValue('type', 'scatter');
 
-		const data = super._contentParser(content);
+		this.propertiesManager.properties["show-points"].addPreproc( (value: string) => {
+			return Boolean(value);
+		});
+		this.propertiesManager.properties["content"].addPreproc( (data: any, prev) => {
 
-		if(data === undefined)
-			return [];
+			if(data === null)
+				return [];
 
-		const decimate = this.data.getValue('decimate');
+			return data.map( (p: [number, number]|number, idx:number) => {
+				if( ! Array.isArray(p) )
+					return {x: idx, y: p};
+				return {x:p[0],y: p[1]}
+			});
 
-		if(decimate !== null) {
+			/* const decimate = this.data.getValue('decimate');
 
-			/*
-			this.chart._chartJS.options.onResize = (...args) => {
+			if(decimate !== null) {
 
-				console.warn(this.chart.host.getBoundingClientRect());
-				console.warn(args);
+				this.chart._chartJS.options.onResize = (...args) => {
 
-				// precision = 1px
+					console.warn(this.chart.host.getBoundingClientRect());
+					console.warn(args);
 
-				//TODO: update...
-			}*/
+					// precision = 1px
 
-			//h4ck: min-max for proper scale computation...
-			/*
-			let points = [{
-						x: value_min(data, (p: any) => p[0]),
-						y: value_min(data, (p: any) => p[1])
-					},{x: 0.5,y:0.5},
-					{
-						x: value_max(data, (p: any) => p[0]),
-						y: value_max(data, (p: any) => p[1])
-					}];
+					//TODO: update...
+				}*/
 
-			return points;*/
+				//h4ck: min-max for proper scale computation...
+				/*
+				let points = [{
+							x: value_min(data, (p: any) => p[0]),
+							y: value_min(data, (p: any) => p[1])
+						},{x: 0.5,y:0.5},
+						{
+							x: value_max(data, (p: any) => p[0]),
+							y: value_max(data, (p: any) => p[1])
+						}];
 
-		}
-
-		return data.map( (p: [number, number]|number, idx:number) => {
-			if( ! Array.isArray(p) )
-				return {x: idx, y: p};
-			return {x:p[0],y: p[1]}
+				return points;
+			} */
 		});
     }
+
+	get showPoints(): boolean {
+		return this.propertiesManager.getValue('show-points'); 
+	}
+
+	override get data(): Record<string, number>[] {
+		return this.propertiesManager.getValue("content");
+	}
 
     override _update() {
         super._update();
 
-        this.dataset.showLine = true;
+        this.dataset.showLine    = true;
         this.dataset.borderWidth = 2;
-        this.dataset.parsing = false;
-        this.dataset.normalized =  true;
+        this.dataset.parsing     = false;
+        this.dataset.normalized  =  true;
 
-		if( this.data.getValue("show-points") === "false")
+		const show = this.showPoints;
+		if( ! show )
 			this.dataset.pointRadius = 0;
 
         /* this.#dataset = {

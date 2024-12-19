@@ -9,6 +9,31 @@
 - `npm run build`
 - `npm run watch`
 
+## DOC
+
+// un peu bancal mais ça marche...
+- raw : string|null
+- parsed : any | () => any
+- value : any (evaluate () => any + preproc + default value)
+- getter => get value with final type.
+- setter => set parsed.
+
+=> type issues with manager...
+
+=> parent listen children
+  => parent signal ???
+    => children.attach()
+      => requestUpdate => parentChanged => update.
+    => children.detach()
+
+  => listen properties.
+    => throttle
+    => requestUpdate
+      => if no changes : nothing
+      => if changes update()
+      => order depending on type (datasets before scales, etc)
+        => permet de retirer beforeChartUpdate()
+
 ## TODO
 
 - doc StringEval types + auto-deduce.

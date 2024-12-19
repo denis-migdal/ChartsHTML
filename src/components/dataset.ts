@@ -7,36 +7,25 @@ import type { ChartType, TooltipItem } from "chart.js";
 // attrs: ['type', 'color', 'tooltip', 'hide']
 export default class Dataset extends LISS({extends: GraphComponent}) {
 
-    static override observedAttributes = [...GraphComponent.observedAttributes, 'type', 'color', 'tooltip', 'hide'];
+    static override observedAttributes = [
+        ...GraphComponent.observedAttributes,
+        'type', 'color', 'tooltip',
+    ];
 
-    constructor(...args: any[]) {
-        super(...args);
+    constructor(args: any) {
+        super(args);
 
         this.host.setAttribute('slot', 'dataset');
-        this.data.setDefault('color', 'black');
+        this.propertiesManager.setDefaultValue("color", "black");
     }
 
     #dataset = {
-        name: this.data.getValue('name'),
+        name: this.propertiesManager.getValue('name'),
         data: [],
         type: null as null|string
     };
     get dataset() {
-        console.warn("called ?");
         return this.#dataset as any;
-    }
-
-    toggleShow() {
-        //TODO: hidden...
-        this.data.setValue('hide', `${ this.isShown }`);
-
-        this.update();
-        this.chart!.update();
-
-        return this.isShown;
-    }
-    get isShown() {
-        return this.data.getValue('hide') !== "true";
     }
 
     override _insert(): void {
@@ -47,21 +36,23 @@ export default class Dataset extends LISS({extends: GraphComponent}) {
         this.chart.removeDataset(this);
     }
 
+    //TODO: setter
+    get type(): string|null {
+        return this.propertiesManager.getValue("type");
+    }
+    get color(): string {
+        return this.propertiesManager.getValue("color");
+    }
+    get data(): any {
+        return this.propertiesManager.getValue("content");
+    }
+
     override _update(): void {
 
-        //TODO: validate config...
+        this.#dataset.type = this.type;
+        this.#dataset.data = this.data;
 
-        const type  = this.data.getValue('type');
-        const color = this.data.getValue('color');
-        const hide  = this.data.getValue('hide');
-    
-        this.#dataset.type = type!;
-        this.#dataset.data = hide === "true" ? [] : this.contentParsed;
-
-        if(color !== null) {
-            this.dataset.borderColor = color;
-            this.dataset.backgroundColor = color;
-        }
+        this.dataset.backgroundColor = this.dataset.borderColor = this.color;
     }
 
     // add values
@@ -87,13 +78,14 @@ export default class Dataset extends LISS({extends: GraphComponent}) {
     #tooltipEval = new StringEval<string>(this);
     tooltip(context: any) {
 
-        const tooltip = this.data.getValue('tooltip');
+        const tooltip = this.propertiesManager.getValue('tooltip');
 
         if( tooltip === null)
             return "";
 
-        this.#tooltipEval.setString(tooltip);
-        return this.#tooltipEval.eval( this.additionalContext(context) );
+        //TODO...
+        // @ts-ignore
+        return tooltip(  this.additionalContext(context) )
     }
 
     // datalabel
@@ -134,9 +126,9 @@ export default class Dataset extends LISS({extends: GraphComponent}) {
 
     toCSV() {
 
-        const name = this.data.getValue('name');
+        const name = this.propertiesManager.getValue('name');
 
-        const data = this.contentParsed as Record<string, number>[]; // when hide, #dataset.data is [].
+        const data = this.dataset_data.value as Record<string, number>[]; // when hide, #dataset.data is [].
 
         // Get the keys.
         const keys_set = new Set<string>();
