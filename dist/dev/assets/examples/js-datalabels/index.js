@@ -11,5 +11,4 @@ graph.addComponent(ChartsHTML.Line, {
     content: [[0,0], [1,1], [2,0]]
 });
 
-console.warn('before append');
 document.body.append(graph.host);

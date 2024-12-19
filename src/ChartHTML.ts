@@ -4,7 +4,7 @@ import { Constructor } from "LISS/src/types.ts";
 import {Chart, Tooltip, Filler, LinearScale, ScatterController, PointElement, LineElement, BarController, BarElement, ChartDataset, ScaleOptionsByType, ScaleOptions} from 'chart.js';
 
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import zoomPlugin      from 'chartjs-plugin-zoom';
+import zoomPlugin, { zoom }      from 'chartjs-plugin-zoom';
 
 Chart.register(Tooltip, Filler, ScatterController, PointElement, LineElement, LinearScale, BarController, BarElement, ChartDataLabels, zoomPlugin);
 
@@ -33,7 +33,6 @@ export default class ChartHTML extends LISS({css: CSS}) {
     #chartjs!: Chart;
 
     protected override connectedCallback(): void {
-        console.warn('DOM');
 		this.updateAll();
     }
 
@@ -126,7 +125,13 @@ export default class ChartHTML extends LISS({css: CSS}) {
                     },
 					tooltip   : {
 						enabled: false
-					}
+					},
+                    zoom: {
+                        pan: {
+                            /* required for proper pan init */
+                            enabled: true
+                        }
+                    }
 				},
 
                 /*
@@ -156,9 +161,13 @@ export default class ChartHTML extends LISS({css: CSS}) {
 			})
 		}
 
-		//h4ck - required for correct pan initialization...
-		this.#chartjs = config; 
-		this.#isUpdatingAll = true;
+		//this.#chartjs = config; 
+		this.#chartjs = new Chart(ctx, config);
+        // h4ck for correct pan init.
+        const zoom = this.#chartjs.config.options!.plugins!.zoom!;
+        zoom.pan!.enabled = false;
+
+        this.#isUpdatingAll = true;
 
         this.#components = LISS.qsaSync('[slot]', this.host); //TODO sync.
         for(let elem of this.#components)
@@ -167,7 +176,7 @@ export default class ChartHTML extends LISS({css: CSS}) {
 		for(let elem of this.#components)
 			elem._before_chart_update();
 
-		this.#chartjs = new Chart(ctx, config);
+        
 
 		this.#isUpdatingAll = false;
 	}
@@ -184,7 +193,7 @@ export default class ChartHTML extends LISS({css: CSS}) {
 			return;
 		this.#isUpdatingAll = true;
 
-		this._chartJS.resize();
+		this._chartJS.resize(); // for connectedCallback ?
 
 		for(let elem of this.#components)
 			elem.update(); //TODO...

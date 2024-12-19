@@ -12,27 +12,29 @@ export default class ChartZoom extends LISS({extends: GraphComponent}) {
 
     override _insert(): void {
 		// https://github.com/chartjs/chartjs-plugin-zoom
-        this.chart._chartJS.options.plugins!.zoom = {
-            pan: {
-				enabled: true,
+        const zoom = this.chart._chartJS.options.plugins!.zoom!;
+
+
+        zoom.limits = {};
+        zoom.zoom   = {
+            wheel: {
+                enabled: false,
+                speed: 0.1
+            }
+        }
+        
+        zoom.pan = {enabled: true};
+                /*
                 onPanComplete: () => {
 
                     console.warn('?', this.chart._chartJS.scales["x"].min, this.chart._chartJS.scales["x"].max )
-                }
+                }*/
                 /* onPanComplete */
-			},
-			limits: {},
-			zoom: {
-				wheel: {
-					enabled: true,
-					speed: 0.1
-				},
-                onZoomComplete: () => {
-                    console.warn('?', this.chart._chartJS.scales["x"].min, this.chart._chartJS.scales["x"].max )
-                }
-			}
-        }
-
+        /*
+            onZoomComplete: () => {
+                console.warn('?', this.chart._chartJS.scales["x"].min, this.chart._chartJS.scales["x"].max )
+            }
+        */
     }
 
     // compute zoom limits (only works on x/y axis for now)

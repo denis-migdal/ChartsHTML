@@ -22,6 +22,7 @@ export default class Dataset extends LISS({extends: GraphComponent}) {
         type: null as null|string
     };
     get dataset() {
+        console.warn("called ?");
         return this.#dataset as any;
     }
 

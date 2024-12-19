@@ -1,6 +1,5 @@
-import { ShadowCfg } from "./types";
-import { LISSState } from "./state";
-import { setCstrHost } from "./LISSBase";
+import { setCstrHost } from "./LISSControler";
+import { States } from "./LifeCycle/states";
 // LISSHost must be build in define as it need to be able to build
 // the defined subclass.
 let id = 0;
@@ -8,9 +7,9 @@ const sharedCSS = new CSSStyleSheet();
 export function getSharedCSS() {
     return sharedCSS;
 }
-let __cstr_base = null;
-export function setCstrBase(_) {
-    __cstr_base = _;
+let __cstr_controler = null;
+export function setCstrControler(_) {
+    __cstr_controler = _;
 }
 export function buildLISSHost(Liss, 
 // can't deduce : cause type deduction issues...
@@ -22,24 +21,23 @@ hostCstr, content_generator_cstr, args) {
             content_generator: content_generator_cstr,
             args
         };
-        // adopt state if already created.
-        state = this.state ?? new LISSState(this);
         // ============ DEPENDENCIES ==================================
         static whenDepsResolved = content_generator.whenReady();
         static get isDepsResolved() {
             return content_generator.isReady;
         }
         // ============ INITIALIZATION ==================================
-        static Base = Liss;
-        #base = null;
-        get base() {
-            return this.#base;
+        static Controler = Liss;
+        #controler = null;
+        get controler() {
+            return this.#controler;
         }
         get isInitialized() {
-            return this.#base !== null;
+            return this.#controler !== null;
         }
         whenInitialized;
         #whenInitialized_resolver;
+        //TODO: get real TS type ?
         #params;
         initialize(...params) {
             if (this.isInitialized)
@@ -51,12 +49,14 @@ hostCstr, content_generator_cstr, args) {
                     throw new Error('Cstr params has already been provided !');
                 this.#params = params;
             }
-            this.#base = this.init();
+            this.#controler = this.init();
             if (this.isConnected)
-                this.#base.connectedCallback();
-            return this.#base;
+                this.#controler.connectedCallback();
+            return this.#controler;
         }
         // ============== Content ===================
+        #internals = this.attachInternals();
+        #states = this.#internals.states;
         #content = this;
         get content() {
             return this.#content;
@@ -90,14 +90,18 @@ hostCstr, content_generator_cstr, args) {
         // ============== Impl ===================
         constructor(...params) {
             super();
+            this.#states.add(States.LISS_UPGRADED);
+            content_generator.whenReady().then(() => {
+                this.#states.add(States.LISS_READY);
+            });
             this.#params = params;
             let { promise, resolve } = Promise.withResolvers();
             this.whenInitialized = promise;
             this.#whenInitialized_resolver = resolve;
-            const base = __cstr_base;
-            __cstr_base = null;
-            if (base !== null) {
-                this.#base = base;
+            const controler = __cstr_controler;
+            __cstr_controler = null;
+            if (controler !== null) {
+                this.#controler = controler;
                 this.init(); // call the resolver
             }
             if ("_whenUpgradedResolve" in this)
@@ -105,37 +109,34 @@ hostCstr, content_generator_cstr, args) {
         }
         // ====================== DOM ===========================		
         disconnectedCallback() {
-            if (this.base !== null)
-                this.base.disconnectedCallback();
+            if (this.controler !== null)
+                this.controler.disconnectedCallback();
         }
         connectedCallback() {
             // TODO: life cycle options
             if (this.isInitialized) {
-                this.base.connectedCallback();
+                this.controler.connectedCallback();
                 return;
             }
-            // TODO: life cycle options
-            if (this.state.isReady) {
+            // TODO: instance deps
+            if (content_generator.isReady) {
                 this.initialize(); // automatically calls onDOMConnected
                 return;
             }
             (async () => {
-                await this.state.isReady;
+                await content_generator.whenReady();
                 if (!this.isInitialized)
                     this.initialize();
             })();
         }
-        static observedAttributes = Liss.observedAttributes;
+        static get observedAttributes() {
+            return LISSHost.Controler.observedAttributes;
+        }
         attributeChangedCallback(name, oldValue, newValue) {
-            if (this.#base)
-                this.#base.attributeChangedCallback(name, oldValue, newValue);
+            if (this.#controler)
+                this.#controler.attributeChangedCallback(name, oldValue, newValue);
         }
         shadowMode = null;
-        get shadowRoot() {
-            if (this.shadowMode === ShadowCfg.SEMIOPEN)
-                return null;
-            return super.shadowRoot;
-        }
         init() {
             // no needs to set this.#content (already host or set when attachShadow)
             content_generator.generate(this);
@@ -143,13 +144,14 @@ hostCstr, content_generator_cstr, args) {
             //this.#content.addEventListener('click', onClickEvent);
             //@ts-ignore
             //this.#content.addEventListener('dblclick', onClickEvent);
-            if (this.#base === null) {
+            if (this.#controler === null) {
                 // h4ck, okay because JS is monothreaded.
                 setCstrHost(this);
-                this.#base = new Liss(...this.#params);
+                this.#controler = new LISSHost.Controler(...this.#params);
             }
-            this.#whenInitialized_resolver(this.base);
-            return this.base;
+            this.#states.add(States.LISS_INITIALIZED);
+            this.#whenInitialized_resolver(this.controler);
+            return this.controler;
         }
     }
     ;

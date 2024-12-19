@@ -1,8 +1,6 @@
 import LISS from "./extends";
-import "./core/state";
-import "./core/customRegistery";
+import "./core/LifeCycle";
 export { default as ContentGenerator } from "./ContentGenerator";
-//TODO: BLISS
 //TODO: events.ts
 //TODO: globalCSSRules
 export { LISSAuto_ContentGenerator } from "./helpers/LISSAuto";
@@ -14,4 +12,7 @@ export { html } from "./utils";
 export default LISS;
 // for debug.
 export { _extends } from "./extends";
+// required for auto mode it seems.
+// @ts-ignore
+globalThis.LISS = LISS;
 //# sourceMappingURL=index.js.map

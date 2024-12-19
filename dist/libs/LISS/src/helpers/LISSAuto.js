@@ -1,16 +1,17 @@
-import { LISS } from "../LISSBase";
-import { define } from "../customRegistery";
+import LISS from "../extends";
 import ContentGenerator from "../ContentGenerator";
+import { define } from "../LifeCycle/DEFINED";
 // should be improved (but how ?)
 const script = document.querySelector('script[autodir]');
+const RESSOURCES = [
+    "index.js",
+    "index.bry",
+    "index.html",
+    "index.css"
+];
+const KnownTags = new Set();
+let _cdir;
 if (script !== null) {
-    const RESSOURCES = [
-        "index.js",
-        "index.bry",
-        "index.html",
-        "index.css"
-    ];
-    const KnownTags = new Set();
     const SW = new Promise(async (resolve) => {
         const sw_path = script.getAttribute('sw');
         if (sw_path === null) {
@@ -34,14 +35,11 @@ if (script !== null) {
             resolve();
         });
     });
-    let components_dir = script.getAttribute('autodir');
-    /*
-    if( components_dir[0] === '.') {
-        components_dir = window.location.pathname + components_dir; // getting an absolute path.
-    }
-    */
-    if (components_dir[components_dir.length - 1] !== '/')
-        components_dir += '/';
+    _cdir = script.getAttribute('autodir');
+    console.warn(_cdir);
+    if (_cdir[_cdir.length - 1] !== '/')
+        _cdir += '/';
+    const brython = script.getAttribute("brython");
     // observe for new injected tags.
     new MutationObserver((mutations) => {
         for (let mutation of mutations)
@@ -52,78 +50,95 @@ if (script !== null) {
     for (let elem of document.querySelectorAll("*"))
         addTag(elem);
     async function addTag(tag) {
-        const tagname = (tag.getAttribute('is') ?? tag.tagName).toLowerCase();
-        if (!tagname.includes('-') || KnownTags.has(tagname))
-            return;
-        KnownTags.add(tagname);
         await SW; // ensure SW is installed.
-        const filenames = RESSOURCES;
-        const resources = await Promise.all(filenames.map(file => {
-            const file_path = `${components_dir}${tagname}/${file}`;
-            return file.endsWith('.js') ? _import(file_path, true)
-                : _fetchText(file_path, true);
-        }));
-        const files = {};
-        for (let i = 0; i < filenames.length; ++i)
-            if (resources[i] !== undefined)
-                files[filenames[i]] = resources[i];
-        const html = files["index.html"];
-        const css = files["index.css"];
+        const tagname = (tag.getAttribute('is') ?? tag.tagName).toLowerCase();
         let host = HTMLElement;
         if (tag.hasAttribute('is'))
             host = tag.constructor;
-        return defineWebComponent(tagname, files, { html, css, host });
+        if (!tagname.includes('-') || KnownTags.has(tagname))
+            return;
+        importComponent(tagname, {
+            brython,
+            cdir: _cdir,
+            host
+        });
     }
-    function defineWebComponent(tagname, files, opts) {
-        const js = files["index.js"];
-        let klass = null;
-        if (js !== undefined)
-            klass = js(opts);
-        else if (opts.html !== undefined) {
-            klass = LISS({
-                ...opts,
-                content_generator: LISSAuto_ContentGenerator
-            });
-        }
-        if (klass === null)
-            throw new Error(`Missing files for WebComponent ${tagname}.`);
-        return define(tagname, klass);
+}
+async function defineWebComponent(tagname, files, opts) {
+    const c_js = files["index.js"];
+    opts.html ??= files["index.html"];
+    console.warn(opts, files);
+    let klass = null;
+    if (c_js !== undefined) {
+        const file = new Blob([c_js], { type: 'application/javascript' });
+        const url = URL.createObjectURL(file);
+        const oldreq = LISS.require;
+        LISS.require = function (url) {
+            if (typeof url === "string" && url.startsWith('./')) {
+                const filename = url.slice(2);
+                if (filename in files)
+                    return files[filename];
+            }
+            return oldreq(url);
+        };
+        klass = (await import(/* webpackIgnore: true */ url)).default;
+        LISS.require = oldreq;
     }
-    // ================================================
-    // =============== LISS internal tools ============
-    // ================================================
-    async function _fetchText(uri, isLissAuto = false) {
-        const options = isLissAuto
-            ? { headers: { "liss-auto": "true" } }
-            : {};
-        const response = await fetch(uri, options);
-        if (response.status !== 200)
-            return undefined;
-        if (isLissAuto && response.headers.get("status") === "404")
-            return undefined;
-        return await response.text();
+    else if (opts.html !== undefined) {
+        klass = LISS({
+            ...opts,
+            content_generator: LISSAuto_ContentGenerator
+        });
     }
-    async function _import(uri, isLissAuto = false) {
-        // test for the module existance.
-        if (isLissAuto && await _fetchText(uri, isLissAuto) === undefined)
-            return undefined;
-        try {
-            return (await import(/* webpackIgnore: true */ uri)).default;
-        }
-        catch (e) {
-            console.log(e);
-            return undefined;
-        }
+    if (klass === null)
+        throw new Error(`Missing files for WebComponent ${tagname}.`);
+    define(tagname, klass);
+    return klass;
+}
+// ================================================
+// =============== LISS internal tools ============
+// ================================================
+async function _fetchText(uri, isLissAuto = false) {
+    const options = isLissAuto
+        ? { headers: { "liss-auto": "true" } }
+        : {};
+    const response = await fetch(uri, options);
+    if (response.status !== 200)
+        return undefined;
+    if (isLissAuto && response.headers.get("status") === "404")
+        return undefined;
+    const answer = await response.text();
+    if (answer === "")
+        return undefined;
+    return answer;
+}
+async function _import(uri, isLissAuto = false) {
+    // test for the module existance.
+    if (isLissAuto && await _fetchText(uri, isLissAuto) === undefined)
+        return undefined;
+    try {
+        return (await import(/* webpackIgnore: true */ uri)).default;
     }
+    catch (e) {
+        console.log(e);
+        return undefined;
+    }
+}
+const converter = document.createElement('span');
+function encodeHTML(text) {
+    converter.textContent = text;
+    return converter.innerHTML;
 }
 export class LISSAuto_ContentGenerator extends ContentGenerator {
     prepareHTML(html) {
+        this.data = null;
         if (typeof html === 'string') {
-            html = html.replaceAll(/\$\{([\w]+)\}/g, (_, name) => {
+            this.data = html;
+            return null;
+            /*
+            html = html.replaceAll(/\$\{([\w]+)\}/g, (_, name: string) => {
                 return `<liss value="${name}"></liss>`;
-            });
-            // https://stackoverflow.com/questions/29182244/convert-a-string-to-a-template-string
-            //let str = (content as string).replace(/\$\{(.+?)\}/g, (_, match) => this.getAttribute(match)??'')
+            });*/
             //TODO: ${} in attr
             // - detect start ${ + end }
             // - register elem + attr name
@@ -132,12 +147,19 @@ export class LISSAuto_ContentGenerator extends ContentGenerator {
         return super.prepareHTML(html);
     }
     generate(host) {
+        // https://stackoverflow.com/questions/29182244/convert-a-string-to-a-template-string
+        if (this.data !== null) {
+            const str = this.data.replace(/\$\{(.+?)\}/g, (_, match) => encodeHTML(host.getAttribute(match) ?? ''));
+            super.setTemplate(super.prepareHTML(str));
+        }
         const content = super.generate(host);
+        /*
         // html magic values.
         // can be optimized...
         const values = content.querySelectorAll('liss[value]');
-        for (let value of values)
-            value.textContent = host.getAttribute(value.getAttribute('value'));
+        for(let value of values)
+            value.textContent = host.getAttribute(value.getAttribute('value')!)
+        */
         // css prop.
         const css_attrs = host.getAttributeNames().filter(e => e.startsWith('css-'));
         for (let css_attr of css_attrs)
@@ -145,4 +167,83 @@ export class LISSAuto_ContentGenerator extends ContentGenerator {
         return content;
     }
 }
+async function importComponents(components, { cdir = _cdir, brython = null, 
+// @ts-ignore
+host = HTMLElement }) {
+    const results = {};
+    for (let tagname of components) {
+        results[tagname] = await importComponent(tagname, {
+            cdir,
+            brython,
+            host
+        });
+    }
+    return results;
+}
+const bry_wrapper = `def wrapjs(js_klass):
+
+    class Wrapper:
+
+        _js_klass = js_klass
+        _js = None
+
+        def __init__(self, *args):
+            self._js = js_klass.new(*args)
+
+        def __getattr__(self, name: str):
+            return self._js[name];
+
+        def __setattr__(self, name: str, value):
+            if name == "_js":
+                super().__setattr__(name, value)
+                return
+            self._js[name] = value
+
+    return Wrapper
+
+`;
+async function importComponent(tagname, { cdir = _cdir, brython = null, 
+// @ts-ignore
+host = HTMLElement, files = null } = {}) {
+    KnownTags.add(tagname);
+    const compo_dir = `${cdir}${tagname}/`;
+    console.warn("import", tagname, files);
+    if (files === null) {
+        files = {};
+        const file = brython === "true" ? 'index.bry' : 'index.js';
+        files[file] = (await _fetchText(`${compo_dir}${file}`, true));
+        //TODO!!!
+        try {
+            files["index.html"] = (await _fetchText(`${compo_dir}index.html`, true));
+        }
+        catch (e) {
+        }
+        try {
+            files["index.css"] = (await _fetchText(`${compo_dir}index.css`, true));
+        }
+        catch (e) {
+        }
+    }
+    if (brython === "true" && files['index.bry'] !== undefined) {
+        const code = bry_wrapper + files["index.bry"];
+        files['index.js'] =
+            `const $B = globalThis.__BRYTHON__;
+
+$B.runPythonSource(\`${code}\`, "_");
+
+const module = $B.imported["_"];
+export default module.WebComponent;
+
+`;
+    }
+    const html = files["index.html"];
+    const css = files["index.css"];
+    return await defineWebComponent(tagname, files, { html, css, host });
+}
+function require(url) {
+    return fetch(url);
+}
+LISS.importComponents = importComponents;
+LISS.importComponent = importComponent;
+LISS.require = require;
 //# sourceMappingURL=LISSAuto.js.map

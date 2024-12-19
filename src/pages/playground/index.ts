@@ -1,6 +1,4 @@
-import {hl, initContentEditableCode} from "../../../libs/LISS/src/pages/playground/hl";
-
-let iframe = document.querySelector('iframe')!;
+import "../../../libs/LISS/src/pages/docs/skeleton/";
 
 const examples = [
     "html-empty",
@@ -33,6 +31,40 @@ const examples = [
     "jsapi-value-cstr"
 ];
 
+
+import "./code/chart-playground/ChartPlayground";
+
+// liss-playground
+const playground = document.querySelector<HTMLElement>('chart-playground')!;
+function setExample(name: string) {
+    selector.value = name;
+    //playground.removeAttribute('show');
+    playground.setAttribute('name', name);
+}
+
+// init select
+
+const selector = document.querySelector<HTMLSelectElement>('select')!;
+//const webcomp_name = document.querySelector<HTMLInputElement>('input')!;
+
+for(let example of examples)
+    selector.append( new Option(example, example));
+
+selector.addEventListener('change', () => {
+    const url = new URL(location as any);
+    url.searchParams.set("example", selector.value);
+    history.pushState({}, "", url);
+
+    setExample(selector.value);
+});
+
+// init current example
+
+const searchParams = new URLSearchParams(location.search);
+const example = searchParams.get('example');
+setExample(example ?? selector.value);
+
+/*
 const resources = [
     'index.html',
     'index.js',
@@ -145,7 +177,8 @@ for(let name of inputs_names ) {
 
     values[name] = input.textContent = localStorage.getItem(name) ?? "";
 
-    initContentEditableCode(input, false);
+    initContentEditableCode(input);
 }
 
 update();
+*/

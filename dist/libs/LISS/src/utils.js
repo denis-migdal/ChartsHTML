@@ -46,8 +46,7 @@ export function isShadowSupported(tag) {
 export function isDOMContentLoaded() {
     return document.readyState === "interactive" || document.readyState === "complete";
 }
-export const whenDOMContentLoaded = waitDOMContentLoaded();
-export async function waitDOMContentLoaded() {
+export async function whenDOMContentLoaded() {
     if (isDOMContentLoaded())
         return;
     const { promise, resolve } = Promise.withResolvers();

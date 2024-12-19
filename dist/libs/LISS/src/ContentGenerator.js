@@ -1,19 +1,23 @@
 import { getSharedCSS } from "./LISSHost";
 import { ShadowCfg } from "./types";
-import { _element2tagname, isDOMContentLoaded, isShadowSupported, waitDOMContentLoaded } from "./utils";
+import { _element2tagname, isDOMContentLoaded, isShadowSupported, whenDOMContentLoaded } from "./utils";
 const alreadyDeclaredCSS = new Set();
 const sharedCSS = getSharedCSS(); // from LISSHost...
 export default class ContentGenerator {
     #stylesheets;
     #template;
     #shadow;
+    data;
     constructor({ html, css = [], shadow = null, } = {}) {
         this.#shadow = shadow;
         this.#template = this.prepareHTML(html);
         this.#stylesheets = this.prepareCSS(css);
         this.#isReady = isDOMContentLoaded();
-        this.#whenReady = waitDOMContentLoaded();
+        this.#whenReady = whenDOMContentLoaded();
         //TODO: other deps...
+    }
+    setTemplate(template) {
+        this.#template = template;
     }
     #whenReady;
     #isReady = false;
@@ -35,9 +39,10 @@ export default class ContentGenerator {
         const target = this.initShadow(host);
         this.injectCSS(target, this.#stylesheets);
         const content = this.#template.content.cloneNode(true);
-        target.replaceChildren(content);
-        if (target instanceof ShadowRoot && target.childNodes.length === 0)
-            target.append(document.createElement('slot'));
+        if (host.shadowMode !== ShadowCfg.NONE || target.childNodes.length === 0)
+            target.replaceChildren(content);
+        //if( target instanceof ShadowRoot && target.childNodes.length === 0)
+        //	target.append( document.createElement('slot') );
         customElements.upgrade(host);
         return target;
     }
@@ -47,10 +52,8 @@ export default class ContentGenerator {
             throw new Error(`Host element ${_element2tagname(host)} does not support ShadowRoot`);
         let mode = this.#shadow;
         if (mode === null)
-            mode = canHaveShadow ? ShadowCfg.SEMIOPEN : ShadowCfg.NONE;
+            mode = canHaveShadow ? ShadowCfg.OPEN : ShadowCfg.NONE;
         host.shadowMode = mode;
-        if (mode === ShadowCfg.SEMIOPEN)
-            mode = ShadowCfg.OPEN; // TODO: set to X.
         let target = host;
         if (mode !== ShadowCfg.NONE)
             target = host.attachShadow({ mode });

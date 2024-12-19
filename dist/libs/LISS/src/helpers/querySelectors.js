@@ -1,6 +1,6 @@
-import { initializeSync, whenInitialized } from "../state";
 ;
 import LISS from "../extends";
+import { initializeSync, whenInitialized } from "../LifeCycle/INITIALIZED";
 function liss_selector(name) {
     if (name === undefined) // just an h4ck
         return "";
