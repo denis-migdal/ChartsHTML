@@ -1,27 +1,33 @@
 import GraphComponent from "./index.ts";
 import LISS from "../../libs/LISS/src/index.ts";
+import Dataset from "./dataset.ts";
+import { inherit, PropertiesDescriptor } from "properties/PropertiesDescriptor.ts";
 
-export default class Datalabels extends LISS({extends: GraphComponent}) {
+/*
+export const properties = {
+    "content"    : PROPERTY_RAWDATA,
+    "name"       : PROPERTY_STRING,
+    "color"      : {
+        type: PROPERTY_COLOR,
+        default: "black"
+    },
+    "type"       : PROPERTY_STRING,
+    "tooltip"    : PROPERTY_FSTRING
+} satisfies PropertiesDescriptor;*/
 
-    constructor(...args: any[]) {
-        super(...args);
+export default class Datalabels extends inherit(GraphComponent, {}) {
 
-        console.warn('end cstr');
+    #idx = new WeakMap<Dataset, number>();
 
-        this.host.setAttribute('slot', 'options');
-
-        //TODO : move 2 parents....
-        const observer = new MutationObserver( () => {
-            this._update()
-        });
-        observer.observe(this.host, {characterData: true, subtree: true});
+    override onDetach(): void {
+        delete this.graph._chartJS.options.plugins!.datalabels;
+        delete this.graph._chartJS.options.onClick;
+        delete this.graph._chartJS.options.onHover;
     }
 
-    override _insert(): void {
+    override onAttach(): void {
 
-        console.warn('inserted');
-
-        this.chart._chartJS.options.plugins!.datalabels = {
+        this.graph._chartJS.options.plugins!.datalabels = {
 
             //enabled: true,
 
@@ -38,33 +44,51 @@ export default class Datalabels extends LISS({extends: GraphComponent}) {
                 const name = (context.dataset as any).name;
                 if( name === null)
                     return null;
-                return this.chart.getDataset(name).getDatalabel(context as any);
+
+                const ref = this.graph.getDataset(name);
+                let idx   = this.#idx.get(ref) ?? 0;
+
+                const labels = (ref.constructor as any).datalabels;
+
+                const label = Object.keys(labels);
+
+                ref.ctx.context = context;
+
+                return labels[label[idx]](ref.ctx);
             }
         };
 
         //TODO:
-        this.chart._chartJS.options.onHover = (e: any) => {
+        this.graph._chartJS.options.onHover = (e: any) => {
 
             if( ! e.chart.tooltip?.opacity) {
-                this.chart.host.classList.remove('clickable');
+                this.graph.host.classList.remove('clickable');
                 return;
             }
 
-            this.chart.host.classList.add('clickable');
+            this.graph.host.classList.add('clickable');
         };
-        this.chart._chartJS.options.onClick = (context: any) => {
+        this.graph._chartJS.options.onClick = (ev: any) => {
 
-            // vérifier si des points sont sélectionnés.
-            if( ! context.chart.tooltip?.opacity)
+
+            const elems = ev.chart.getElementsAtEventForMode(ev, 'point', { intersect: true }, true);
+           
+            if(elems.length === 0)
                 return;
 
-            const dataset =  context.chart.tooltip.dataPoints[0].dataset;
+            const dataset = ev.chart.data.datasets[elems[0].datasetIndex];
+
             if(dataset.name === null)
                 return;
-            
-            this.chart.getDataset(dataset.name).datalabelToggle();
 
-            this.chart.update();
+            const ref = this.graph.getDataset(dataset.name);
+            let idx   = this.#idx.get(ref) ?? 0;
+            
+            idx = ++idx % Object.keys((ref.constructor as any).datalabels).length;
+
+            this.#idx.set(ref, idx);
+
+            this.graph.requestUpdate();
         }
     }
 }

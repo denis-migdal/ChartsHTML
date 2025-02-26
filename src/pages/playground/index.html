@@ -3,50 +3,19 @@
     <head>
         <meta charset="utf8"/>
         <title>Playground</title>
-        <!--
-        <meta name="theme-color" media="(prefers-color-scheme: light)" content="cyan" />
-        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
-        -->
         <meta name="color-scheme" content="dark light">
         <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <link   href="./index.css"  rel="stylesheet" blocking="render">
+        <link   href="/skeleton/liss/index.css"  rel="stylesheet">
+        <script  src="/skeleton/liss/index.js"  type="module"     blocking="render" async></script>
         <script  src="./index.js"  type="module"     blocking="render" async></script>
     </head>
-    <body>
+    <body code-langs="html,js">
         <main>
             <header>
                 <select></select>
             </header>
-            <chart-playground show="index.html,index.js,output">
+            <chart-playground show="index.code,output">
             </chart-playground>
         </main>
     </body>
 </html>
-        <!--
-        <div>
-            <h2>Config</h2>
-            Example: <select></select>
-            [TODO: JS OR BRY]
-        </div>
-        <div>
-            <h2>HTML</h2>
-            <div id="html" lang="html" contenteditable></div>
-        </div>
-        <div>
-            <h2>Result</h2>
-            <iframe></iframe>
-        </div>
-        <div>
-            <h2>Data (JSON)</h2>
-            <div id="json" lang="json" contenteditable>[TODO]</div>
-        </div>
-        <div>
-            <h2>JS/Brython</h2>
-            <div id="js" lang="js" contenteditable></div>
-        </div>
-        <div>
-            <h2>Charts.js configuration</h2>
-            <div id="config" lang="json" contenteditable>
-                [TODO]
-            </div>
-        </div> -->

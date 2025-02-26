@@ -1,36 +1,35 @@
+import { inherit, PROPERTY_NUMBER, PROPERTY_RAWDATA, PROPERTY_STRING } from "properties/PropertiesDescriptor.ts";
 import GraphComponent from ".";
 import LISS from "../../libs/LISS/src/index.ts";;
 
-export default class Scale extends LISS({extends: GraphComponent}) {
+const properties = {
+    "content"    : PROPERTY_RAWDATA,
+    "position"   : PROPERTY_STRING,
+    "min"        : PROPERTY_NUMBER,
+    "max"        : PROPERTY_NUMBER,
+}
 
-    constructor(...args: any[]) {
-        super(...args);
+export default class Scale extends inherit(GraphComponent, properties) {
 
-        this.host.setAttribute('slot', 'scale');
-    }
+    override onUpdate() {//TODO: validate config...
 
-    #data: any = {};
+        const name     = this.properties.name;
+        const position = this.properties.position;
 
-    override _update() {//TODO: validate config...
-
-        const name     = this.data.getValue('name');
-        const position = this.data.getValue('position');
-        const min      = this.data.getValue('min');
-        const max      = this.data.getValue('max');
+        let labels   = this.properties.content;
+        let min      = this.properties.min;
+        let max      = this.properties.max;
 
         if( name === null)
             throw new Error('name is null');
 
-        let labels = this.contentParsed; //TODO: null or undefined ? not clear...
-
         // range...
         if(labels != null && labels.length === 2 && typeof labels[0] === "number" && typeof labels[1] === "number" ) {
-            this.data.setValue('min', `${labels[0]}`, false);
-            this.data.setValue('max', `${labels[1]}`, false);
+            [min, max] = labels;
             labels = null;
         }
 
-        let scale = this.chart._chartJS.options.scales![name]!;
+        let scale = this.graph._chartJS.options.scales![name]!;
         if(labels != null) {
 
             Object.assign(scale, {
@@ -78,26 +77,23 @@ export default class Scale extends LISS({extends: GraphComponent}) {
     }
 
     // compute implicit min/max.
-    override _before_chart_update() {
+    override onChartUpdate() {
 
-        const scale_name = this.data.getValue('name')!
-        const scale = this.chart._chartJS.options.scales![scale_name]!;
+        const scale_name = this.properties.name;
+        const scale = this.graph._chartJS.options.scales![scale_name]!;
 
         if(scale.type !== 'linear')
             return;
 
-        const vmin = this.data.getValue('min');
-        const vmax = this.data.getValue('max');
-
-        let min = +(vmin ?? Number.POSITIVE_INFINITY);
-        let max = +(vmax ?? Number.NEGATIVE_INFINITY);
+        let min = this.properties.min ?? Number.POSITIVE_INFINITY;
+        let max = this.properties.max ?? Number.NEGATIVE_INFINITY;
 
         let getValue = (p: any) => p[scale_name];
 
         if( min === Number.POSITIVE_INFINITY ) {
 
             let tmin;
-            for(let dataset of this.chart._chartJS.data.datasets) {
+            for(let dataset of this.graph._chartJS.data.datasets) {
                 tmin = value_min(dataset.data, getValue);
                 if( tmin < min)
                     min = tmin;
@@ -106,7 +102,7 @@ export default class Scale extends LISS({extends: GraphComponent}) {
         if( max === Number.NEGATIVE_INFINITY ) {
 
             let tmax;
-            for(let dataset of this.chart._chartJS.data.datasets) {
+            for(let dataset of this.graph._chartJS.data.datasets) {
                 tmax = value_max(dataset.data, getValue);
                 if( tmax > max)
                     max = tmax;
@@ -130,9 +126,14 @@ export default class Scale extends LISS({extends: GraphComponent}) {
     }
 
 
-    override _insert() {
-        const name = this.data.getValue('name')!;
-        this.chart._chartJS.options.scales![name] = {};
+    override onAttach() {
+        const name = this.properties.name;
+        this.graph._chartJS.options.scales![name] = {};
+    }
+
+    override onDetach(): void {
+        const name = this.properties.name;
+        delete this.graph._chartJS.options.scales![name];
     }
 }
 LISS.define('chart-scale', Scale);

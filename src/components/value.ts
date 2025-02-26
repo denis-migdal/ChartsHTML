@@ -1,22 +1,25 @@
+import { inherit, PropertiesDescriptor, PROPERTY_RAWDATA } from "properties/PropertiesDescriptor.ts";
 import GraphComponent from ".";
-import LISS from "../../libs/LISS/src/index.ts";;
+import LISS from "../../libs/LISS/src/index.ts";
 
-export default class Value extends LISS({extends: GraphComponent}) {
+export const properties = {
+    "content"    : PROPERTY_RAWDATA,
+} satisfies PropertiesDescriptor;
 
-    constructor(...args: any[]) {
-        super(...args);
-        this.host.setAttribute('slot', 'dataset');
+// name is fixed for now ?
 
-        const observer = new MutationObserver( () => {
-            this._update()
-        });
-        observer.observe(this.host, {characterData: true, subtree: true});
+export default class Value extends inherit(GraphComponent, properties) {
+
+    override onAttach() {
+        this.graph.signals.set(this.properties.name, this.propertiesManager.properties["content"].value);
     }
 
-    override _update(): void {
-        //TODO: signal...
-        //TODO: validate config...
-        this.chart.setValue(this.data.getValue('name')!, this.parsedContent.value);
+    override onDetach() {
+        this.graph.signals.clear(this.properties.name);
+    }
+
+    override onUpdate(): void {
+        //TODO: name changed
     }
 }
 LISS.define('chart-value', Value);

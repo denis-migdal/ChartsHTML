@@ -1,39 +1,39 @@
+import { inherit, PropertiesDescriptor, PROPERTY_COLOR, PROPERTY_FSTRING, PROPERTY_RAWDATA, PROPERTY_STRING } from 'properties/PropertiesDescriptor.ts';
 import GraphComponent from '.';
-import LISS, { ShadowCfg } from "../../libs/LISS/src/index.ts";
+import LISS from "../../libs/LISS/src/index.ts";
 import Dataset from './dataset';
-import { StringEval } from '../StringEval';
 
-export default class Datasets extends LISS({extends: GraphComponent, shadow: ShadowCfg.OPEN}) {
+export const properties = {
+    "content"    : PROPERTY_RAWDATA,
+    "name"       : PROPERTY_STRING,
+    "colors"     : PROPERTY_RAWDATA,
+    "color"      : {
+        type: PROPERTY_COLOR,
+        default: "black"
+    },
+    "type"       : PROPERTY_STRING,
+    "tooltip"    : PROPERTY_FSTRING
+} satisfies PropertiesDescriptor;
 
-    constructor(...args: any[]) {
-        super(...args);
-        this.host.setAttribute('slot', 'datasets');
-    }
+export default class Datasets extends inherit(GraphComponent, properties) {
 
     #curves: Dataset[] = [];
 
-    #colors_eval = new StringEval<string[]>(this);
-
-    override _update(): void {
+    override onUpdate(): void {
 
         for(let curve of this.#curves)
-            curve._detach();
+            curve.detach(); // TODO: optimize...
 
-        const contents = this.contentParsed ?? [];
-
+        const contents = this.properties.content ?? [];
 
         //TODO: generic ???
-        let colors: string[]|null = null;
-        const vcolors = this.data.getValue('colors');
-        if( vcolors !== null) {
-            this.#colors_eval.setString( vcolors );
-            colors = this.#colors_eval.eval();
-        }
+        /*
+        let colors: string[]|null = this.properties.colors;
 
-        const type = this.data.getValue('type');
-        const name = this.data.getValue('name');
-        const tooltip = this.data.getValue('tooltip');
-        const color   = this.data.getValue('color');
+        const type = this.properties.type;
+        const name = this.properties.name;
+        const tooltip = this.properties.tooltip;
+        const color   = this.properties.color; */
 
         this.#curves = contents.map( (content: any, i: number) => {
 
@@ -55,7 +55,7 @@ export default class Datasets extends LISS({extends: GraphComponent, shadow: Sha
         });
 
         for(let curve of this.#curves)
-            curve._attach(this.chart);
+            curve.attachTo(this.graph);
 
     }
 }

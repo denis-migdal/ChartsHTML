@@ -1,19 +1,23 @@
+import { inherit, PROPERTY_STRING } from "properties/PropertiesDescriptor.ts";
 import GraphComponent from ".";
 import LISS from "../../libs/LISS/src/index.ts";;
 
-export default class ChartZoom extends LISS({extends: GraphComponent}) {
+const properties = {
+    "direction"  : {
+        type   : PROPERTY_STRING,
+        default: "xy"
+    }
+}
 
-    constructor(...args: any[]) {
-        super(...args);
-        this.host.setAttribute('slot', 'options');
+export default class ChartZoom extends inherit(GraphComponent, properties) {
 
-        this.data.setDefault('direction', 'xy');
+    override onDetach(): void {
+        delete this.graph._chartJS.options.plugins!.zoom;
     }
 
-    override _insert(): void {
+    override onAttach(): void {
 		// https://github.com/chartjs/chartjs-plugin-zoom
-        const zoom = this.chart._chartJS.options.plugins!.zoom!;
-
+        const zoom = this.graph._chartJS.options.plugins!.zoom!;
 
         zoom.limits = {};
         zoom.zoom   = {
@@ -38,16 +42,16 @@ export default class ChartZoom extends LISS({extends: GraphComponent}) {
     }
 
     // compute zoom limits (only works on x/y axis for now)
-    override _before_chart_update() {
+    override onChartUpdate() {
 
-        const direction = this.data.getValue('direction');
-        const zoom_limits = this.chart._chartJS.options.plugins!.zoom!.limits!;
-        const scales = this.chart._chartJS.options.scales!;
+        const direction = this.properties.direction;
+        const zoom_limits = this.graph._chartJS.options.plugins!.zoom!.limits!;
+        const scales = this.graph._chartJS.options.scales!;
 
         if(direction === 'none')
             return;
 
-        for(let scale_name in this.chart._chartJS.options.scales! ) {
+        for(let scale_name in this.graph._chartJS.options.scales! ) {
             
             if(scales[scale_name]!.type !== 'linear') {
                 zoom_limits[scale_name] = {};
@@ -61,17 +65,17 @@ export default class ChartZoom extends LISS({extends: GraphComponent}) {
         }
     }
 
-    override _update(): void {
+    override onUpdate(): void {
 
-        const direction = this.data.getValue('direction') as "x"|"y"|"xy"|"none";
+        const direction = this.properties.direction as "x"|"y"|"xy"|"none";
 
-        this.chart._chartJS.options.plugins!.zoom!.zoom!.wheel!.enabled = direction !== 'none';
-        this.chart._chartJS.options.plugins!.zoom!.zoom!.mode           = direction! as any; //TODO validate
-        this.chart._chartJS.options.plugins!.zoom!.pan!.mode            = direction! as any; //TODO validate
+        this.graph._chartJS.options.plugins!.zoom!.zoom!.wheel!.enabled = direction !== 'none';
+        this.graph._chartJS.options.plugins!.zoom!.zoom!.mode           = direction! as any; //TODO validate
+        this.graph._chartJS.options.plugins!.zoom!.pan!.mode            = direction! as any; //TODO validate
     }
 
     reset() {
-        this.chart._chartJS.resetZoom();
+        this.graph._chartJS.resetZoom();
     }
 }
 LISS.define('chart-zoom', ChartZoom);

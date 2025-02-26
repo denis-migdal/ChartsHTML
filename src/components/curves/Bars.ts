@@ -1,34 +1,61 @@
 import Dataset from '../dataset'
 
 import LISS from "../../../libs/LISS/src/index.ts";
+import { inherit, PropertiesDescriptor, PROPERTY_BOOLEAN } from 'properties/PropertiesDescriptor.ts';
+import { LazyComputedSignal, ROSignal } from 'LISS/src/x.ts';
 
-//['reversed']
-export default class Bars extends LISS({extends: Dataset}) {
+const properties = {
+    "type"       : "bar" as const,
+    "reverded"   : PROPERTY_BOOLEAN
+} satisfies PropertiesDescriptor;
 
-    constructor(...args: any[]) {
-        super(...args);
+export default class Bars extends inherit(Dataset, properties) {
 
-        this.data.setDefault('type', 'bar');
+    protected computeBars(source: ROSignal<any>) {
+    
+        const data = source.value;
+
+        if(data === null)
+            return [];
+
+		return data.map( (p: [number, number]) => {return {x:p[0],y: p[1]} }) as {x: number, y:number|null}[];
+    };
+    
+    protected _bars = new LazyComputedSignal(this.propertiesManager.properties["content"].value,
+                                            this.computeBars.bind(this) );
+
+    constructor(args: any) {
+        super(args);
+        this._data.source = this._bars;
     }
 
-    /* TODO ... */
-    override _contentParser(content: unknown) {
+    override buildDataset() {
+        
+        const dataset = super.buildDataset();
 
-        const data = content as undefined| readonly [number,number][];
+        dataset.borderWidth   = 0;
+        dataset.barPercentage = 1;
+        dataset.categoryPercentage = 2;
+        dataset.inflateAmount = 1; // hide artifacts.
+        dataset.grouped = false;
 
-		if(data === undefined)
-			return [];
+        //dataset.barThickness = "flex"; // not working properly...
 
-		return data.map( (p: [number, number]) => {return {x:p[0],y: p[1]} });
+        dataset.parsing = false;
+        dataset.normalized = true;
+
+        //dataset.labels = ["1", "2", "3", "4"];
+
+        return dataset;
     }
 
-    override _update() {
-        super._update();
+    override onUpdate() {
+        super.onUpdate();
 
         // h4ck to set min/max values.
         if(this.dataset.data.length > 1) {
 
-            let data = this.dataset.data;
+            let data = this._bars.value as {x:number, y:number|null}[];
             const min = data[0].x;
             const max = data[data.length-1].x;
 
@@ -39,8 +66,8 @@ export default class Bars extends LISS({extends: Dataset}) {
                     width = w;
             }
 
-            if( this.data.getValue('reversed') === "true" )
-                data = data.map( (p:any) => {return {x: p.x, y: p.y !== null ? -p.y : null} });
+            if( this.properties.reversed )
+                data = data.map( (p) => {return {x: p.x, y: p.y !== null ? -p.y : null} });
 
             this.dataset.data = [
                 {x: min -width/2, y:null},
@@ -48,20 +75,6 @@ export default class Bars extends LISS({extends: Dataset}) {
                 {x: max +width/2, y:null}
             ]
         }
-
-        this.dataset.borderWidth   = 0;
-        this.dataset.barPercentage = 1;
-        this.dataset.categoryPercentage = 2;
-        this.dataset.inflateAmount = 1; // hide artifacts.
-        this.dataset.grouped = false;
-
-        //this.dataset.barThickness = "flex"; // not working properly...
-
-        this.dataset.parsing = false;
-        this.dataset.normalized = true;
-
-
-        //this.dataset.labels = ["1", "2", "3", "4"];
     }
 }
 

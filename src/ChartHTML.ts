@@ -1,16 +1,16 @@
-import LISS from "../libs/LISS/src/index.ts";
-import { Constructor } from "LISS/src/types.ts";
+import LISS from "@LISS/index.ts";
 
 import {Chart, Tooltip, Filler, LinearScale, ScatterController, PointElement, LineElement, BarController, BarElement, ChartDataset, ScaleOptionsByType, ScaleOptions} from 'chart.js';
 
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import zoomPlugin, { zoom }      from 'chartjs-plugin-zoom';
+import zoomPlugin      from 'chartjs-plugin-zoom';
 
 Chart.register(Tooltip, Filler, ScatterController, PointElement, LineElement, LinearScale, BarController, BarElement, ChartDataLabels, zoomPlugin);
 
-//TODO: remove
 import {CategoryScale} from 'chart.js'; 
-import Dataset from "./components/dataset.ts";
+import Dataset from "./components/dataset";
+import { Signal, SignalEvent, SignalManager, ThrottledSignalEvent } from "LISS/src/x";
+import GraphComponent from "components/index";
 Chart.register(CategoryScale);
 
 const CSS = `
@@ -27,52 +27,93 @@ const CSS = `
 }
 `;
 
+/* not required ?
+function resize(entries: ResizeObserverEntry[]) {
+	for(let i = 0; i < entries.length; ++i)
+		(entries[i].target as any).controler._chartJS.resize();
+}
+
+const observer = new ResizeObserver(resize);*/
+
 export default class ChartHTML extends LISS({css: CSS}) {
 
     #canvas: HTMLCanvasElement;
     #chartjs!: Chart;
 
-    protected override connectedCallback(): void {
-		this.updateAll();
-    }
+	readonly signals = new SignalManager();
 
     constructor(params: Record<string, any>) {
         super();
 
         for(let name in params)
-            this.setValue(name, params[name]);
+			this.signals.set(name, new Signal(params[name]) );
 
         this.#canvas = document.createElement('canvas');
         this.content.append(this.#canvas);
 
 		this.#initGraph();
+
+		this.#ev.listen( () => {
+			this.onUpdate();
+		})
+
+		new MutationObserver( (records: MutationRecord[]) => {
+			
+			for(let i = 0; i < records.length; ++i) {
+				const {addedNodes, removedNodes} = records[i];
+
+				for(let j = 0; j < addedNodes.length; ++j) {
+					const component = LISS.getControlerSync<GraphComponent>(addedNodes[j] as HTMLElement);
+					this.#onAttach(component);
+				}
+
+				for(let j = 0; j < removedNodes.length; ++j) {
+					const component = LISS.getControlerSync<GraphComponent>(removedNodes[j] as HTMLElement);
+					this.#onDetach(component);
+				}
+
+				this.requestUpdate();
+			}
+
+        }).observe(this.host, {childList: true});
     }
 
-    //TODO: use Data...
-	#values: Record<string, any> = {}
-	getValue(name: string) {
-		return this.#values[name];
+	// components
+
+	#onAttach(component: GraphComponent) {
+		this.#components.push(component);
+		component.onAttach();
 	}
-	setValue(name: string, value: any) {
-		this.#values[name] = value;
-		this.updateAll();
+	#onDetach(component: GraphComponent) {
+		this.#components.splice(this.#components.indexOf(component) );
+		component.onDetach();
 	}
 
-	addComponent(Component: Constructor<Dataset>, params: Record<string,string|null> = {}) {
+	#components: GraphComponent[] = [];
+	add(instance: GraphComponent): this
+	add(Component: Constructor<GraphComponent>   , params: Record<string,string|null>): this
+	add(arg1: GraphComponent|Constructor<GraphComponent>, params: Record<string,string|null> = {}) {
 		
-		let instance = new Component(params);
-		this.host.append(instance.host);
-		instance._attach(this);
+		if( typeof arg1 === "function" )
+			arg1 = new arg1(params);
 
-		this.#components.push(instance);
+		const instance = arg1;
 
-        this.update();
+		instance.attachTo(this);
+
+		return this;
 	}
 
-	evalContext(context = {}) {
-		return {ctx: context, values: this.#values};
+	remove(instance: GraphComponent): this {
+
+		// triggers Observer
+		instance.detach();
+
+		return this;
 	}
 
+	//TODO...
+	// Datasets : why (?) -> remove during attach/detach refactor ?
 	#datasets: Record<string, Dataset> = {};
 	getDatasetNames() {
 		return Object.keys(this.#datasets);
@@ -166,54 +207,42 @@ export default class ChartHTML extends LISS({css: CSS}) {
         // h4ck for correct pan init.
         const zoom = this.#chartjs.config.options!.plugins!.zoom!;
         zoom.pan!.enabled = false;
+ 
+        this.#components = LISS.qsaSync(':scope > *', this.host);
 
-        this.#isUpdatingAll = true;
-
-        this.#components = LISS.qsaSync('[slot]', this.host); //TODO sync.
-        for(let elem of this.#components)
-            elem._attach(this);
-
-		for(let elem of this.#components)
-			elem._before_chart_update();
-
-        
-
-		this.#isUpdatingAll = false;
+        for(let elem of this.#components) {
+			this.add(elem);
+			elem.onAttach();
+		}
+		
+		this.requestUpdate();
 	}
 
-	#components: any[] = [];
+	#changes = new SignalEvent();
+	#ev = new ThrottledSignalEvent(this.#changes);
 
-	#isUpdatingAll: boolean = false;
-	updateAll() {
+    protected override connectedCallback(): void {
+		this._chartJS.resize(); // required for JS API
+		//observer.observe(this.host);
+		this.#ev.blockSignal(false);
+    }
+	protected override disconnectedCallback(): void {
+		//observer.unobserve(this.host);
+		this.#ev.blockSignal(true);
+    }
 
-		if( ! this.isConnected )
-			return;
-
-		if( this.#isUpdatingAll )
-			return;
-		this.#isUpdatingAll = true;
-
-		this._chartJS.resize(); // for connectedCallback ?
-
-		for(let elem of this.#components)
-			elem.update(); //TODO...
-
-		this.update();
-
-		this.#isUpdatingAll = false;
+	requestUpdate() {
+		this.#changes.trigger();
 	}
 
-	update() {
+	onUpdate() {
 
-		if( ! this.isConnected )
-			return;
-
-		//TODO: set animation framerequest
-		//TODO: vs updateAll
-		//TODO: attached/detached...
+		//TODO: if waiting
+		for(let elem of this.#components)
+			elem.onUpdate();
 
 		for(let elem of this.#components)
-			elem._before_chart_update();
+			elem.onChartUpdate();
 
 		this._chartJS.update('none');
 	}

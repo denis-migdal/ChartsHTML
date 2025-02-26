@@ -1,0 +1,7 @@
+- fr:🇫🇷
+    - getting-started:🚀 Prise en main
+    - components:🕮 Components
+    - curves:🕮 Créer un composant Web
+- en:🇬🇧
+- playground:🧪 Playground
+- https://github.com/denis-migdal/ChartsHTML:⭐ Github

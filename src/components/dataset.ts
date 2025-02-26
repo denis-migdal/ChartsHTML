@@ -1,134 +1,101 @@
-import { StringEval } from "../StringEval";
 import GraphComponent from ".";
 import LISS, { _extends } from "../../libs/LISS/src/index.ts";
+import { LazyComputedSignal } from "LISS/src/x.ts";
+import { inherit, PropertiesDescriptor, PROPERTY_COLOR, PROPERTY_FSTRING, PROPERTY_RAWDATA, PROPERTY_STRING } from "properties/PropertiesDescriptor.ts";
+import { ContextProvider } from "./tooltip.ts";
 
-import type { ChartType, TooltipItem } from "chart.js";
+
+export const properties = {
+    "content"    : PROPERTY_RAWDATA,
+    "name"       : PROPERTY_STRING,
+    "color"      : {
+        type: PROPERTY_COLOR,
+        default: "black"
+    },
+	"type"       : PROPERTY_STRING,
+    "tooltip"    : PROPERTY_FSTRING
+} satisfies PropertiesDescriptor;
 
 // attrs: ['type', 'color', 'tooltip', 'hide']
-export default class Dataset extends LISS({extends: GraphComponent}) {
-
-    static override observedAttributes = [
-        ...GraphComponent.observedAttributes,
-        'type', 'color', 'tooltip',
-    ];
-
+export default class Dataset extends inherit(GraphComponent, properties) {
+    
     constructor(args: any) {
         super(args);
 
-        this.host.setAttribute('slot', 'dataset');
-        this.propertiesManager.setDefaultValue("color", "black");
+        this.propertiesManager.changes.add( this._data );
     }
 
-    #dataset = {
-        name: this.propertiesManager.getValue('name'),
-        data: [],
-        type: null as null|string
-    };
-    get dataset() {
-        return this.#dataset as any;
-    }
+    // data
 
-    override _insert(): void {
-        this.chart.insertDataset(this);
-    }
-
-    override _detach(): void {
-        this.chart.removeDataset(this);
-    }
-
-    //TODO: setter
-    get type(): string|null {
-        return this.propertiesManager.getValue("type");
-    }
-    get color(): string {
-        return this.propertiesManager.getValue("color");
-    }
+    protected _data = new LazyComputedSignal(this.propertiesManager.properties["content"].value, (v) => v.value);
     get data(): any {
-        return this.propertiesManager.getValue("content");
+        return this._data.value;
     }
 
-    override _update(): void {
+    // dataset
 
-        this.#dataset.type = this.type;
-        this.#dataset.data = this.data;
-
-        this.dataset.backgroundColor = this.dataset.borderColor = this.color;
-    }
-
-    // add values
-    protected additionalContext(context: any) {
-
+    readonly dataset = this.buildDataset();
+    buildDataset(): any {
         return {
-            name:  context.dataset.name,
-            x:     (context?.parsed as any)?.x
-                ?? (context.dataset as any)?.data[context.dataIndex]?.x
-                ?? (context.dataset as any)?.data[context.dataIndex]?.[0]
-                ?? null,
-
-            y:      (context?.parsed as any)?.y
-                ?? (context.dataset as any)?.data[context.dataIndex]?.y
-                ?? (context.dataset as any)?.data[context.dataIndex]?.[1]
-                ?? null
-
-        };
-
+            name: this.properties.name,
+            data: [],
+            type: null as null|string
+        }
     }
 
+    override onAttach(): void {
+        // .controler might not be set yet...
+        this.graph.insertDataset(this);
+    }
+
+    override onDetach(): void {
+        this.graph.removeDataset(this);
+    }
+
+
+    override onUpdate(): void {
+
+        this.dataset.type = this.properties.type;
+        this.dataset.data = this.data;
+
+        this.dataset.backgroundColor = this.dataset.borderColor = this.properties.color;
+    }
+
+    readonly ctx = new ContextProvider();
+    
     // tooltips
-    #tooltipEval = new StringEval<string>(this);
     tooltip(context: any) {
 
+        //TODO: use property
         const tooltip = this.propertiesManager.getValue('tooltip');
 
         if( tooltip === null)
             return "";
 
+        this.ctx.context = context;
+
         //TODO...
         // @ts-ignore
-        return tooltip(  this.additionalContext(context) )
+        return tooltip( this.ctx )
     }
 
     // datalabel
 
-    //TODO: better...
-	#curDatalabel = 'none';
-    #datalabels: Record<string, string|null> = {
-		none  : null,
-		name  :  '${ctx.name}',
-        x     : '${ctx.x}',
-		y     : '${ctx.y}',
-	};
-
-    #datalabelEval = new StringEval<string>(this);
-    getDatalabel<TType extends ChartType>( context: TooltipItem<TType>): string|number|null {
-
-        const datalabel = this.#datalabels[this.#curDatalabel]!;
-        if(datalabel === "")
-            return null;
-
-        this.#datalabelEval.setString(datalabel);
-        return this.#datalabelEval.eval( this.additionalContext(context) );
-	}
-
-    datalabelToggle(name?: string) {
-
-		if(name) {
-			this.#curDatalabel = name;
-			return;
-		}
-
-		let labels = Object.keys(this.#datalabels);
-		let idx = labels.indexOf(this.#curDatalabel);
-		idx = (idx + 1) % labels.length;
-
-		this.#curDatalabel = labels[idx];
+    static datalabels = {
+        none: () => null,
+        name: (ctx: any) => ctx.name,
+        xy  : (ctx: any) => `(${ctx.x},${ctx.y})`,
+        x   : (ctx: any) => ctx.x,
+        y   : (ctx: any) => ctx.y,
     }
+
+    // exports (+toJSON)
 
     toCSV() {
 
         const name = this.propertiesManager.getValue('name');
 
-        const data = this.dataset_data.value as Record<string, number>[]; // when hide, #dataset.data is [].
+        const data = this.properties.data as Record<string, number>[]; // when hide, #dataset.data is [].
 
         // Get the keys.
         const keys_set = new Set<string>();

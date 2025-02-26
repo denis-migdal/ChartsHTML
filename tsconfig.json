@@ -1,11 +1,11 @@
 {
     "include": ["src"],
+    "exclude": ["src/tests"],
     "compilerOptions": {
-        "rootDir": ".",
-        "outDir": "./dist/",
-        "baseUrl": "./",
+        "outDir": "./build/TS",
         "paths": {
-        "*": ["src/*", "libs/*"]
+            "@LISS/*"      : ["./libs/LISS/V3/*"],
+            "@ChartsHTML/*": ["./src/*"]
         },
         "sourceMap": true,
         "alwaysStrict": true,
@@ -16,7 +16,6 @@
         "noFallthroughCasesInSwitch": true,
         "noImplicitOverride": true,
         "noImplicitReturns": true,
-        "allowImportingTsExtensions": true,
 
         "module": "esnext",
         "target": "esnext",

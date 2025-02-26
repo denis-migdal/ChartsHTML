@@ -1,77 +1,74 @@
 
-import LISS, {ShadowCfg} from "../../libs/LISS/src/index.ts";;
+import LISS, {ShadowCfg} from "@LISS";
 import type {ChartHTML} from '..';
 
-import { PropertiesManager } from "PropertiesManager.ts";
+import { PropertiesManager } from "properties/PropertiesManager.ts";
+import { PropertiesDescriptor, PROPERTY_STRING } from "properties/PropertiesDescriptor.ts";
+import ROSignal from "@LISS/src/signals/ROSignal";
+import Signal   from "@LISS/src/signals/Signal";
 
 /****/
 
 export default class GraphComponent extends LISS({shadow: ShadowCfg.NONE}) {
 
-    static override readonly observedAttributes = ['name'];
+    static propertiesDescriptor: PropertiesDescriptor = {
+        name: {type: PROPERTY_STRING}
+    };
 
-    protected propertiesManager = new PropertiesManager(this.host);
+    static override readonly observedAttributes = ['name']; 
+
+    static readonly PropertiesBuilder = {} as any;
+
+    protected propertiesManager: PropertiesManager;
+    readonly properties: any;
 
     constructor(params: Record<string,any>) {
         super();
 
+        this.propertiesManager = new PropertiesManager(this);
+        this.properties = new (this.constructor as any).PropertiesBuilder(this.propertiesManager)
+
+        console.warn("built", this.constructor.name);
+
+        for( let key in params )
+            this.properties[key] = params[key];
+
         this.propertiesManager.changes.listen( () => {
-
-            // TODO: wait chart.update()
-            // TODO: only update if changes (here).
-                // request update vs update...
-            // TODO: chart.js throttle
-            this._update();
-            
-            if(this.chart !== undefined)
-                this.chart.update();
+            if( this.isAttached )
+                this.graph.requestUpdate();
         });
+    }
+    
+    onUpdate() {}
+    onChartUpdate() {}
 
-
-        /* for(let key in params ) {
-            if( key === "content" ) {
-                if( typeof params.content === "string" ) {
-                    this.host.textContent = "str:" + params.content;
-                    continue;
-                }
-                if( typeof params.content === 'function') {
-                    throw new Error("not implemented yet");
-                    //this.parsedContent.value = params.content;
-                }
-                this.host.textContent = JSON.stringify(params.content);
-                continue;
-            }
-            this.data.setValue(key, params[key], false);
-        }*/
+    #graph = new Signal<ChartHTML>();
+    get graphSignal(): ROSignal<ChartHTML> {
+        console.warn('!', this.constructor.name);
+        console.warn( this instanceof GraphComponent );
+        return this.#graph;
+    }
+    get graph() {
+        const graph = this.#graph.value;
+        if(graph === null)
+            throw new Error("Not attached !");
+        return graph;
+    }
+    get isAttached() {
+        return this.#graph.value !== null;
     }
 
-    /****/
-    #chart?: ChartHTML;
-
-    // chart
-    get chart() {
-        return this.#chart!;
+    attachTo(chart: ChartHTML) {
+        this.#graph.value = chart;
+        // triggers host
+        if( this.host.parentElement !== chart.host)
+            chart.host.append(this.host);
+    }
+    detach() {
+        this.#graph.clear();
+        this.host.remove();
     }
 
-    update() {
-        this._update();
-    }
-    _update() {}
-    _before_chart_update() {}
-
-    //TODO: review attach/detach system...
-    // redefine
-    _insert() {}
-    //TODO !!! rename !!!
-
-    // external
-    _attach(chart: ChartHTML) {
-
-        this.#chart = chart;
-        this._insert();
-
-        if( this.isConnected)
-            this._update();
-    }
-    _detach() {}
+    onAttach() {}
+    onDetach() {}
 }

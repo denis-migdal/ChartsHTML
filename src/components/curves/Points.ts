@@ -1,35 +1,41 @@
 import Dataset from '../dataset'
 
 import LISS from "../../../libs/LISS/src/index.ts";
+import { inherit, PropertiesDescriptor } from 'properties/PropertiesDescriptor.ts';
+import { LazyComputedSignal } from 'LISS/src/x.ts';
 
-export default class Points extends LISS({extends: Dataset}) {
 
-    constructor(...args: any[]) {
-        super(...args);
+const properties = {
+    "type"       : "scatter" as const
+} satisfies PropertiesDescriptor;
 
-        this.data.setDefault('type', 'scatter');
+export default class Points extends inherit(Dataset, properties) {
+
+    protected _points = new LazyComputedSignal(this.propertiesManager.properties["content"].value, (source) => {
+    
+        const data = source.value;
+
+        if(data === null)
+            return [];
+
+        return data.map( (p: [number, number]) => {return {x:p[0],y: p[1]} });
+    });
+        
+    constructor(args: any) {
+        super(args);
+
+        this._data.source = this._points;
     }
 
-    /* TODO ... */
-    override _contentParser(content: string) {
+    override buildDataset() {
+        const dataset = super.buildDataset();
 
-		const data = super._contentParser(content);
+        dataset.borderWidth = 2;
+        dataset.parsing = false;
+        dataset.showLine = false;
 
-		if(data === undefined)
-			return [];
-
-		return data.map( (p: [number, number]) => {return {x:p[0],y: p[1]} });
+        return dataset;
     }
-
-    override _update() {
-        super._update();
-
-        this.dataset.borderWidth = 2;
-        this.dataset.parsing = false;
-
-        this.dataset.showLine = false;
-    }
-
 }
 
 

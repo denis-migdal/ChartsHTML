@@ -1,87 +1,104 @@
+import { inherit, PROPERTY_FSTRING, PROPERTY_RAWDATA, PROPERTY_STRING } from "properties/PropertiesDescriptor.ts";
 import GraphComponent from ".";
 import LISS from "../../libs/LISS/src/index.ts";
 
 import { ChartType, TooltipItem} from 'chart.js';
 
+export class ContextProvider {
+    
+    #context!: any;
+    set context(context: any) {
+        this.#context = context;
+    }
+
+    get name() {
+        return this.#context.dataset.name;
+    }
+    get x() {
+        const context = this.#context;
+        return (context?.parsed as any)?.x
+            ?? (context.dataset as any)?.data[context.dataIndex]?.x
+            ?? (context.dataset as any)?.data[context.dataIndex]?.[0]
+            ?? null;
+    }
+
+    get y() {
+        const context = this.#context;
+        return (context?.parsed as any)?.y
+        ?? (context.dataset as any)?.data[context.dataIndex]?.y
+        ?? (context.dataset as any)?.data[context.dataIndex]?.[1]
+        ?? null
+    }      
+}
+
+const properties = {
+    "content"    : PROPERTY_FSTRING,
+    "direction"  : PROPERTY_STRING
+}
+
 //TODO: direction... (with zoom...)
-export default class Tooltip extends LISS({extends: GraphComponent}) {
+export default class Tooltip extends inherit(GraphComponent, properties) {
 
-    constructor(...args: any[]) {
-        super(...args);
+    readonly #ctx = new ContextProvider();
+    
+    readonly #config = {
 
-        this.host.setAttribute('slot', 'options');
+        enabled: true,
 
-        //TODO : move 2 parents....
-        const observer = new MutationObserver( () => {
-            this._update()
-        });
-        observer.observe(this.host, {characterData: true, subtree: true});
+        mode     : "point" as "x"|"y"|"point",
+        intersect: true,
+
+        titleFont: {
+            family: 'Courier New'
+        },
+        bodyFont: {
+            family: 'Courier New'
+        },
+        filter: <TType extends ChartType>(context: TooltipItem<TType>) => {
+            //TODO... also no tooltip...
+            const point = context.parsed as any;
+            return point.x !== null && point.y !== null;
+        },
+
+        callbacks: {
+
+            // Tooltip title (depends graph)
+            title: (context: any) => {
+
+                if(context.length === 0)
+                    return null;
+
+                this.#ctx.context = context[0];
+
+                console.warn(this.properties.content, this.#ctx);
+                return this.properties.content(this.#ctx);
+            },
+            // One line per points
+            label: (context: any) => {
+                return this.graph.getDataset(context.dataset.name).tooltip(context) as string;
+            }
+        }
+    };
+
+    override onDetach(): void {
+        delete this.graph._chartJS.options.hover;
+        delete this.graph._chartJS.options.plugins!.tooltip;
     }
 
-    //TODO: refactor (cf Dataset)
-    protected additionalContext(context: any) {
+    override onAttach(): void {
 
-        return {
-            name:  context.dataset.name,
-            x:     (context?.parsed as any)?.x
-                ?? (context.dataset as any)?.data[context.dataIndex]?.x
-                ?? (context.dataset as any)?.data[context.dataIndex]?.[0]
-                ?? null,
-
-            y:      (context?.parsed as any)?.y
-                ?? (context.dataset as any)?.data[context.dataIndex]?.y
-                ?? (context.dataset as any)?.data[context.dataIndex]?.[1]
-                ?? null
-
-        };
-
-    }
-
-    override _insert(): void {
-
-		let mode = (this.data.getValue('direction') ?? 'point') as "x"|"y"|"point";
+		let mode = (this.properties.direction ?? 'point') as "x"|"y"|"point";
         let intersect = mode === "point";
 
-        this.chart._chartJS.options.hover = {
+        this.graph._chartJS.options.hover = {
             mode,
             intersect
         };
 
-        this.chart._chartJS.options.plugins!.tooltip = {
+        this.#config.mode      = mode;
+        this.#config.intersect = intersect;
 
-            enabled: true,
-            mode,
-            intersect,
-
-            titleFont: {
-                family: 'Courier New'
-            },
-            bodyFont: {
-                family: 'Courier New'
-            },
-            filter: <TType extends ChartType>(context: TooltipItem<TType>) => {
-                //TODO... also no tooltip...
-                const point = context.parsed as any;
-                return point.x !== null && point.y !== null;
-            },
-
-            callbacks: {
-
-                // Tooltip title (depends graph)
-                title: (context: any) => {
-
-                    if(context.length === 0)
-                        return null;
-
-                    return this._contentParser( this._content_eval.eval(this.additionalContext(context[0]) ) );
-                },
-                // One line per points
-                label: (context: any) => {
-
-                    return this.chart.getDataset(context.dataset.name).tooltip(context) as string;
-                }
-            }
-        };
+        this.graph._chartJS.options.plugins!.tooltip = this.#config;
     }
 }
 

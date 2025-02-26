@@ -1,16 +1,16 @@
 import Line from './Line'
 
 import LISS from "../../../libs/LISS/src/index.ts";
+import { inherit } from 'properties/PropertiesDescriptor.ts';
+import { ROSignal } from 'LISS/src/x.ts';
 
-export default class Timelapse extends LISS({extends: Line}) {
+export default class Timelapse extends inherit(Line) {
 
-    constructor(...args: any[]) {
-        super(...args);
-    }
+    protected override computeLine(source: ROSignal<any>) {
+        const data = source.value;
 
-    override _contentParser(content: unknown) {
-
-        const data = content as [string, number,number][];
+        if(data === null)
+            return [];
 
         const points = new Array(data.length * 3);
 
@@ -21,14 +21,15 @@ export default class Timelapse extends LISS({extends: Line}) {
         }
 
         return points;
+    };
+
+    override buildDataset() {
+        const dataset = super.buildDataset();
+
+        dataset.cubicInterpolationMode = 'monotone';
+
+        return dataset;
     }
-
-    override _update() {
-        super._update();
-
-        this.dataset.cubicInterpolationMode = 'monotone';
-    }
-
 }
 
 

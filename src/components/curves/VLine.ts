@@ -1,21 +1,27 @@
 import Line from './Line'
 
 import LISS from "../../../libs/LISS/src/index.ts";
+import { inherit, PropertiesDescriptor } from 'properties/PropertiesDescriptor.ts';
+import { ROSignal } from 'LISS/src/x.ts';
 
-export default class VLine extends LISS({extends: Line}) {
+const properties = {
+    "show-points": false as const
+} satisfies PropertiesDescriptor;
 
-    constructor(...args: any[]) {
-        super(...args);
+export default class VLine extends inherit(Line, properties) {
 
-        this.data.setDefault('showPoints', 'false');
-    }
+    protected override computeLine(source: ROSignal<any>) {
+        const data = source.value;
 
-    override _contentParser(content: string) {
-        return [{x:+content,y:Number.POSITIVE_INFINITY}, {x:+content,y:Number.NEGATIVE_INFINITY}];
-    }
+        if(data === null)
+            return [];
+
+        return [{x:data,y:Number.POSITIVE_INFINITY}, {x:data,y:Number.NEGATIVE_INFINITY}];
+    };
 
     override tooltip(context: any) {
         
+        // show only one
         if(context.dataIndex !== 0)
             return null;
         return super.tooltip(context);
