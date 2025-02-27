@@ -1,25 +1,26 @@
+import LISS from "@LISS/src";
 import Bars from './Bars';
 
-import LISS from "../../../libs/LISS/src/index.ts";
-import { inherit, PropertiesDescriptor, PROPERTY_INT } from 'properties/PropertiesDescriptor.ts';
-import { ROSignal } from 'LISS/src/x.ts';
+import { PropertiesDescriptor } from "@LISS/src/properties/PropertiesManager";
 
-const properties = {
-    "precision"  : PROPERTY_INT
-} satisfies PropertiesDescriptor;
+import INTEGER_PARSER from "@LISS/src/properties/parser/INTEGER_PARSER";
 
 // precision
-export default class Histogram extends inherit(Bars, properties) {
+export default class Histogram extends Bars {
 
-    protected override computeBars(source: ROSignal<any>) {
-        const data = source.value;
+    static override PropertiesDescriptor: PropertiesDescriptor = {
+        ...Bars.PropertiesDescriptor,
+        "precision"   : INTEGER_PARSER
+    };
 
-        if(data === null || ! this.isAttached )
-            return [];
+    protected override computeChartJSData(data: any) {
+		
+        if(data === null || this.chart === null)
+			return [];
 
         //TODO: better ?
-        const min = this.graph._chartJS.options.scales!.x?.min as number ?? 0;
-        const max = this.graph._chartJS.options.scales!.x?.max as number ?? 1;
+        const min = this.chartJS!.options.scales!.x?.min as number ?? 0;
+        const max = this.chartJS!.options.scales!.x?.max as number ?? 1;
         const precision = +( this.properties.precision ?? 10);
 
         const sorted = true;

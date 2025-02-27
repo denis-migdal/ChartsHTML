@@ -1,33 +1,25 @@
 import Dataset from '../dataset'
 
-import LISS from "../../../libs/LISS/src/index.ts";
-import { inherit, PropertiesDescriptor } from 'properties/PropertiesDescriptor.ts';
-import { LazyComputedSignal } from 'LISS/src/x.ts';
+import LISS from "@LISS/src/";
+import { PropertiesDescriptor } from '@LISS/src/properties/PropertiesManager';
 
+export default class Points extends Dataset {
 
-const properties = {
-    "type"       : "scatter" as const
-} satisfies PropertiesDescriptor;
+    static override PropertiesDescriptor: PropertiesDescriptor = {
+        ...Dataset.PropertiesDescriptor,
+        "type"       : "scatter" as const,
+    };
 
-export default class Points extends inherit(Dataset, properties) {
-
-    protected _points = new LazyComputedSignal(this.propertiesManager.properties["content"].value, (source) => {
-    
-        const data = source.value;
-
+    protected override computeChartJSData(data: any) {
+		
         if(data === null)
             return [];
 
         return data.map( (p: [number, number]) => {return {x:p[0],y: p[1]} });
-    });
-        
-    constructor(args: any) {
-        super(args);
-
-        this._data.source = this._points;
     }
 
     override buildDataset() {
+
         const dataset = super.buildDataset();
 
         dataset.borderWidth = 2;

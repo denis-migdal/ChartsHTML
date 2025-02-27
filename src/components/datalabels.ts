@@ -1,33 +1,42 @@
-import GraphComponent from "./index.ts";
-import LISS from "../../libs/LISS/src/index.ts";
-import Dataset from "./dataset.ts";
-import { inherit, PropertiesDescriptor } from "properties/PropertiesDescriptor.ts";
+import GraphComponent from "./";
+import LISS from "@LISS/src/";
+import Dataset from "./dataset";
 
-/*
-export const properties = {
-    "content"    : PROPERTY_RAWDATA,
-    "name"       : PROPERTY_STRING,
-    "color"      : {
-        type: PROPERTY_COLOR,
-        default: "black"
-    },
-    "type"       : PROPERTY_STRING,
-    "tooltip"    : PROPERTY_FSTRING
-} satisfies PropertiesDescriptor;*/
+import { PropertiesDescriptor } from "@LISS/src/properties/PropertiesManager";
+import RAWDATA_PARSER from "@LISS/src/properties/parser/RAWDATA_PARSER";
+import COLOR_PARSER from "@LISS/src/properties/parser/COLOR_PARSER";
+import STRING_PARSER from "@LISS/src/properties/parser/STRING_PARSER";
+import LISSFather from "@LISS/src/LISSClasses/LISSFather";
 
-export default class Datalabels extends inherit(GraphComponent, {}) {
+export default class Datalabels extends GraphComponent {
 
+    static override PropertiesDescriptor: PropertiesDescriptor = {
+            ...GraphComponent.PropertiesDescriptor,
+            "content": RAWDATA_PARSER,
+            "color"  : {
+                parser: COLOR_PARSER,
+                default: "black"
+            },
+            "type": STRING_PARSER,
+            "tooltip": STRING_PARSER
+            /* "tooltip"    : PROPERTY_FSTRING */
+        };
+
+    // current label idx being printed for each Dataset.
     #idx = new WeakMap<Dataset, number>();
 
     override onDetach(): void {
-        delete this.graph._chartJS.options.plugins!.datalabels;
-        delete this.graph._chartJS.options.onClick;
-        delete this.graph._chartJS.options.onHover;
+
+        const opts = this.chartJS!.options;
+
+        delete opts.plugins!.datalabels;
+        delete opts.onClick;
+        delete opts.onHover;
     }
 
     override onAttach(): void {
 
-        this.graph._chartJS.options.plugins!.datalabels = {
+        this.chartJS!.options.plugins!.datalabels = {
 
             //enabled: true,
 
@@ -41,11 +50,12 @@ export default class Datalabels extends inherit(GraphComponent, {}) {
               weight: 'bold'
             },
             formatter: (_value, context) => {
-                const name = (context.dataset as any).name;
-                if( name === null)
+
+                const ref = (context.dataset as any).dataset as Dataset;
+
+                if( ref.properties.name === null) //TODO: remove condition ?
                     return null;
 
-                const ref = this.graph.getDataset(name);
                 let idx   = this.#idx.get(ref) ?? 0;
 
                 const labels = (ref.constructor as any).datalabels;
@@ -59,36 +69,29 @@ export default class Datalabels extends inherit(GraphComponent, {}) {
         };
 
         //TODO:
-        this.graph._chartJS.options.onHover = (e: any) => {
-
-            if( ! e.chart.tooltip?.opacity) {
-                this.graph.host.classList.remove('clickable');
-                return;
-            }
-
-            this.graph.host.classList.add('clickable');
+        this.chartJS!.options.onHover = (e: any) => {
+            this.chart!.classList.toggle('clickable', e.chart.tooltip?.opacity);
         };
-        this.graph._chartJS.options.onClick = (ev: any) => {
 
+        this.chartJS!.options.onClick = (ev: any) => {
 
             const elems = ev.chart.getElementsAtEventForMode(ev, 'point', { intersect: true }, true);
            
             if(elems.length === 0)
                 return;
 
-            const dataset = ev.chart.data.datasets[elems[0].datasetIndex];
+            const dataset = (ev.chart.data.datasets[elems[0].datasetIndex] as any).dataset as Dataset;
 
-            if(dataset.name === null)
+            if(dataset.properties.name === null) //TODO: remove condition ?
                 return;
 
-            const ref = this.graph.getDataset(dataset.name);
-            let idx   = this.#idx.get(ref) ?? 0;
+            let idx   = this.#idx.get(dataset) ?? 0;
             
-            idx = ++idx % Object.keys((ref.constructor as any).datalabels).length;
+            idx = ++idx % Object.keys((dataset.constructor as any).datalabels).length;
 
-            this.#idx.set(ref, idx);
+            this.#idx.set(dataset, idx);
 
-            this.graph.requestUpdate();
+            this.chart!.requestUpdate();
         }
     }
 }

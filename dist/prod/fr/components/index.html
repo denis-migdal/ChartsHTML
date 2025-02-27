@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf8"/>
+        <title>ChartsHTML</title>
+        <meta name="color-scheme" content="dark light">
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link   href="/skeleton/index.css"  rel="stylesheet">
+        <script  src="/skeleton/index.js"  type="module"     blocking="render" async></script>
+    </head>
+    <body code-langs="html,js">
+        <main>
+
+<h1 id="components">Components</h1>
+<p>Les composants permettant d&#39;ajouter des datasets et fonctionnalités à votre graphe.</p>
+<p>Il existe plusieurs types de composants :</p>
+<ul>
+<li><a href="./components.md#dataset"><code>Dataset</code> : permet d&#39;afficher et de configurer un dataset.</a></li>
+<li><a href="./components.md#scale"><code>Scale</code> : configurer les axes du graphe.</a></li>
+<li><a href="./components.md#tooltip"><code>Tooltip</code> : activer et configurer les bulles informatives.</a></li>
+<li><a href="./components.md#datalabels"><code>Datalabels</code> : activer et configurer les étiquettes de données.</a></li>
+<li><a href="./components.md#zoom"><code>Zoom</code> : activer et configurer le zoom/pan.</a></li>
+<li><a href="./components.md#value"><code>Value</code> : configure une valeur partagée ou externe.</a></li>
+<li><code>Datasets</code> : regroupe un ensemble de datasets en un seul composant (généralement utilisé avec Value).</li>
+</ul>
+<h2 id="dataset"><code>Dataset</code></h2>
+<p>Le composant <code>Dataset</code> permet d&#39;afficher et de configurer un dataset.</p>
+<p><code>Dataset</code> défini différentes propriétés communes à toutes les courbes :</p>
+<ul>
+<li><code>type</code> : le type de la courbe (cf <a href="https://www.chartjs.org/docs/latest/charts/mixed.html">chart.js</a>).</li>
+<li><code>content</code> : les données à afficher (cf chart.js).</li>
+<li><code>name</code> : le nom de la courbe (nécessaire pour certaines fonctionnalités).</li>
+<li><code>color</code> : la couleur de la courbe.</li>
+<li><code>tooltip</code> : l&#39;info-bulle à afficher au survol.</li>
+</ul>
+<p>💡 Plusieurs composants héritent de <code>Dataset</code> pour faciliter l&#39;utilisation de différent types de courbes :</p>
+<ul>
+<li><a href="./curves.md#points"><code>Points</code> : un ensemble de points.</a></li>
+<li><code>Line</code> : une ligne.<ul>
+<li><code>HLine</code> : une ligne horizontale.</li>
+<li><code>VLine</code> : une ligne verticale.</li>
+<li><code>Timelapse</code> : données temporelles.</li>
+</ul>
+</li>
+<li><code>Bars</code> : données en barres.<ul>
+<li><code>Histogram</code> : histogramme.</li>
+</ul>
+</li>
+</ul>
+<table>
+    <thead>
+        <tr><th>HTML</th><th>JS</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>
+            <pre><code lang="html">&lt;chart-html&gt;
+    &lt;chart-tooltip&gt;Data&lt;/chart-tooltip&gt;
+    &lt;chart-dataset name="my line" type="scatter" color="red"
+             tooltip="${ctx.name}: (${ctx.x}, ${ctx.y})"&gt;
+        [[0,0], [1,1], [2,0]]
+    &lt;/chart-dataset&gt;
+&lt;/chart-html&gt;</code></pre>
+        </td><td>
+<pre><code lang="js">const graph = new ChartHTML();
+graph.addComponent(ChartHTML.Tooltip, {
+    content: "Data"
+});
+graph.addComponent(ChartHTML.Dataset, {
+    name   : "my line",
+    type   : "scatter",
+    color  : "red",
+    tooltip: ({ctx}) => `${ctx.name}: (${ctx.x}, ${ctx.y})`,
+    content: [[0,0], [1,1], [2,0]]
+});
+document.body.append(graph.host);</code></pre>
+        </td></tr>
+    </tbody>
+    <tfoot>
+        <tr><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-dataset">playground</a>
+        </td><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-dataset">playground</a>
+        </td></tr>
+    </tfoot>
+</table>
+
+<h2 id="scale"><code>Scale</code></h2>
+<p>Le composant <code>Scale</code> permet d&#39;ajouter et de configurer les axes de votre graphe.<br/>
+💡 Par défaut les axes sont linéaires. Si une liste est fournie en contenu de <code>Scale</code>, il sera considéré comme un axe de catégorie.</p>
+<p>La position des axes est déterminée par la propriété <code>position</code>, elle peut prendre pour valeur <code>top</code>, <code>bottom</code>, <code>left</code>, ou <code>right</code>.<br/>
+💡 Par défaut, les axes dont le nom commence par <code>x</code> ou <code>y</code> sont positionnés en bas ou à gauche.</p>
+<p>Les axes linéaires peuvent indiquer une valeur minimale et maximale via les priopriétés <code>min</code> et ̀<code>max</code>.<br/>
+💡 Si le <code>min</code> et/ou ̀<code>max</code> ne sont pas renseignés, leur valeur est calculée à partir des données affichées.</p>
+<p>⚠ Les axes doivent être nommés via la propriété <code>name</code>.</p>
+<table>
+    <thead>
+        <tr><th>HTML</th><th>JS</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>
+            <pre><code lang="html">&lt;chart-html&gt;
+    &lt;chart-scale name="x"&gt;["A", "B", "C"]&lt;/chart-scale&gt;
+    &lt;chart-scale name="y" min="0" max="10" &gt;&lt;/chart-scale&gt;
+    &lt;chart-scale name="r" position="right"&gt;&lt;/chart-scale&gt;
+&lt;/chart-html&gt;</code></pre>
+        </td><td>
+<pre><code lang="js">const graph = new ChartHTML();
+graph.addComponent(ChartHTML.Scale, {
+    name: "x",
+    content: ["A", "B", "C"]
+});
+graph.addComponent(ChartHTML.Scale, {
+    name: "y",
+    min: 0,
+    max: 10
+});
+graph.addComponent(ChartHTML.Scale, {
+    name: "r",
+    position: "right"
+});
+document.body.append(graph.host);</code></pre>
+        </td></tr>
+    </tbody>
+    <tfoot>
+        <tr><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-scales">playground</a>
+        </td><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-scales">playground</a>
+        </td></tr>
+    </tfoot>
+</table>
+
+<h2 id="tooltip"><code>Tooltip</code></h2>
+<p>Le composant <code>Tooltip</code> permet d&#39;ajouter et de configurer les bulles informatives au survol des points des courbes.</p>
+<p>La propriété <code>direction</code> permet d&#39;indiquer la manière dont les points sont sélectionnés :</p>
+<ul>
+<li><code>point</code> (défaut) : les points sous le curseur.</li>
+<li><code>x</code> : les points de même abscisse que le curseur.</li>
+<li><code>y</code> : les points de même ordonnée que le curseur.</li>
+</ul>
+<p>Les bulles informatives sont composées :</p>
+<ul>
+<li>d&#39;un titre défini par le contenu de <code>Tooltip</code></li>
+<li>d&#39;une ligne par points sélectionnés, dont le contenu est défini par la propriété <code>tooltip</code> du dataset à laquelle le point appartient.</li>
+</ul>
+<table>
+    <thead>
+        <tr><th>HTML</th><th>JS</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>
+            <pre><code lang="html">&lt;chart-html&gt;
+    &lt;chart-tooltip direction="x"&gt;Data&lt;/chart-tooltip&gt;
+    &lt;curve-line name="my line"
+             tooltip="${ctx.name}: (${ctx.x}, ${ctx.y})"&gt;
+        [[0,0], [1,1], [2,0]]
+    &lt;/curve-line&gt;
+&lt;/chart-html&gt;</code></pre>
+        </td><td>
+<pre><code lang="js">const graph = new ChartHTML();
+graph.addComponent(ChartHTML.Tooltip, {
+    direction : "x",
+    content: "Data"
+});
+graph.addComponent(ChartHTML.Line, {
+    name   : "my line",
+    tooltip: ({ctx}) => `${ctx.name}: (${ctx.x}, ${ctx.y})`,
+    content: [[0,0], [1,1], [2,0]]
+});
+document.body.append(graph.host);</code></pre>
+        </td></tr>
+    </tbody>
+    <tfoot>
+        <tr><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-tooltip">playground</a>
+        </td><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-tooltip">playground</a>
+        </td></tr>
+    </tfoot>
+</table>
+
+<h2 id="datalabels"><code>Datalabels</code></h2>
+<p>Le composant <code>Datalabels</code> permet d&#39;activer et de configurer les étiquettes de données.</p>
+<p>Au clic sur un point de la courbe, l&#39;étiquette affichée change :</p>
+<ul>
+<li>rien : n&#39;affiche aucune étiquette (par défaut) ;</li>
+<li>nom</li>
+<li>x</li>
+<li>y</li>
+</ul>
+<table>
+    <thead>
+        <tr><th>HTML</th><th>JS</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>
+            <pre><code lang="html">&lt;chart-html&gt;
+    &lt;chart-tooltip direction="x"&gt;Data&lt;/chart-tooltip&gt;
+    &lt;chart-tooltip&gt;&lt;/chart-tooltip&gt;
+    &lt;chart-datalabels&gt;&lt;/chart-datalabels&gt;
+    &lt;curve-line name="my line"
+        [[0,0], [1,1], [2,0]]
+    &lt;/curve-line&gt;
+&lt;/chart-html&gt;</code></pre>
+        </td><td>
+<pre><code lang="js">const graph = new ChartHTML();
+graph.addComponent(ChartHTML.Tooltip, {
+    direction : "x",
+    content: "Data"
+});
+graph.addComponent(ChartHTML.Line, {
+    name   : "my line",
+    tooltip: ({ctx}) => `${ctx.name}: (${ctx.x}, ${ctx.y})`,
+    content: [[0,0], [1,1], [2,0]]
+});
+document.body.append(graph.host);</code></pre>
+        </td></tr>
+    </tbody>
+    <tfoot>
+        <tr><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-datalabels">playground</a>
+        </td><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-datalabels">playground</a>
+        </td></tr>
+    </tfoot>
+</table>
+
+<p>💡 <code>Datalabels</code> n&#39;est pour le moment pas configurable.</p>
+<p>🐛 Actuellement <code>Datalabels</code> requiert la présence d&#39;un <code>Tooltip</code></p>
+<h2 id="zoom"><code>Zoom</code></h2>
+<p>Le composant <code>Zoom</code> permet d&#39;ajouter et de configurer le zoom et le pan de votre graphe.</p>
+<p>Sa propriété <code>direction</code> permet d&#39;indiquer la ou les directions dans lesquels on peut zoomer/pan :</p>
+<ul>
+<li><code>xy</code> : zoom/pan autorisé dans les deux directions (par défaut).</li>
+<li><code>x</code> : zoom/pan autorisé seulement sur l&#39;axe des abscisses.</li>
+<li><code>y</code> : zoom/pan autorisé seulement sur l&#39;axe des ordonnées.</li>
+<li><code>none</code> : zoom/pan interdit ;</li>
+</ul>
+<p>💡 La limite des zoom/pan est déterminée par les propriétés <code>min</code> et <code>max</code> des axes.</p>
+<table>
+    <thead>
+        <tr><th>HTML</th><th>JS</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>
+            <pre><code lang="html">&lt;chart-html&gt;
+    &lt;chart-scale name="x" min="1" max="10"&gt;&lt;/chart-scale&gt;
+    &lt;chart-zoom direction="x"&gt;&lt;/chart-zoom&gt;
+&lt;/chart-html&gt;</code></pre>
+        </td><td>
+<pre><code lang="js">const graph = new ChartHTML();
+graph.addComponent(ChartHTML.Scale, {
+    name: "x",
+    min : 0,
+    max : 10
+});
+graph.addComponent(ChartHTML.Zoom, {
+    direction: "x"
+});
+document.body.append(graph.host);</code></pre>
+        </td></tr>
+    </tbody>
+    <tfoot>
+        <tr><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-zoom">playground</a>
+        </td><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-zoom">playground</a>
+        </td></tr>
+    </tfoot>
+</table>
+
+<p>🐛 Actuellement, le pan ne fonctionne pas avec l&#39;API JS.</p>
+<h2 id="value"><code>Value</code></h2>
+<p>Le composant <code>Value</code> permet de configurer une valeur partagée ou externe.</p>
+<table>
+    <thead>
+        <tr><th>HTML</th><th>JS</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>
+            <pre><code lang="html">&lt;chart-html&gt;
+    &lt;chart-value name="data"&gt;
+        [[0,0], [1,1], [2,0]]
+    &lt;/chart-value&gt;
+    &lt;curve-line color="green"&gt;
+        values.data
+    &lt;/curve-line&gt;
+    &lt;curve-line color="red"&gt;
+        values.data?.map(e => [e[0], 1-e[1]])
+    &lt;/curve-line&gt;
+&lt;/chart-html&gt;</code></pre>
+        </td><td>
+<pre><code lang="js">const graph = new ChartHTML();
+graph.addComponent(ChartHTML.Value, {
+    name   : "data",
+    content: [[0,0], [1,1], [2,0]]
+});
+graph.addComponent(ChartHTML.Line, {
+    color  : "green",
+    content: ({values: {data}}) => data
+});
+graph.addComponent(ChartHTML.Line, {
+    color  : "red",
+    content: ({values: {data}}) => data?.map(e => [e[0], 1-e[1]])
+});
+document.body.append(graph.host);</code></pre>
+        </td></tr>
+    </tbody>
+    <tfoot>
+        <tr><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-value">playground</a>
+        </td><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-value">playground</a>
+        </td></tr>
+    </tfoot>
+</table>
+
+<p>💡 Dans l&#39;API JS, <code>ChartHTML.setValue(name, value)</code> et <code>ChartHTML.getValue()</code> permettent de manipuler ces valeurs. La valeur ne sera alors pas inscrite dans le DOM.</p>
+<table>
+    <thead>
+        <tr><th>JS API</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>
+<pre><code lang="js">const graph = new ChartHTML();
+graph.addComponent(ChartHTML.Value, {
+    name   : "data",
+    content: [[0,0], [1,1], [2,0]]
+});
+graph.addComponent(ChartHTML.Line, {
+    color  : "green",
+    content: ({values: {data}}) => data
+});
+graph.addComponent(ChartHTML.Line, {
+    color  : "red",
+    content: ({values: {data}}) => data?.map(e => [e[0], 1-e[1]])
+});
+document.body.append(graph.host);</code></pre>
+        </td></tr>
+    </tbody>
+    <tfoot>
+        <tr><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=jsapi-value">playground</a>
+        </td></tr>
+    </tfoot>
+</table>
+
+
+</main>
+    </body>
+</html>

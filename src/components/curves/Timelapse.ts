@@ -1,13 +1,13 @@
+import LISS from "@LISS/src/";
 import Line from './Line'
 
-import LISS from "../../../libs/LISS/src/index.ts";
-import { inherit } from 'properties/PropertiesDescriptor.ts';
-import { ROSignal } from 'LISS/src/x.ts';
 
-export default class Timelapse extends inherit(Line) {
+export default class Timelapse extends Line {
 
-    protected override computeLine(source: ROSignal<any>) {
-        const data = source.value;
+    protected override computeChartJSData(data: any) {
+		
+        if(data === null)
+            return [];
 
         if(data === null)
             return [];
@@ -21,7 +21,7 @@ export default class Timelapse extends inherit(Line) {
         }
 
         return points;
-    };
+    }
 
     override buildDataset() {
         const dataset = super.buildDataset();

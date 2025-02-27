@@ -1,34 +1,26 @@
+import LISS from "@LISS/src/";
+
 import Dataset from '../dataset'
 
-import LISS from "../../../libs/LISS/src/index.ts";
-import { inherit, PropertiesDescriptor, PROPERTY_BOOLEAN } from 'properties/PropertiesDescriptor.ts';
-import { LazyComputedSignal, ROSignal } from 'LISS/src/x.ts';
+import BOOLEAN_PARSER from "@LISS/src/properties/parser/BOOLEAN_PARSER";
+import { PropertiesDescriptor } from "@LISS/src/properties/PropertiesManager";
 
-const properties = {
-    "type"       : "bar" as const,
-    "reverded"   : PROPERTY_BOOLEAN
-} satisfies PropertiesDescriptor;
+export default class Bars extends Dataset {
 
-export default class Bars extends inherit(Dataset, properties) {
+    static override PropertiesDescriptor: PropertiesDescriptor = {
+        ...Dataset.PropertiesDescriptor,
+        "type"       : "bar" as const,
+        "reversed"   : BOOLEAN_PARSER
+    };
 
-    protected computeBars(source: ROSignal<any>) {
-    
-        const data = source.value;
-
+    protected override computeChartJSData(data: any) {
+		
         if(data === null)
-            return [];
+			return [];
 
 		return data.map( (p: [number, number]) => {return {x:p[0],y: p[1]} }) as {x: number, y:number|null}[];
-    };
-    
-    protected _bars = new LazyComputedSignal(this.propertiesManager.properties["content"].value,
-                                            this.computeBars.bind(this) );
-
-    constructor(args: any) {
-        super(args);
-        this._data.source = this._bars;
     }
-
+    
     override buildDataset() {
         
         const dataset = super.buildDataset();
@@ -50,12 +42,13 @@ export default class Bars extends inherit(Dataset, properties) {
     }
 
     override onUpdate() {
+
         super.onUpdate();
 
         // h4ck to set min/max values.
         if(this.dataset.data.length > 1) {
 
-            let data = this._bars.value as {x:number, y:number|null}[];
+            let data = this.ChartJSData.value as {x:number, y:number|null}[];
             const min = data[0].x;
             const max = data[data.length-1].x;
 

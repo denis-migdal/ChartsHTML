@@ -2,6 +2,14 @@ import "@LISS/pages/skeleton/base/";
 
 const examples = [
     "curve-line",
+    "curve-points",
+    "curve-hline",
+    "curve-vline",
+    "curve-timelapse",
+    "curve-bars",
+    "curve-histogram",
+
+    "graph-empty",
 
     "component-scale",
     "component-zoom",
@@ -18,7 +26,7 @@ const examples = [
 ];
 
 
-import "../../chart-playground/ChartPlayground";
+import "@ChartsHTML/chart-playground/";
 
 // liss-playground
 const playground = document.querySelector<HTMLElement>('chart-playground')!;

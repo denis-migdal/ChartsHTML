@@ -1,41 +1,19 @@
-import LISS from "@LISS";
-import PlaygroundArea, { ASSETS } from "@LISS/components/playground/playground-area/";
+import LISS from "@LISS/src";
+import PlaygroundArea, { Resource } from "@LISS/components/playground/playground-area/";
 
-const resources = [{
-        file : 'index.js',
-        lang : 'js',
-        title: 'JS API'
-    },{
-        file : 'index.html',
-        lang : 'html',
-        title: 'HTML API'
-    },
-]
-
-class VSHSPlayground extends LISS({extends: PlaygroundArea}) {
-
-    constructor() {
-        super(resources);
-    }
+class VSHSPlayground extends PlaygroundArea {
 
     static override observedAttributes = [...PlaygroundArea.observedAttributes, "server"];
 
-    override setGrid() {
-
-        this.host.style.setProperty('grid', 'auto / 1fr 1fr');
-    }
-
-    override async generateIFrameContent() {
-
-        const codes = this.getAllCodes();
+    override generateIFrameContent() {
 
         let c_js   = "";
         let c_html = "";
 
-        if( this.code_lang === "js" )
-            c_js = codes["index.js"];
+        if( this.codeLang === "js" )
+            c_js = this.codes["index.js"].getCode();
         else
-            c_html = codes["index.html"];
+            c_html = this.codes["index.html"].getCode();
 
     const html =
 `<!DOCTYPE html>
@@ -47,11 +25,19 @@ class VSHSPlayground extends LISS({extends: PlaygroundArea}) {
                 margin: 0;
                 background-color: white;
             }
+            :not(:defined) {
+                visibility: hidden;
+            }
         </style>
-        <script type="module" defer>
-            import * as ChartsHTML from '../../index.js';
-            const ChartHTML = ChartsHTML.ChartHTML;
-
+        <script type="importmap">
+            {
+                "imports": {
+                    "@ChartsHTML": "/libs/ChartsHTML/index.js"
+                }
+            }
+        </script>
+        <script type="module" src="/libs/ChartsHTML/index.js"></script>
+        <script type="module">
             ${c_js}
         </script>
     </head>
@@ -63,6 +49,13 @@ ${c_html}
         return html;
 
     }
+
+    protected static override ASSETS_DIR = "/assets/examples/";
+
+    protected static override RESSOURCES = [
+        { file : 'index.js'  , title: 'JS API'  },
+        { file : 'index.html', title: 'HTML API'},
+    ]
 }
 
 LISS.define('chart-playground', VSHSPlayground);

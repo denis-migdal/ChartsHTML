@@ -1,8 +1,9 @@
-import { inherit, PropertiesDescriptor, PROPERTY_COLOR, PROPERTY_FSTRING, PROPERTY_RAWDATA, PROPERTY_STRING } from 'properties/PropertiesDescriptor.ts';
+//import { inherit, PropertiesDescriptor, PROPERTY_COLOR, PROPERTY_FSTRING, PROPERTY_RAWDATA, PROPERTY_STRING } from 'properties/PropertiesDescriptor.ts';
 import GraphComponent from '.';
-import LISS from "../../libs/LISS/src/index.ts";
+import LISS from "@LISS/src/";
 import Dataset from './dataset';
 
+/*
 export const properties = {
     "content"    : PROPERTY_RAWDATA,
     "name"       : PROPERTY_STRING,
@@ -15,14 +16,17 @@ export const properties = {
     "tooltip"    : PROPERTY_FSTRING
 } satisfies PropertiesDescriptor;
 
-export default class Datasets extends inherit(GraphComponent, properties) {
+inherit(GraphComponent, properties)
+*/
+
+export default class Datasets extends GraphComponent {
 
     #curves: Dataset[] = [];
 
     override onUpdate(): void {
 
         for(let curve of this.#curves)
-            curve.detach(); // TODO: optimize...
+            ;//curve.detach(); // TODO: optimize...
 
         const contents = this.properties.content ?? [];
 
@@ -55,7 +59,7 @@ export default class Datasets extends inherit(GraphComponent, properties) {
         });
 
         for(let curve of this.#curves)
-            curve.attachTo(this.graph);
+            ;//curve.attachTo(this.graph);
 
     }
 }

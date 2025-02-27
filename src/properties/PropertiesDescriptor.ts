@@ -1,3 +1,4 @@
+/*
 import LISS from "@LISS";
 import { PropertiesManager } from "./PropertiesManager";
 import { ChartHTML } from "@ChartsHTML/";
@@ -208,3 +209,4 @@ export function inherit<T extends Cstr<any>, U extends PropertiesDescriptor>(
         static override readonly PropertiesBuilder = Properties;
     }
 }
+*/

@@ -1,23 +1,23 @@
+import LISS from "@LISS/src/";
 import Line from './Line'
 
-import LISS from "../../../libs/LISS/src/index.ts";
-import { inherit, PropertiesDescriptor } from 'properties/PropertiesDescriptor.ts';
-import { ROSignal } from 'LISS/src/x.ts';
+import { PropertiesDescriptor } from '@LISS/src/properties/PropertiesManager';
 
-const properties = {
-    "show-points": false as const
-} satisfies PropertiesDescriptor;
 
-export default class HLine extends inherit(Line, properties) {
+export default class HLine extends Line {
 
-    protected override computeLine(source: ROSignal<any>) {
-        const data = source.value;
+    static override PropertiesDescriptor: PropertiesDescriptor = {
+        ...Line.PropertiesDescriptor,
+        "show-points": false as const
+    };
 
+    protected override computeChartJSData(data: any) {
+		
         if(data === null)
             return [];
 
         return [{x:Number.POSITIVE_INFINITY, y:data}, {x:Number.NEGATIVE_INFINITY, y:data}];
-    };
+    }
 
     override tooltip(context: any) {
         

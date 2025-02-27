@@ -1,21 +1,24 @@
-import { inherit, PropertiesDescriptor, PROPERTY_RAWDATA } from "properties/PropertiesDescriptor.ts";
 import GraphComponent from ".";
-import LISS from "../../libs/LISS/src/index.ts";
+import LISS from "@LISS/src";
 
+/*
 export const properties = {
     "content"    : PROPERTY_RAWDATA,
 } satisfies PropertiesDescriptor;
 
 // name is fixed for now ?
 
-export default class Value extends inherit(GraphComponent, properties) {
+inherit(GraphComponent, properties)
+*/
+
+export default class Value extends GraphComponent {
 
     override onAttach() {
-        this.graph.signals.set(this.properties.name, this.propertiesManager.properties["content"].value);
+        //this.graph.signals.set(this.properties.name, this.propertiesManager.properties["content"].value);
     }
 
     override onDetach() {
-        this.graph.signals.clear(this.properties.name);
+        //this.graph.signals.clear(this.properties.name);
     }
 
     override onUpdate(): void {

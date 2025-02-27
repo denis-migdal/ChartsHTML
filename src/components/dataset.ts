@@ -1,73 +1,70 @@
 import GraphComponent from ".";
-import LISS, { _extends } from "../../libs/LISS/src/index.ts";
-import { LazyComputedSignal } from "LISS/src/x.ts";
-import { inherit, PropertiesDescriptor, PROPERTY_COLOR, PROPERTY_FSTRING, PROPERTY_RAWDATA, PROPERTY_STRING } from "properties/PropertiesDescriptor.ts";
-import { ContextProvider } from "./tooltip.ts";
+import LISS from "@LISS/src/";
+import LazyComputedSignal from "@LISS/src/signals/LazyComputedSignal";
+import { ContextProvider } from "./tooltip";
+import { PropertiesDescriptor } from "@LISS/src/properties/PropertiesManager";
+import STRING_PARSER  from "@LISS/src/properties/parser/STRING_PARSER";
+import COLOR_PARSER   from "@LISS/src/properties/parser/COLOR_PARSER";
+import RAWDATA_PARSER from "@LISS/src/properties/parser/RAWDATA_PARSER";
+import FSTRING_PARSER from "@LISS/src/properties/parser/FSTRING_PARSER";
 
-
-export const properties = {
-    "content"    : PROPERTY_RAWDATA,
-    "name"       : PROPERTY_STRING,
-    "color"      : {
-        type: PROPERTY_COLOR,
-        default: "black"
-    },
-	"type"       : PROPERTY_STRING,
-    "tooltip"    : PROPERTY_FSTRING
-} satisfies PropertiesDescriptor;
 
 // attrs: ['type', 'color', 'tooltip', 'hide']
-export default class Dataset extends inherit(GraphComponent, properties) {
-    
-    constructor(args: any) {
-        super(args);
+export default class Dataset extends GraphComponent {
 
-        this.propertiesManager.changes.add( this._data );
-    }
+    static override PropertiesDescriptor: PropertiesDescriptor = {
+        ...GraphComponent.PropertiesDescriptor,
+        "color": {
+            parser : COLOR_PARSER,
+            default: "black"
+        },
+        "content"    : RAWDATA_PARSER,
+        "name"       :  STRING_PARSER,
+        "type"       :  STRING_PARSER,
+        "tooltip"    : FSTRING_PARSER
+    };
 
-    // data
+    protected computeChartJSData(data: any) { return data; }
 
-    protected _data = new LazyComputedSignal(this.propertiesManager.properties["content"].value, (v) => v.value);
-    get data(): any {
-        return this._data.value;
-    }
+    protected ChartJSData = new LazyComputedSignal(this.manager.getSignal("content"),
+                                                   (signal) => this.computeChartJSData(signal.value) );
 
     // dataset
-
+    // @ts-ignore (WTF)
     readonly dataset = this.buildDataset();
+    override readonly datasets = [
+        this.dataset
+    ];
+
     buildDataset(): any {
+
         return {
+            dataset: this,
             name: this.properties.name,
             data: [],
             type: null as null|string
         }
     }
 
-    override onAttach(): void {
-        // .controler might not be set yet...
-        this.graph.insertDataset(this);
-    }
-
-    override onDetach(): void {
-        this.graph.removeDataset(this);
-    }
-
-
     override onUpdate(): void {
 
         this.dataset.type = this.properties.type;
-        this.dataset.data = this.data;
+
+        console.warn("called", this.ChartJSData.value);
+
+        this.dataset.data = this.ChartJSData.value;
 
         this.dataset.backgroundColor = this.dataset.borderColor = this.properties.color;
     }
+
+    // =============== TOOLTIP ====================
 
     readonly ctx = new ContextProvider();
     
     // tooltips
     tooltip(context: any) {
 
-        //TODO: use property
-        const tooltip = this.propertiesManager.getValue('tooltip');
+        const tooltip = this.properties.tooltip;
 
         if( tooltip === null)
             return "";
@@ -93,7 +90,7 @@ export default class Dataset extends inherit(GraphComponent, properties) {
 
     toCSV() {
 
-        const name = this.propertiesManager.getValue('name');
+        const name = ""; //this.propertiesManager.getValue('name');
 
         const data = this.properties.data as Record<string, number>[]; // when hide, #dataset.data is [].
 

@@ -1,21 +1,21 @@
 import Dataset from '../dataset'
 
-import LISS from "../../../libs/LISS/src/index.ts";
-import { LazyComputedSignal, ROSignal } from 'LISS/src/x.ts';
-import { inherit, PropertiesDescriptor, PROPERTY_BOOLEAN } from 'properties/PropertiesDescriptor.ts';
+import LISS from "@LISS/src/";
+import { PropertiesDescriptor } from '@LISS/src/properties/PropertiesManager';
 
-const properties = {
+import BOOLEAN_PARSER  from "@LISS/src/properties/parser/BOOLEAN_PARSER";
+
+export default class Line extends Dataset {
+
+	static override PropertiesDescriptor: PropertiesDescriptor = {
+	...Dataset.PropertiesDescriptor,
 	"type"       : "scatter" as const,
-	"show-points": PROPERTY_BOOLEAN
-} satisfies PropertiesDescriptor;
+	"show-points": BOOLEAN_PARSER
+	};
 
-export default class Line extends inherit(Dataset, properties) {
-
-	protected computeLine(source: ROSignal<any>) {
-
-		const data = source.value;
-
-		if(data === null)
+	protected override computeChartJSData(data: any) {
+		
+        if(data === null)
 			return [];
 
 		return data.map( (p: [number, number]|number, idx:number) => {
@@ -23,18 +23,10 @@ export default class Line extends inherit(Dataset, properties) {
 				return {x: idx, y: p};
 			return {x:p[0],y: p[1]}
 		});
-	}
-
-	protected _line = new LazyComputedSignal(this.propertiesManager.properties["content"].value,
-											this.computeLine);
-
-	constructor(args: any) {
-        super(args);
-		console.warn("Line built");
-		this._data.source = this._line;
-	}
+    }
 
 	override buildDataset() {
+
 		const dataset = super.buildDataset();
 
         dataset.showLine    = true;

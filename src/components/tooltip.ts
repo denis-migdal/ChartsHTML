@@ -1,8 +1,12 @@
-import { inherit, PROPERTY_FSTRING, PROPERTY_RAWDATA, PROPERTY_STRING } from "properties/PropertiesDescriptor.ts";
 import GraphComponent from ".";
-import LISS from "../../libs/LISS/src/index.ts";
+import LISS from "@LISS/src/";
+import STRING_PARSER  from "@LISS/src/properties/parser/STRING_PARSER";
+import FSTRING_PARSER from "@LISS/src/properties/parser/FSTRING_PARSER";
+import { PropertiesDescriptor } from "@LISS/src/properties/PropertiesManager";
 
 import { ChartType, TooltipItem} from 'chart.js';
+import Dataset from "./dataset";
+import LISSFather from "@LISS/src/LISSClasses/LISSFather";
 
 export class ContextProvider {
     
@@ -31,13 +35,14 @@ export class ContextProvider {
     }      
 }
 
-const properties = {
-    "content"    : PROPERTY_FSTRING,
-    "direction"  : PROPERTY_STRING
-}
 
-//TODO: direction... (with zoom...)
-export default class Tooltip extends inherit(GraphComponent, properties) {
+export default class Tooltip extends GraphComponent {
+
+    static override PropertiesDescriptor: PropertiesDescriptor = {
+        ...GraphComponent.PropertiesDescriptor,
+        "content"    : FSTRING_PARSER,
+        "direction"  :  STRING_PARSER
+    };
 
     readonly #ctx = new ContextProvider();
     
@@ -75,14 +80,14 @@ export default class Tooltip extends inherit(GraphComponent, properties) {
             },
             // One line per points
             label: (context: any) => {
-                return this.graph.getDataset(context.dataset.name).tooltip(context) as string;
+                return ((context.dataset as any).dataset as Dataset)!.tooltip(context) as string;
             }
         }
     };
 
     override onDetach(): void {
-        delete this.graph._chartJS.options.hover;
-        delete this.graph._chartJS.options.plugins!.tooltip;
+        delete this.chartJS!.options.hover;
+        delete this.chartJS!.options.plugins!.tooltip;
     }
 
     override onAttach(): void {
@@ -90,7 +95,7 @@ export default class Tooltip extends inherit(GraphComponent, properties) {
 		let mode = (this.properties.direction ?? 'point') as "x"|"y"|"point";
         let intersect = mode === "point";
 
-        this.graph._chartJS.options.hover = {
+        this.chartJS!.options.hover = {
             mode,
             intersect
         };
@@ -98,7 +103,7 @@ export default class Tooltip extends inherit(GraphComponent, properties) {
         this.#config.mode      = mode;
         this.#config.intersect = intersect;
 
-        this.graph._chartJS.options.plugins!.tooltip = this.#config;
+        this.chartJS!.options.plugins!.tooltip = this.#config;
     }
 }
 

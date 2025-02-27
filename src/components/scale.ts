@@ -1,15 +1,21 @@
-import { inherit, PROPERTY_NUMBER, PROPERTY_RAWDATA, PROPERTY_STRING } from "properties/PropertiesDescriptor.ts";
+import { PropertiesDescriptor } from "@LISS/src/properties/PropertiesManager";
 import GraphComponent from ".";
-import LISS from "../../libs/LISS/src/index.ts";;
+import LISS from "@LISS/src";
 
-const properties = {
-    "content"    : PROPERTY_RAWDATA,
-    "position"   : PROPERTY_STRING,
-    "min"        : PROPERTY_NUMBER,
-    "max"        : PROPERTY_NUMBER,
-}
+import RAWDATA_PARSER from "@LISS/src/properties/parser/RAWDATA_PARSER";
+import STRING_PARSER  from "@LISS/src/properties/parser/STRING_PARSER";
+import NUMBER_PARSER  from "@LISS/src/properties/parser/NUMBER_PARSER";
+import LISSFather from "@LISS/src/LISSClasses/LISSFather";
 
-export default class Scale extends inherit(GraphComponent, properties) {
+export default class Scale extends GraphComponent {
+
+    static override PropertiesDescriptor: PropertiesDescriptor = {
+        ...GraphComponent.PropertiesDescriptor,
+        "content"    : RAWDATA_PARSER,
+        "position"   : STRING_PARSER,
+        "min"        : NUMBER_PARSER,
+        "max"        : NUMBER_PARSER,
+    };
 
     override onUpdate() {//TODO: validate config...
 
@@ -29,7 +35,7 @@ export default class Scale extends inherit(GraphComponent, properties) {
             labels = null;
         }
 
-        let scale = this.graph._chartJS.options.scales![name]!;
+        let scale = this.chartJS!.options.scales![name]!;
         if(labels != null) {
 
             Object.assign(scale, {
@@ -79,8 +85,10 @@ export default class Scale extends inherit(GraphComponent, properties) {
     // compute implicit min/max.
     override onChartUpdate() {
 
+        const chartJS = this.chartJS!;
+
         const scale_name = this.properties.name;
-        const scale = this.graph._chartJS.options.scales![scale_name]!;
+        const scale = chartJS.options.scales![scale_name]!;
 
         if(scale.type !== 'linear')
             return;
@@ -93,7 +101,7 @@ export default class Scale extends inherit(GraphComponent, properties) {
         if( min === Number.POSITIVE_INFINITY ) {
 
             let tmin;
-            for(let dataset of this.graph._chartJS.data.datasets) {
+            for(let dataset of chartJS.data.datasets) {
                 tmin = value_min(dataset.data, getValue);
                 if( tmin < min)
                     min = tmin;
@@ -102,7 +110,7 @@ export default class Scale extends inherit(GraphComponent, properties) {
         if( max === Number.NEGATIVE_INFINITY ) {
 
             let tmax;
-            for(let dataset of this.graph._chartJS.data.datasets) {
+            for(let dataset of chartJS.data.datasets) {
                 tmax = value_max(dataset.data, getValue);
                 if( tmax > max)
                     max = tmax;
@@ -125,15 +133,14 @@ export default class Scale extends inherit(GraphComponent, properties) {
             delete scale.max;
     }
 
-
     override onAttach() {
         const name = this.properties.name;
-        this.graph._chartJS.options.scales![name] = {};
+        this.chartJS!.options.scales![name] = {};
     }
 
     override onDetach(): void {
         const name = this.properties.name;
-        delete this.graph._chartJS.options.scales![name];
+        delete (this.father as any).chartJS.options.scales![name];
     }
 }
 LISS.define('chart-scale', Scale);

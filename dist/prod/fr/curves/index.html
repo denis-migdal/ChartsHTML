@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf8"/>
+        <title>ChartsHTML</title>
+        <meta name="color-scheme" content="dark light">
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link   href="/skeleton/index.css"  rel="stylesheet">
+        <script  src="/skeleton/index.js"  type="module"     blocking="render" async></script>
+    </head>
+    <body code-langs="html,js,bry">
+        <main>
+
+<h1 id="courbes">Courbes</h1>
+<h2 id="points">Points</h2>
+<p>Est un ensemble de points à afficher sur le graphe.</p>
+<table>
+    <thead>
+        <tr><th>HTML</th><th>JS</th></tr>
+    </thead>
+    <tbody>
+        <tr><td>
+            <pre><code lang="html">&lt;chart-html&gt;
+    &lt;curve-points&gt;
+        [[0,0], [1,1], [2,0]]
+    &lt;/curve-points&gt;
+&lt;/chart-html&gt;</code></pre>
+        </td><td>
+<pre><code lang="js">const graph = new ChartHTML();
+graph.addComponent(ChartHTML.Points, {
+    content: [[0,0], [1,1], [2,0]]
+});
+document.body.append(graph.host);</code></pre>
+        </td></tr>
+    </tbody>
+    <tfoot>
+        <tr><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-points">playground</a>
+        </td><td>
+            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-points">playground</a>
+        </td></tr>
+    </tfoot>
+</table>
+
+<p>Hérite de <a href="./components.md#dataset">Dataset</a>.</p>
+<h2 id="line">Line</h2>
+<p>Hérite de <a href="./components.md#dataset">Dataset</a>.</p>
+<p>show-points&#39;, &#39;decimate</p>
+<h3 id="vlinehline">VLine/HLine</h3>
+<p>Hérite de <a href="./curves.md#line">Line</a>.</p>
+<h3 id="timelapse">Timelapse</h3>
+<p>Hérite de <a href="./curves.md#line">Line</a>.</p>
+<h2 id="bars">Bars</h2>
+<p>Hérite de <a href="./components.md#dataset">Dataset</a>.</p>
+<ul>
+<li>reversed</li>
+</ul>
+<h2 id="histogram">Histogram</h2>
+<p>Hérite de <a href="./curves.md#bars">Bars</a>.</p>
+<ul>
+<li>précision</li>
+</ul>
+</main>
+    </body>
+</html>
