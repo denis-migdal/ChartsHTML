@@ -4,6 +4,8 @@
   <p>[Project description</p>
 </div>
 
+Documentation: https://chartshtml.migdal.ovh
+
 ## Build
 
 - `npm run build`
