@@ -8,7 +8,8 @@ ChartsHTML uses **composition** in order to **factorize** code, improving readab
 
 Documentation (FR): https://chartshtml.migdal.ovh
 
-## Build
+## Commands
 
-- `npm run build`
+- `npm run build[-prod]`
 - `npm run watch`
+- `npm run stats`
