@@ -28,7 +28,7 @@ export default class Datasets extends GraphComponent {
         for(let curve of this.#curves)
             ;//curve.detach(); // TODO: optimize...
 
-        const contents = this.properties.content ?? [];
+        const contents = this.value.content ?? [];
 
         //TODO: generic ???
         /*

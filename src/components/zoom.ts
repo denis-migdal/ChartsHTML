@@ -2,7 +2,6 @@ import STRING_PARSER from "@LISS/src/properties/parser/STRING_PARSER";
 import GraphComponent from ".";
 import LISS from "@LISS/src";
 import { PropertiesDescriptor } from "@LISS/src/properties/PropertiesManager";
-import LISSFather from "@LISS/src/LISSClasses/LISSFather";
 
 export default class ChartZoom extends GraphComponent {
 
@@ -50,7 +49,7 @@ export default class ChartZoom extends GraphComponent {
 
         const chartJS = this.chartJS!
 
-        const direction = this.properties.direction;
+        const direction = this.value.direction;
         const zoom_limits = chartJS.options.plugins!.zoom!.limits!;
         const scales      = chartJS.options.scales!;
 
@@ -73,7 +72,7 @@ export default class ChartZoom extends GraphComponent {
 
     override onUpdate(): void {
 
-        const direction = this.properties.direction as "x"|"y"|"xy"|"none";
+        const direction = this.value.direction as "x"|"y"|"xy"|"none";
 
         const cfg = this.chartJS!.options.plugins!.zoom!;
 

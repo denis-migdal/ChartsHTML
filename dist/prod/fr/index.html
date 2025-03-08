@@ -12,151 +12,21 @@
         <main>
 
 <h1 id="chartshtml">ChartsHTML</h1>
-<h2 id="quest-ce-que-chartshtml-">Qu&#39;est-ce que ChartsHTML ?</h2>
-<p>ChartsHTML est une surcouche de Chart.js. ChartsHTML permet de construire des graphes via des <strong>compositions</strong>. Il permet ainsi de :</p>
+<p>ChartsHTML est une surcouche de Chart.js permettant de construire des graphes par <strong>compositions</strong>, et ainsi de :</p>
 <ul>
 <li><strong>factoriser</strong> les éléments de configuration des graphes Chart.js ;</li>
-<li>favoriser l&#39;extensibilité et réutilisabilité des composants ;</li>
-<li>améliorer la lisibilité du code ;</li>
-<li>faciliter la création de graphes.</li>
+<li>favoriser l&#39;<strong>extensibilité</strong> et <strong>réutilisabilité</strong> de ces éléments ;</li>
+<li>améliorer la <strong>lisibilité</strong> du code ;</li>
+<li><strong>faciliter</strong> la création de graphes.</li>
 </ul>
-<p>Les graphes ChartsHTML peuvent être créés en HTML, ou en JS/TS.<br/>
-En interne, ChartsHTML utilise des composants Web (basés sur LISS) permettant ainsi, via les outils de développement du navigateur, de facilement consulter et modifier à la volée la configuration des graphes.</p>
-<p>ChartsHTML intègre aussi plusieurs plugins Chart.js :</p>
-<ul>
-<li>Zoom (<mark>TBI ?</mark>)</li>
-<li>Datalabel</li>
-<li>C2S (<mark>TBI</mark>)</li>
-</ul>
-<p>Et fournit de nouvelles fonctionnalités :</p>
-<ul>
-<li>synchronisation de sources de données (<mark>TBI ?</mark>).</li>
-<li>export de données (csv, json, ?) (<mark>TBI</mark>).</li>
-<li>export de graphes (png, svg, HTML, ?) (<mark>TBI</mark>).</li>
-</ul>
-<p>💡 Vous pouvez consulter les différents exemples dans le <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/">playground</a>.</p>
-<h2 id="votre-premier-graphe-chartshtml">Votre premier graphe ChartsHTML</h2>
-<p>Tout d&#39;abord, construisons un nouveau graphe vide :</p>
-<table>
-    <thead>
-        <tr><th>HTML</th><th>JS</th></tr>
-    </thead>
-    <tbody>
-        <tr><td>
-            <pre><code lang="html">&lt;chart-html&gt;&lt;/chart-html&gt;</code></pre>
-        </td><td>
-<pre><code lang="js">const graph = new ChartHTML();
-document.body.append(graph.host);
-</code></pre>
-        </td></tr>
-    </tbody>
-    <tfoot>
-        <tr><td>
-            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-empty">playground</a>
-        </td><td>
-            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-empty">playground</a>
-        </td></tr>
-    </tfoot>
-</table>
+<p>💡 Aussi, grâce à un système de signals, les données ne sont calculées que lorsque nécessaire.</p>
+<p>Les graphes ChartsHTML peuvent être créés en HTML, ou en JS/TS (cliquez en haut à gauche pour changer de langage) :</p>
+<p><chart-playground name="demo"></chart-playground></p>
+<div style="float:right">
 
-<p>Nous pouvons ensuite ajouter notre premier composant au graphe, e.g. une ligne :</p>
-<table>
-    <thead>
-        <tr><th>HTML</th><th>JS</th></tr>
-    </thead>
-    <tbody>
-        <tr><td>
-            <pre><code lang="html">&lt;chart-html&gt;
-    &lt;curve-line&gt;
-        [[0,0], [1,1], [2,0]]
-    &lt;/curve-line&gt;
-&lt;/chart-html&gt;</code></pre>
-        </td><td>
-<pre><code lang="js">const graph = new ChartHTML();
-graph.addComponent(ChartHTML.Line, {
-    content: [[0,0], [1,1], [2,0]]
-});
-document.body.append(graph.host);
-</code></pre>
-        </td></tr>
-    </tbody>
-    <tfoot>
-        <tr><td>
-            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-line">playground</a>
-        </td><td>
-            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-line">playground</a>
-        </td></tr>
-    </tfoot>
-</table>
+<p>🚀 Cliquez <a href="./getting-started">ici</a> pour découvrir comment utiliser ChartsHTML.</p>
+</div>
 
-<p>Nous pouvons alors configurer cet élément, e.g. sa couleur et ses bulles informatives (au survol de ses points) :</p>
-<table>
-    <thead>
-        <tr><th>HTML</th><th>JS</th></tr>
-    </thead>
-    <tbody>
-        <tr><td>
-            <pre><code lang="html">&lt;chart-html&gt;
-    &lt;chart-tooltip&gt;Data&lt;/chart-tooltip&gt;
-    &lt;curve-line name="my line" color="red"
-             tooltip="${ctx.name}: (${ctx.x}, ${ctx.y})"&gt;
-        [[0,0], [1,1], [2,0]]
-    &lt;/curve-line&gt;
-&lt;/chart-html&gt;</code></pre>
-        </td><td>
-<pre><code lang="js">const graph = new ChartHTML();
-graph.addComponent(ChartHTML.Tooltip, {
-    content: "Data"
-});
-graph.addComponent(ChartHTML.Line, {
-    name   : "my line",
-    color  : "red",
-    tooltip: ({ctx}) => `${ctx.name}: (${ctx.x}, ${ctx.y})`,
-    content: [[0,0], [1,1], [2,0]]
-});
-document.body.append(graph.host);
-</code></pre>
-        </td></tr>
-    </tbody>
-    <tfoot>
-        <tr><td>
-            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=html-line-color-tooltip">playground</a>
-        </td><td>
-            <a href="https://denis-migdal.github.io/ChartsHTML/dist/dev/pages/playground/?example=js-line-color-tooltip">playground</a>
-        </td></tr>
-    </tfoot>
-</table>
-
-<p>💡 <code>ctx</code> contient les informations contextuelles (peuvent varier en fonction du composant) :</p>
-<ul>
-<li><code>ctx.name</code> : le nom du dataset ;</li>
-<li><code>ctx.x</code> : la valeur d&#39;abscisse du point ;</li>
-<li><code>ctx.y</code> : la valeur d&#39;ordonnée du point.</li>
-</ul>
-<p>Vous pouvez désormais ajouter, puis configurer, d&#39;autres composants à votre graphe :</p>
-<ul>
-<li><a href="./components.md#dataset"><code>Dataset</code> : permet d&#39;afficher et de configurer un dataset.</a><ul>
-<li><a href="./curves.md#points"><code>Points</code> : un ensemble de points.</a></li>
-<li><code>Line</code> : une ligne.<ul>
-<li><code>HLine</code> : une ligne horizontale.</li>
-<li><code>VLine</code> : une ligne verticale.</li>
-</ul>
-</li>
-<li><code>Bars</code> : données en barres.<ul>
-<li><code>Histogram</code> : histogramme.</li>
-</ul>
-</li>
-<li><code>Timelapse</code> : données temporelles.</li>
-</ul>
-</li>
-<li><a href="./components.md#scale"><code>Scale</code> : configurer les axes du graphe.</a></li>
-<li><a href="./components.md#tooltip"><code>Tooltip</code> : activer et configurer les bulles informatives.</a></li>
-<li><a href="./components.md#datalabels"><code>Datalabels</code> : activer et configurer les étiquettes de données.</a></li>
-<li><a href="./components.md#zoom"><code>Zoom</code> : activer et configurer le zoom/pan.</a></li>
-<li><a href="./components.md#value"><code>Value</code> : configure une valeur partagée ou externe.</a></li>
-<li><code>Datasets</code> : regroupe un ensemble de datasets en un seul composant (généralement utilisé avec Value).</li>
-</ul>
-<p>💡 [TODO API JS++]</p>
 </main>
     </body>
 </html>

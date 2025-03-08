@@ -1,4 +1,5 @@
 import "@LISS/pages/skeleton/base/";
+import "@ChartsHTML/chart-playground/";
 
 import { initMenu } from "@LISS/components/page/menu";
 

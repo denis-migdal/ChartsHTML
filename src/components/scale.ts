@@ -5,7 +5,6 @@ import LISS from "@LISS/src";
 import RAWDATA_PARSER from "@LISS/src/properties/parser/RAWDATA_PARSER";
 import STRING_PARSER  from "@LISS/src/properties/parser/STRING_PARSER";
 import NUMBER_PARSER  from "@LISS/src/properties/parser/NUMBER_PARSER";
-import LISSFather from "@LISS/src/LISSClasses/LISSFather";
 
 export default class Scale extends GraphComponent {
 
@@ -19,12 +18,12 @@ export default class Scale extends GraphComponent {
 
     override onUpdate() {//TODO: validate config...
 
-        const name     = this.properties.name;
-        const position = this.properties.position;
+        const name     = this.value.name;
+        const position = this.value.position;
 
-        let labels   = this.properties.content;
-        let min      = this.properties.min;
-        let max      = this.properties.max;
+        let labels   = this.value.content;
+        let min      = this.value.min;
+        let max      = this.value.max;
 
         if( name === null)
             throw new Error('name is null');
@@ -87,14 +86,14 @@ export default class Scale extends GraphComponent {
 
         const chartJS = this.chartJS!;
 
-        const scale_name = this.properties.name;
+        const scale_name = this.value.name;
         const scale = chartJS.options.scales![scale_name]!;
 
         if(scale.type !== 'linear')
             return;
 
-        let min = this.properties.min ?? Number.POSITIVE_INFINITY;
-        let max = this.properties.max ?? Number.NEGATIVE_INFINITY;
+        let min = this.value.min ?? Number.POSITIVE_INFINITY;
+        let max = this.value.max ?? Number.NEGATIVE_INFINITY;
 
         let getValue = (p: any) => p[scale_name];
 
@@ -134,12 +133,12 @@ export default class Scale extends GraphComponent {
     }
 
     override onAttach() {
-        const name = this.properties.name;
+        const name = this.value.name;
         this.chartJS!.options.scales![name] = {};
     }
 
     override onDetach(): void {
-        const name = this.properties.name;
+        const name = this.value.name;
         delete (this.father as any).chartJS.options.scales![name];
     }
 }

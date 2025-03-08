@@ -42,7 +42,7 @@ export default class Line extends Dataset {
 
         super.onUpdate();
 
-		if( ! this.properties.showPoints )
+		if( ! this.value.showPoints )
 			this.dataset.pointRadius = 0;
 
         /* this.#dataset = {

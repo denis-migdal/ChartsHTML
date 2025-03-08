@@ -6,7 +6,6 @@ import { PropertiesDescriptor } from "@LISS/src/properties/PropertiesManager";
 
 import { ChartType, TooltipItem} from 'chart.js';
 import Dataset from "./dataset";
-import LISSFather from "@LISS/src/LISSClasses/LISSFather";
 
 export class ContextProvider {
     
@@ -60,9 +59,14 @@ export default class Tooltip extends GraphComponent {
             family: 'Courier New'
         },
         filter: <TType extends ChartType>(context: TooltipItem<TType>) => {
-            //TODO... also no tooltip...
+
             const point = context.parsed as any;
-            return point.x !== null && point.y !== null;
+            if( point.x === null || point.y === null )
+                return false;
+
+            const dataset = ((context.dataset as any).dataset as Dataset)!;
+
+            return dataset.hasTooltip;
         },
 
         callbacks: {
@@ -75,8 +79,7 @@ export default class Tooltip extends GraphComponent {
 
                 this.#ctx.context = context[0];
 
-                console.warn(this.properties.content, this.#ctx);
-                return this.properties.content(this.#ctx);
+                return this.value.content(this.#ctx);
             },
             // One line per points
             label: (context: any) => {
@@ -92,7 +95,11 @@ export default class Tooltip extends GraphComponent {
 
     override onAttach(): void {
 
-		let mode = (this.properties.direction ?? 'point') as "x"|"y"|"point";
+        let direction = this.value.direction;
+        if( direction === "xy" || direction === null)
+            direction = "point";
+
+		let mode = direction as "x"|"y"|"point";
         let intersect = mode === "point";
 
         this.chartJS!.options.hover = {

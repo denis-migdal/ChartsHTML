@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf8"/>
+        <title>ChartsHTML</title>
+        <meta name="color-scheme" content="dark light">
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link   href="/skeleton/index.css"  rel="stylesheet">
+        <script  src="/skeleton/index.js"  type="module"     blocking="render" async></script>
+    </head>
+    <body code-langs="html,js">
+        <main>
+
+<h1 id="prise-en-main">Prise en main</h1>
+<p>Créez votre premier graphe ChartsHTML en 5 petites étapes.</p>
+<h2 id="ajout-de-chartshtml">Ajout de ChartsHTML</h2>
+<p>La première étape est d&#39;ajouter la bibliothèque ChartsHTML à votre page Web :</p>
+<script type="c-html">
+    <!DOCTYPE html>
+    <html>
+        <head>
+            ... 
+            <script type="module" src="<h>/libs/ChartsHTML/</h>"><xscript>
+        </head>
+        <body>
+            ...
+        <xbody>
+    </html>
+</script>
+
+<h2 id="créez-votre-premier-graphe">Créez votre premier graphe</h2>
+<p>En HTML ou en JS/TS, ajoutez un graphe vide à votre page Web :</p>
+<p><chart-playground name="graph-empty" show="index.code,output"></chart-playground></p>
+<div style="text-align:right"><a href="/playground/?example=graph-empty"><i>Tester l'exemple dans le bac à sable</i></a></div>
+
+<p>💡 Le graphe étant actuellement vide, rien ne s&#39;affiche.</p>
+<h2 id="ajouter-une-courbe-à-votre-graphe">Ajouter une courbe à votre graphe</h2>
+<p>Vous pouvez maintenant afficher des données sur votre graphe en lui ajoutant une courbe :</p>
+<p><chart-playground name="curve-line" show="index.code,output"></chart-playground></p>
+<div style="text-align:right"><a href="/playground/?example=curve-line"><i>Tester l'exemple dans le bac à sable</i></a></div>
+
+<p>💡 ChartsHTML offre différents types de courbes :</p>
+<div class="flex-2">
+    <div>
+
+<ul>
+<li><a href="../curves/#points"><script type="c-text">Points</script></a> : un ensemble de points.</li>
+<li><a href="../curves/#line"><script type="c-text">Line</script></a> : une ligne.<ul>
+<li><a href="../curves/#hline"><script type="c-text">HLine</script></a> : une ligne horizontale.</li>
+<li><a href="../curves/#vline"><script type="c-text">VLine</script></a> : une ligne verticale.</li>
+</ul>
+</li>
+</ul>
+</div><div>
+
+<ul>
+<li><a href="../curves/#bars"><script type="c-text">Bars</script></a> : données en barres.<ul>
+<li><a href="../curves/#histogram"><script type="c-text">Histogram</script></a> : histogramme.</li>
+</ul>
+</li>
+<li><a href="../curves/#timelapse"><script type="c-text">Timelapse</script></a> : données temporelles.</li>
+<li><a href="../curves/#dataset"><script type="c-text">Dataset</script></a> : utiliser un autre type de courbes.</li>
+</ul>
+</div>
+</div>
+
+<h2 id="configurez-votre-courbe">Configurez votre courbe</h2>
+<p>Vous pouvez ensuite configurer votre courbe en lui ajoutant des attributs, e.g. pour modifier sa couleur :</p>
+<p><chart-playground name="curve-line-color" show="index.code,output"></chart-playground></p>
+<div style="text-align:right"><a href="/playground/?example=curve-line-color"><i>Tester l'exemple dans le bac à sable</i></a></div>
+
+<p>💡 La liste des attributs qu&#39;accepte chaque type de courbes est décrit dans leur documentation.</p>
+<h2 id="configurez-votre-graphe">Configurez votre graphe</h2>
+<p>Vous pouvez ensuite configurer votre graphe en lui ajoutant différents composants.<br/>
+Par exemple pour afficher une bulle informative au survol des points :</p>
+<p><chart-playground name="component-tooltip" show="index.code,output"></chart-playground></p>
+<div style="text-align:right"><a href="/playground/?example=component-tooltip"><i>Tester l'exemple dans le bac à sable</i></a></div>
+
+<p>💡 Vous noterez qu&#39;en HTML les indications <script type="c-text">@{...}</script>  sont remplacées par des valeurs dépendantes du point. Ce système est expliqué plus en détails dans la documentation de <a href="../components/#tooltip"><script type="c-js">Tooltip</script></a>.</p>
+<p>💡 ChartsHTML offre différents composants :</p>
+<div class="flex-2">
+    <div>
+
+<ul>
+<li><a href="../components/#scale"><script type="c-js">Scale</script></a> : les axes du graphe.</li>
+<li><a href="../components/#zoom"><script type="c-js">Zoom</script></a> : zoom/pan.</li>
+</ul>
+</div><div>
+
+<ul>
+<li><a href="../components/#tooltip"><script type="c-js">Tooltip</script></a> : bulles informatives.</li>
+<li><a href="../components/#datalabels"><script type="c-js">Datalabels</script></a> : les étiquettes de données.</li>
+<li><a href="../components/#value"><script type="c-js">Value</script></a> : valeur partagée ou externe.</li>
+</ul>
+</div>
+</div>
+
+<ul>
+<li>[TODO] <code>Datasets</code> : regroupe un ensemble de datasets en un seul composant (généralement utilisé avec Value).</li>
+</ul>
+<h2 id="interagir-avec-votre-graphe-et-ses-composants">Interagir avec votre graphe et ses composants</h2>
+<p>💡 En interne, ChartsHTML utilise des composants Web <a href="liss.migdal.ovh">LISS</a> permettant de modifier à la volée la configuration des graphes, via les outils de développement du navigateur.</p>
+<p>[TODO] cf LISS doc.</p>
+<h2 id="créer-vos-propres-composants-de-graphe">Créer vos propres composants de graphe</h2>
+<p>[TODO] doc developer ?</p>
+</main>
+    </body>
+</html>

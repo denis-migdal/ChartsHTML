@@ -21,7 +21,7 @@ export default class Histogram extends Bars {
         //TODO: better ?
         const min = this.chartJS!.options.scales!.x?.min as number ?? 0;
         const max = this.chartJS!.options.scales!.x?.max as number ?? 1;
-        const precision = +( this.properties.precision ?? 10);
+        const precision = +( this.value.precision ?? 10);
 
         const sorted = true;
 
@@ -43,7 +43,6 @@ export default class Histogram extends Bars {
                 ++histo[i];
                 ++offset;
             }
-
         }
 
         histo[histo.length-1] = data.length - offset;

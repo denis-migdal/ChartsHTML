@@ -9,7 +9,8 @@ graph.append(new CH.Tooltip({
 
 graph.append(new CH.Line({
     name   : "line",
-    tooltip: (ctx) => `${ctx.name}: (${ctx.x}, ${ctx.y})`,
+    tooltip: (ctx) =>
+      `${ctx.name}: (${ctx.x}, ${ctx.y})`,
     content: [[0,0], [1,1], [2,0]]
 }));
 

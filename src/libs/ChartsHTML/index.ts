@@ -23,4 +23,4 @@ export {default as Histogram} from '@ChartsHTML/components/curves/Histogram';
 // need to define last.
 export {default as Chart}  from "@ChartsHTML/Chart";
 
-export const foo = 3;
+export {default as CALLBACK} from '@LISS/src/properties/callback';

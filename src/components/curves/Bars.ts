@@ -59,7 +59,7 @@ export default class Bars extends Dataset {
                     width = w;
             }
 
-            if( this.properties.reversed )
+            if( this.value.reversed )
                 data = data.map( (p) => {return {x: p.x, y: p.y !== null ? -p.y : null} });
 
             this.dataset.data = [

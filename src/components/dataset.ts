@@ -7,6 +7,7 @@ import STRING_PARSER  from "@LISS/src/properties/parser/STRING_PARSER";
 import COLOR_PARSER   from "@LISS/src/properties/parser/COLOR_PARSER";
 import RAWDATA_PARSER from "@LISS/src/properties/parser/RAWDATA_PARSER";
 import FSTRING_PARSER from "@LISS/src/properties/parser/FSTRING_PARSER";
+import FSTRING_ARRAY_PARSER from "@LISS/src/properties/parser/FSTRING_ARRAY_PARSER";
 
 
 // attrs: ['type', 'color', 'tooltip', 'hide']
@@ -19,9 +20,9 @@ export default class Dataset extends GraphComponent {
             default: "black"
         },
         "content"    : RAWDATA_PARSER,
-        "name"       :  STRING_PARSER,
         "type"       :  STRING_PARSER,
-        "tooltip"    : FSTRING_PARSER
+        "tooltip"    : FSTRING_PARSER,
+        "datalabels" : FSTRING_ARRAY_PARSER,
     };
 
     protected computeChartJSData(data: any) { return data; }
@@ -40,7 +41,7 @@ export default class Dataset extends GraphComponent {
 
         return {
             dataset: this,
-            name: this.properties.name,
+            name: this.value.name,
             data: [],
             type: null as null|string
         }
@@ -48,43 +49,58 @@ export default class Dataset extends GraphComponent {
 
     override onUpdate(): void {
 
-        this.dataset.type = this.properties.type;
-
-        console.warn("called", this.ChartJSData.value);
+        this.dataset.type = this.value.type;
 
         this.dataset.data = this.ChartJSData.value;
 
-        this.dataset.backgroundColor = this.dataset.borderColor = this.properties.color;
+        this.dataset.backgroundColor = this.dataset.borderColor = this.value.color;
     }
 
-    // =============== TOOLTIP ====================
+    // =============== TOOLTIP & DATALABELS ====================
 
     readonly ctx = new ContextProvider();
-    
+
     // tooltips
+
+    get hasTooltip() {
+        return this.value.tooltip !== null;
+    }
+    
     tooltip(context: any) {
 
-        const tooltip = this.properties.tooltip;
+        const tooltip = this.value.tooltip;
 
         if( tooltip === null)
-            return "";
+            return null;
 
         this.ctx.context = context;
 
-        //TODO...
-        // @ts-ignore
         return tooltip( this.ctx )
     }
 
-    // datalabel
-
-    static datalabels = {
-        none: () => null,
-        name: (ctx: any) => ctx.name,
-        xy  : (ctx: any) => `(${ctx.x},${ctx.y})`,
-        x   : (ctx: any) => ctx.x,
-        y   : (ctx: any) => ctx.y,
+    get hasDatalabels() {
+        return this.value.datalabels !== null;
     }
+
+    private datalabels_id: number = 0;
+
+    on_datalabels_click() {
+        ++this.datalabels_id;
+    }
+
+    datalabels(context: any) {
+
+        const datalabels = this.value.datalabels;
+
+        if( datalabels === null)
+            return null;
+
+        this.ctx.context = context;
+
+        return datalabels( this.datalabels_id, this.ctx );
+    }
+
+    // =============== EXPORTS ====================
 
     // exports (+toJSON)
 
@@ -92,7 +108,7 @@ export default class Dataset extends GraphComponent {
 
         const name = ""; //this.propertiesManager.getValue('name');
 
-        const data = this.properties.data as Record<string, number>[]; // when hide, #dataset.data is [].
+        const data = this.value.data as Record<string, number>[]; // when hide, #dataset.data is [].
 
         // Get the keys.
         const keys_set = new Set<string>();

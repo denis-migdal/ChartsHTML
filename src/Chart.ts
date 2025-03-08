@@ -1,17 +1,32 @@
 import LISS from "@LISS/src/";
 
-import {Chart as ChartJS, Tooltip, Filler, LinearScale, ScatterController, PointElement, LineElement, BarController, BarElement, ChartDataset, ScaleOptionsByType, ScaleOptions} from 'chart.js';
+import {Chart as ChartJS, Tooltip, Filler, LinearScale, ScatterController, PointElement, LineElement, BarController, BarElement,
+	RadarController,
+	BubbleController,
+	PieController,
+	DoughnutController,
+	PolarAreaController,
+	ArcElement,
+	RadialLinearScale,
+} from 'chart.js';
 
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import zoomPlugin      from 'chartjs-plugin-zoom';
 
 ChartJS.register(Tooltip, Filler, ScatterController, PointElement, LineElement, LinearScale, BarController, BarElement, ChartDataLabels, zoomPlugin);
 ChartJS.register(CategoryScale);
+ChartJS.register(RadarController,
+	BubbleController,
+	PieController,
+	ArcElement,
+	DoughnutController,
+	PolarAreaController,
+	RadialLinearScale);
 
-import {CategoryScale} from 'chart.js'; 
-import Dataset from "./components/dataset";
+import {CategoryScale} from 'chart.js';
 import GraphComponent from "./components/";
 import LISSFather from "@LISS/src/LISSClasses/LISSFather";
+import Value from "./components/value";
 
 const CSS = `
 :host {
@@ -33,12 +48,12 @@ export default class Chart extends LISS({css: CSS}, LISSFather) {
 		return this.LISSChildren as any;
 	}
 
-    constructor(params: Record<string, any>) {
+    constructor(values: Record<string, any>) {
         super();
+
+		for(let name in values)
+			this.append( new Value({name, content: values[name] }) );
     }
-	//readonly signals = new SignalManager();
-	//for(let name in params)
-	//	this.signals.set(name, new Signal(params[name]) );
     
 	// =========== Chart ===========
 
