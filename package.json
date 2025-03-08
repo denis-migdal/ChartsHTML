@@ -11,7 +11,7 @@
         "build": "clear ; webpack --no-watch --mode=development",
         "build-prod": "clear ; webpack --no-watch --mode=production",
         "watch": "clear ; webpack --watch    --mode=development",
-        "stats": "du -h dist/dev/libs/ChartsHTML/index.js ; zip /tmp/dev.js dist/dev/libs/ChartsHTML/index.js  > /dev/null ; du -h /tmp/dev.js ; du -h dist/prod/libs/ChartsHTML/index.js ; zip /tmp/prod.js dist/prod/libs/ChartsHTML/index.js > /dev/null ; du -h /tmp/prod.js ",
+        "stats": "du -h dist/dev/libs/ChartsHTML/index.js ; zip - dist/dev/libs/ChartsHTML/index.js 2> /dev/null | wc -c | numfmt --to=iec ; du -h dist/prod/libs/ChartsHTML/index.js ; zip - dist/prod/libs/ChartsHTML/index.js 2> /dev/null | wc -c | numfmt --to=iec",
         "tests": "clear ; deno task test ;"
     },
     "author": "[AUTHOR]",
